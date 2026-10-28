@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src blob: https://cdn.jsdelivr.net; connect-src data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://tessdata.projectnaptha.com https://script.google.com https://script.googleusercontent.com; img-src 'self' data: blob:; style-src 'unsafe-inline'; font-src data:; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>PDF 工具箱</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%84%3C/text%3E%3C/svg%3E">
 <style>
@@ -490,7 +491,7 @@ header.top h1{font-size:17px;margin:0}
         <p class="desc mode" id="c_modeDesc"></p>
         <h2>空格</h2>
         <label><input type="checkbox" id="c_cjkSpace" checked>刪除中文字之間的空格</label>
-        <p class="desc">例：「食 品 安 全」→「食品安全」</p>
+        <p class="desc">例：「會 議 紀 錄」→「會議紀錄」</p>
         <label style="display:block">中文和英文／數字之間
           <select id="c_latinSpace" style="margin-top:4px">
             <option value="keep">保持原樣</option>
@@ -498,7 +499,7 @@ header.top h1{font-size:17px;margin:0}
             <option value="add">統一加一個空格</option>
           </select>
         </label>
-        <p class="desc mode">例：「HACCP 計畫」刪掉＝「HACCP計畫」；「共3頁」加空格＝「共 3 頁」</p>
+        <p class="desc mode">例：「PDF 檔案」刪掉＝「PDF檔案」；「共3頁」加空格＝「共 3 頁」</p>
         <label><input type="checkbox" id="c_multiSpace" checked>連續空格縮成一個</label>
         <p class="desc">例：「A　　　B」→「A B」</p>
         <h2>其他修正</h2>
@@ -542,9 +543,9 @@ header.top h1{font-size:17px;margin:0}
     </div>
     <p class="hint">記下 OCR 或 PDF 常弄錯的字，之後「複製文字」和「文字整理」的結果會自動改成正確的。存在這台電腦的瀏覽器裡，只有你自己看得到。</p>
     <div class="row">
-      <input type="text" id="dictFrom" placeholder="錯的字，例：滷昧">
+      <input type="text" id="dictFrom" placeholder="錯的字，例：己經">
       →
-      <input type="text" id="dictTo" placeholder="正確的字，例：滷味（留空＝刪掉）">
+      <input type="text" id="dictTo" placeholder="正確的字，例：已經（留空＝刪掉）">
       <button class="primary" id="dictAdd">新增</button>
     </div>
     <div class="row"><input type="text" id="dictSearch" placeholder="🔍 搜尋對照表"></div>
@@ -602,7 +603,7 @@ header.top h1{font-size:17px;margin:0}
     <ul><li>OCR 常認錯的字，在結果裡選取 → 按「加入常錯字」（複製文字分頁叫「選取的字加入常錯字」）→ 輸入正確的字。以後會自動改正。</li></ul>
     <h3>命名規則</h3>
     <ul>
-      <li>右上角「📁 檔名」選這次存檔要用哪一組規則；按 ⚙ 新增自己的規則，例如 <code>{日期}-{自訂}-{序號}</code> → 20261028-品管課-001.pdf。</li>
+      <li>右上角「📁 檔名」選這次存檔要用哪一組規則；按 ⚙ 新增自己的規則，例如 <code>{日期}-{自訂}-{序號}</code> → 20261028-業務部-001.pdf。</li>
       <li>每組規則的序號分開算，每天從 001 開始。</li>
     </ul>
     <h2>常見問題</h2>
@@ -652,7 +653,7 @@ header.top h1{font-size:17px;margin:0}
     <textarea id="fbMsg" maxlength="2000" placeholder="越具體越好：在哪個步驟、看到什麼、希望變怎樣"></textarea>
     <div class="hint" id="fbCount">0／2000 字</div>
     <div class="row" style="gap:12px;align-items:flex-start">
-      <div style="flex:1;min-width:180px"><label class="blk" for="fbName">稱呼（選填，不公開）</label><input type="text" id="fbName" maxlength="40" placeholder="例：品管課 小王"></div>
+      <div style="flex:1;min-width:180px"><label class="blk" for="fbName">稱呼（選填，不公開）</label><input type="text" id="fbName" maxlength="40" placeholder="例：業務部 小王"></div>
       <div style="flex:1;min-width:180px"><label class="blk" for="fbContact">聯絡方式（選填，不公開）</label><input type="text" id="fbContact" maxlength="80" placeholder="分機、LINE 或 Email"></div>
     </div>
     <div class="fb-hp" aria-hidden="true"><label>網站<input type="text" id="fbWebsite" tabindex="-1" autocomplete="off"></label></div>
@@ -712,7 +713,7 @@ header.top h1{font-size:17px;margin:0}
         <label class="row">格式 <input type="text" id="nameTpl" spellcheck="false"></label>
         <div class="row vars" id="nameVars">插入：</div>
         <div class="row vars" id="namePresets">常用格式：</div>
-        <label class="row">自訂文字 <input type="text" id="nameCustom" placeholder="填進 {自訂}，例：品管課、廠商簡稱"></label>
+        <label class="row">自訂文字 <input type="text" id="nameCustom" placeholder="填進 {自訂}，例：部門名稱、客戶簡稱"></label>
         <div class="namepv" id="namePreview"></div>
         <div class="row"><span class="hint" id="nameSeqInfo"></span><button id="nameSeqReset">這組序號歸零</button></div>
       </div>
@@ -824,6 +825,7 @@ if (window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_BASE + 'pdf.
 function openPdfjs(bytes) {
   const task = pdfjsLib.getDocument({
     data: bytes.slice(),
+    isEvalSupported: false,
     cMapUrl: PDFJS_BASE + 'cmaps/', cMapPacked: true,
     standardFontDataUrl: PDFJS_BASE + 'standard_fonts/'
   });
@@ -2346,18 +2348,18 @@ $('c_btnPdf').onclick = async () => {
 };
 $('c_btnSample').onclick = () => {
   $('c_inp').value = [
-    '食 品 安 全 管 理 程 序 書',
+    '員 工 教 育 訓 練 辦 法',
     '',
     '一、目的',
-    '為 確 保 本 公 司 生 產 之 滷 味 製 品 符 合 食 品 安 全 衛 生 管 理 法 規 定 ， 特 訂 定 本 程 序 ， 作 為 各 單 位 執 行',
-    '⾃主管理及每⽇檢查的依據 。',
+    '為 提 升 同 仁 專 業 能 力 及 工 作 效 率 ， 並 確 保 各 項 作 業 符 合 公 司 規 定 ， 特 訂 定 本 辦 法 ， 作 為 各 部 門 安 排',
+    '⾃主學習及每⽇工作檢討的依據 。',
     '二、適用範圍',
-    '（一）原料驗收、前處理、滷製、冷卻及包裝等各',
-    '製程站別 。',
-    '（二）委外加工之半成品 。',
+    '（一）新進人員訓練、在職訓練、主管培訓及外部課程等各',
+    '類訓練項目 。',
+    '（二）約聘及兼職人員 。',
     '3',
-    'The HACCP plan shall be reviewed annually to verify its effec-',
-    'tiveness and compliance with current regulations.'
+    'The training plan shall be reviewed annually to verify its effec-',
+    'tiveness and alignment with current business needs.'
   ].join('\n');
   run();
 };
