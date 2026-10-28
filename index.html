@@ -1,0 +1,2952 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>PDF 工具箱</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%84%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#f4f5f7;--panel:#ffffff;--text:#1d2330;--muted:#677085;--line:#d8dce3;
+  --accent:#2463eb;--accent-text:#ffffff;--accent-soft:#e3ecfd;--danger:#c62828;--stage:#e2e5ea;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#14171c;--panel:#1d2129;--text:#e5e7eb;--muted:#9aa3b2;--line:#323946;--accent:#5b8cff;--accent-text:#ffffff;--accent-soft:#233257;--danger:#ff6b6b;--stage:#262b34}
+}
+:root[data-theme="dark"]{--bg:#14171c;--panel:#1d2129;--text:#e5e7eb;--muted:#9aa3b2;--line:#323946;--accent:#5b8cff;--accent-text:#ffffff;--accent-soft:#233257;--danger:#ff6b6b;--stage:#262b34}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 "Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif;display:flex;flex-direction:column}
+button{font:inherit;font-size:14px;padding:5px 11px;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--text);cursor:pointer;white-space:nowrap}
+button:hover{border-color:var(--accent)}
+button:disabled{opacity:.45;cursor:not-allowed;border-color:var(--line)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-text)}
+input[type=number],input[type=text],select{font:inherit;font-size:14px;padding:4px 6px;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--text)}
+input[type=number]{width:64px}
+input[type=color]{width:34px;height:28px;padding:1px;border:1px solid var(--line);border-radius:6px;background:var(--panel)}
+.muted{color:var(--muted)}
+.hint{font-size:12px;color:var(--muted);margin:4px 0;line-height:1.55}
+header.top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;padding:8px 16px;background:var(--panel);border-bottom:1px solid var(--line)}
+header.top h1{font-size:17px;margin:0}
+#tabs{display:flex;flex-wrap:wrap;gap:4px}
+#tabs button{border-color:transparent;background:transparent;font-weight:600;color:var(--muted)}
+#tabs button.on{background:var(--accent-soft);color:var(--accent)}
+.privacy{margin-left:auto;font-size:12px;color:var(--muted)}
+#libErr{background:#fdecea;color:#8a1c1c;padding:8px 16px;font-size:14px}
+.view{flex:1;min-height:0;display:flex;flex-direction:column}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:8px 16px;font-size:14px}
+.bar .sep{width:1px;height:22px;background:var(--line);margin:0 4px}
+.bar .sp{flex:1}
+.bar.tools{background:var(--panel);border-bottom:1px solid var(--line)}
+.bar.export{background:var(--panel);border-top:1px solid var(--line)}
+#rangeInp{width:150px}
+#gridWrap{flex:1;min-height:0;overflow:auto;padding:12px 16px 16px}
+.grid{display:flex;flex-wrap:wrap;gap:12px;align-content:flex-start}
+.card{width:172px;background:var(--panel);border:2px solid var(--line);border-radius:8px;padding:8px;cursor:pointer;position:relative;user-select:none}
+.card.sel{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.card.dragging{opacity:.35}
+.card.drop-before{box-shadow:-7px 0 0 -2px var(--accent)}
+.card.drop-after{box-shadow:7px 0 0 -2px var(--accent)}
+.card .thumb{height:196px;display:flex;align-items:center;justify-content:center;background:var(--stage);border-radius:4px;overflow:hidden}
+.card .thumb canvas{max-width:100%;max-height:100%;box-shadow:0 1px 3px rgba(0,0,0,.3);background:#fff}
+.card .cap{display:flex;gap:6px;align-items:baseline;font-size:13px;margin-top:6px;min-width:0}
+.card .cap .src{color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card .stripe{position:absolute;left:0;right:0;top:0;height:5px;border-radius:6px 6px 0 0;background:var(--doc,transparent)}
+.card.new{animation:newflash 2.6s ease-out}
+@keyframes newflash{0%,55%{border-color:var(--doc);box-shadow:0 0 0 4px var(--doc)}100%{}}
+.files{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 10px;font-size:13px}
+.files:empty{display:none}
+.fchip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;font-size:13px;max-width:100%}
+.fchip i{flex:none;width:10px;height:10px;border-radius:50%;background:var(--doc)}
+.fchip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:260px}
+.fchip small{color:var(--muted)}
+.card .check{position:absolute;top:13px;left:13px;width:22px;height:22px;border-radius:50%;border:2px solid #fff;background:rgba(0,0,0,.28);color:#fff;font-size:13px;line-height:18px;text-align:center}
+.card.sel .check{background:var(--accent)}
+.card.sel .check::after{content:"✓"}
+.card .mini{position:absolute;top:12px;left:40px;right:12px;display:none;flex-wrap:wrap;justify-content:flex-end;gap:3px}
+.card:hover .mini{display:flex}
+.card .mini button{padding:0 5px;font-size:13px;background:rgba(255,255,255,.95);color:#1d2330;border-color:#c5cad3}
+.empty{border:2px dashed var(--line);border-radius:12px;padding:48px 16px;text-align:center;color:var(--muted);background:var(--panel)}
+.empty b{display:block;font-size:17px;color:var(--text);margin-bottom:6px}
+#view-viewer{flex-direction:row}
+.side{width:310px;flex:none;background:var(--panel);border-right:1px solid var(--line);padding:12px 14px;overflow:auto}
+.side h2{font-size:13px;color:var(--muted);margin:16px 0 6px;font-weight:600}
+.side h2:first-child{margin-top:0}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:6px 0;font-size:14px}
+.chk{display:flex;gap:6px;align-items:center;font-size:14px;margin:4px 0;cursor:pointer}
+.seg{display:flex;gap:0}
+.seg button{border-radius:0}
+.seg button:first-child{border-radius:6px 0 0 6px}
+.seg button:last-child{border-radius:0 6px 6px 0;margin-left:-1px}
+.seg button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-text)}
+.wide{width:100%;padding:8px}
+.preview{border:1px solid var(--line);border-radius:6px;min-height:90px;display:flex;align-items:center;justify-content:center;padding:6px;background:var(--stage);margin:6px 0}
+.preview canvas{max-width:100%;max-height:220px;background:#fff}
+#ctOut{width:100%;height:260px;resize:vertical;border:1px solid var(--line);border-radius:6px;padding:8px;font:14px/1.7 "Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif;background:var(--panel);color:var(--text)}
+.vmain{flex:1;min-width:0;display:flex;flex-direction:column}
+.vmain .bar{background:var(--panel);border-bottom:1px solid var(--line)}
+#vDocSel{max-width:280px}
+#vPageNum{width:56px}
+.vscroll{flex:1;min-height:0;overflow:auto;background:var(--stage);padding:16px}
+.stage{position:relative;margin:0 auto;box-shadow:0 2px 10px rgba(0,0,0,.28);background:#fff}
+.stage canvas{display:block}
+.overlay{position:absolute;inset:0;touch-action:none}
+.overlay[data-mode=snap],.overlay[data-mode=copytext],.overlay[data-mode=addtext][data-tool=rect],.overlay[data-mode=addtext][data-tool=redact]{cursor:crosshair}
+.overlay[data-mode=addtext][data-tool=text]{cursor:text}
+.selbox{position:absolute;border:2px solid var(--accent);background:rgba(36,99,235,.12);pointer-events:none}
+.anno{position:absolute}
+.anno.text .content{white-space:pre;line-height:1.3;padding:.1em .15em;min-width:1em;outline:1px dashed rgba(36,99,235,.5);cursor:text}
+.anno.text.active .content{outline:2px solid var(--accent)}
+.anno .grip,.anno .del{position:absolute;top:-24px;width:22px;height:22px;display:none;align-items:center;justify-content:center;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;line-height:1;padding:0;border:0;user-select:none}
+.anno .grip{left:-4px;cursor:move;touch-action:none}
+.anno .del{right:-4px;background:var(--danger)}
+.anno.active .grip,.anno.active .del,.anno:hover .grip,.anno:hover .del{display:flex}
+.anno.rect{background:#fff;outline:1px dashed #8a93a5;cursor:move;touch-action:none}
+.anno.rect.active{outline:2px solid var(--accent)}
+.anno.rect.redact{background:#000;outline-color:#d32f2f}
+.anno.rect.redact.white{background:#fff;outline:2px dashed #d32f2f}
+.anno.rect.drawing{pointer-events:none;outline:2px dashed var(--accent)}
+.anno.rect .handle{position:absolute;right:-7px;bottom:-7px;width:14px;height:14px;background:var(--accent);border-radius:3px;cursor:nwse-resize;display:none;touch-action:none}
+.anno.rect.active .handle{display:block}
+.wmprev{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.wm-off{position:absolute;left:8px;top:8px;margin:0;background:var(--panel);padding:2px 8px;border-radius:4px;pointer-events:none}
+#wmMode{margin-bottom:6px}
+#wmMode button,#wmKind button{flex:1}
+.cmain{flex:1;min-height:0;display:grid;grid-template-columns:1fr 260px 1fr;gap:12px;padding:0 16px 16px}
+.cmain aside{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;overflow:auto}
+.cmain aside h2{font-size:13px;color:var(--muted);margin:14px 0 6px;font-weight:600}
+.cmain aside h2.step-h{font-size:14px;color:var(--text);margin:0 0 8px}
+.step-no{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--line);color:var(--text);font-size:13px;margin-right:6px;vertical-align:1px}
+.pane.cur{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.pane.cur .step-no,.cside .step-no{background:var(--accent);color:var(--accent-text)}
+.cpre{display:flex;flex-direction:column;gap:6px}
+.cpre button{white-space:normal;text-align:left;padding:7px 10px;line-height:1.45}
+.cpre button b{display:block;font-size:14px}
+.cpre button small{display:block;font-size:12px;color:var(--muted)}
+.cpre button.on{border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
+.cpre-custom{font-size:12px;color:var(--accent);margin:2px 0;line-height:1.5}
+.cadv{margin-top:12px;border-top:1px solid var(--line);padding-top:8px}
+.cadv summary{cursor:pointer;font-size:14px;color:var(--muted);padding:4px 0}
+.cadv[open] summary{color:var(--text);font-weight:600}
+.cadv #c_btnReset{margin-top:12px}
+.ctools{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 10px;border-top:1px solid var(--line);font-size:13px}
+.ctools button{font-size:13px;padding:3px 9px}
+.cmain aside label{display:flex;gap:6px;align-items:flex-start;font-size:14px;padding:3px 0;cursor:pointer}
+.cmain aside input[type=checkbox]{margin-top:5px}
+.cmain aside select{width:100%}
+.desc{font-size:12px;color:var(--muted);margin:2px 0 4px 20px;line-height:1.5}
+.desc.mode{margin-left:0}
+.pane{display:flex;flex-direction:column;min-height:0;min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:8px}
+.pane-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 10px;border-bottom:1px solid var(--line)}
+.pane-head strong{margin-right:auto;font-size:14px}
+.pane textarea{flex:1;min-height:200px;width:100%;resize:none;border:0;outline:0;padding:10px 12px;font:15px/1.75 "Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif;background:transparent;color:var(--text)}
+.stats{padding:6px 12px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);min-height:30px}
+.docwrap{flex:1;min-height:0;overflow:auto;padding:16px}
+.doc{max-width:880px;margin:0 auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 24px 24px}
+.doc h2{font-size:18px;margin:22px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+.doc h2:first-child{margin-top:0}
+.doc h3{font-size:15px;margin:14px 0 4px}
+.doc p,.doc li{font-size:14px;line-height:1.75}
+.doc ol,.doc ul{padding-left:22px;margin:4px 0}
+.doc .tip{background:var(--accent-soft);border-radius:6px;padding:8px 12px;font-size:14px;margin:8px 0}
+.doc .warn{background:#fff4e0;color:#6b4300;border-radius:6px;padding:8px 12px;font-size:14px;margin:8px 0}
+.doc details{border:1px solid var(--line);border-radius:6px;padding:6px 12px;margin:6px 0}
+.doc summary{cursor:pointer;font-weight:600;font-size:14px}
+.doc details p{margin:6px 0 2px}
+.fb-form label.blk{display:block;font-size:14px;font-weight:600;margin:14px 0 4px}
+.fb-form .req{color:var(--danger);font-weight:400}
+.fb-chips{display:flex;flex-wrap:wrap;gap:6px}
+.fb-chips button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-text)}
+#fbMsg{width:100%;min-height:150px;resize:vertical;border:1px solid var(--line);border-radius:6px;padding:8px 10px;font:14px/1.7 "Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif;background:var(--panel);color:var(--text)}
+#fbName,#fbContact{width:100%;max-width:360px}
+.fb-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.wp{max-width:880px;margin:0 auto}
+.wp-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:8px}
+.wp-head>div{flex:1}
+.wp-head h2{margin:0;font-size:20px}
+.wp-head .primary{padding:8px 14px;font-size:15px}
+.wp-tabs{display:flex;gap:6px;overflow-x:auto;padding:4px 0 8px}
+.wp-tabs button{border-radius:999px;padding:6px 14px}
+.wp-tabs button.on{background:var(--text);border-color:var(--text);color:var(--bg)}
+#wpSearch{flex:1;min-width:160px;border-radius:999px;padding:7px 14px}
+.wp-card{display:flex;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:10px 0;cursor:pointer}
+.wp-card:hover{border-color:var(--accent)}
+.wp-vote{flex:none;width:58px;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;border-radius:12px;padding:0;background:var(--bg);line-height:1.1}
+.wp-vote span{font-size:14px}
+.wp-vote b{font-size:17px}
+.wp-vote.on{background:var(--text);border-color:var(--text);color:var(--bg)}
+.wp-main{flex:1;min-width:0}
+.wp-title{font-size:16px;font-weight:700;margin:0 0 2px;word-break:break-word}
+.wp-desc{font-size:14px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line;word-break:break-word}
+.wp-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-top:8px;font-size:12px;color:var(--muted)}
+.wp-pill{background:var(--stage);color:var(--text);border-radius:6px;padding:1px 8px;font-size:12px}
+.wp-pill.s-已排程{background:#e3ecfd;color:#1d4ed8}
+.wp-pill.s-進行中{background:#fff4e0;color:#8a5300}
+.wp-pill.s-已完成{background:#e6f6ec;color:#14532d}
+.wp-pill.s-不採納{background:#eee;color:#777}
+.wp-empty{text-align:center;color:var(--muted);padding:40px 16px}
+.wp-detail{width:min(680px,100%);overflow:auto}
+.wp-dtop{display:flex;gap:14px;align-items:flex-start;margin:4px 0 8px}
+.wp-dtop h3{margin:0;font-size:18px;word-break:break-word}
+.wp-body{white-space:pre-wrap;word-break:break-word;font-size:14px;line-height:1.75;margin:6px 0}
+.wp-reply{background:var(--accent-soft);border-radius:8px;padding:8px 12px;font-size:14px;white-space:pre-wrap;margin:8px 0}
+.wp-ch{font-size:14px;margin:14px 0 4px;border-top:1px solid var(--line);padding-top:10px}
+.wp-cmt{padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.wp-cmt .who{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.wp-cdel{font-size:12px;padding:1px 8px;color:var(--danger)}
+.wp-cmt .txt{white-space:pre-wrap;word-break:break-word}
+.wp-cform #wpCNick{width:150px}
+.wp-cform #wpCText{flex:1;min-width:160px}
+.fb-result{border-radius:6px;padding:10px 12px;margin:10px 0;font-size:14px}
+.fb-result.ok{background:#e6f6ec;color:#14532d}
+.fb-result.err{background:#fdecea;color:#8a1c1c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .doc .warn{background:#3a2c12;color:#f5d9a6}:root:not([data-theme="light"]) .fb-result.ok{background:#173322;color:#b6efc9}:root:not([data-theme="light"]) .fb-result.err{background:#3a1c1c;color:#f6c1c1}}
+:root[data-theme="dark"] .doc .warn{background:#3a2c12;color:#f5d9a6}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:40;padding:16px}
+.modal-box{background:var(--panel);color:var(--text);border-radius:10px;width:min(600px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;gap:2px;padding:14px 16px;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.modal-head{display:flex;align-items:center;gap:8px}
+.modal-head strong{font-size:16px}
+.modal-head button{margin-left:auto}
+#dictFrom,#dictTo{flex:1;min-width:120px}
+#dictSearch{flex:1;min-width:120px}
+.dict-list{flex:1;min-height:140px;max-height:46vh;overflow:auto;border:1px solid var(--line);border-radius:6px;padding:4px;margin:4px 0}
+.dict-row{display:flex;align-items:center;gap:6px;padding:3px 4px;border-radius:4px}
+.dict-row:hover{background:var(--accent-soft)}
+.dict-row input[type=text]{flex:1;min-width:0}
+.dict-row.off input[type=text]{opacity:.45;text-decoration:line-through}
+.dict-row .del{padding:2px 8px;color:var(--danger)}
+.dict-empty{color:var(--muted);font-size:13px;padding:16px;text-align:center}
+.lightbox{background:rgba(10,12,16,.86);gap:10px;z-index:45}
+.lb-main{display:flex;flex-direction:column;align-items:center;min-width:0;max-width:100%}
+.lb-img{display:flex;align-items:center;justify-content:center;min-height:120px;color:#cfd3da}
+.lb-img canvas{display:block;background:#fff;box-shadow:0 6px 30px rgba(0,0,0,.5)}
+.lb-cap{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 14px;margin-top:10px;color:#fff;font-size:14px}
+.lb-cap .chk{margin:0;color:#fff}
+.lb-nav{font-size:22px;padding:14px 12px;background:rgba(255,255,255,.14);color:#fff;border-color:transparent;flex:none}
+.lb-nav:hover{background:rgba(255,255,255,.26);border-color:transparent}
+@media (max-width:600px){.lb-nav{padding:10px 6px;font-size:18px}}
+#nameTpl,#nameCustom,#nameLabel{flex:1;min-width:160px}
+.namebar{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--muted)}
+#nameQuick{max-width:190px;font-size:13px}
+.namebar button{padding:3px 8px}
+.nm-box{width:min(860px,100%)}
+.nm-body{display:flex;gap:14px;min-height:0;overflow:auto}
+.nm-list{width:230px;flex:none;display:flex;flex-direction:column}
+#nameList{border:1px solid var(--line);border-radius:6px;padding:4px;max-height:42vh;overflow:auto;margin-top:4px}
+.nm-item{display:block;width:100%;text-align:left;border:0;background:transparent;padding:6px 8px;border-radius:5px;white-space:normal;margin:1px 0}
+.nm-item:hover{background:var(--accent-soft)}
+.nm-item.on{background:var(--accent);color:var(--accent-text)}
+.nm-item small{display:block;opacity:.78;font-size:11px;word-break:break-all}
+.nm-edit{flex:1;min-width:0}
+@media (max-width:700px){.nm-body{flex-direction:column}.nm-list{width:auto}}
+.vars button{padding:2px 8px;font-size:13px}
+.namepv{border:1px solid var(--line);border-radius:6px;background:var(--bg);padding:8px 10px;font-size:13px;line-height:1.8;margin:6px 0;word-break:break-all}
+.namepv b{font-weight:600;color:var(--muted);margin-right:6px}
+.vartable{font-size:12px;color:var(--muted);border-collapse:collapse;margin:4px 0}
+.vartable td{padding:1px 10px 1px 0;vertical-align:top}
+.vartable code{color:var(--text)}
+#busy{position:fixed;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;z-index:50}
+#busy div{background:var(--panel);color:var(--text);padding:16px 24px;border-radius:8px;font-size:15px;box-shadow:0 6px 24px rgba(0,0,0,.3)}
+#toast{position:fixed;left:50%;bottom:72px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:8px 16px;border-radius:6px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100% - 32px);z-index:60}
+#toast.show{opacity:1}
+@media (max-width:900px){
+  html,body{height:auto}
+  .view{flex:none}
+  #view-viewer{flex-direction:column}
+  .side{width:auto;border-right:0;border-top:1px solid var(--line);order:2}
+  .vscroll{min-height:70vh}
+  .cmain{grid-template-columns:1fr}
+  .pane{min-height:340px}
+  .privacy{margin-left:0}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>PDF 工具箱</h1>
+  <nav id="tabs">
+    <button data-tab="organize" class="on">合併・分割・裁半</button>
+    <button data-tab="addtext">加字</button>
+    <button data-tab="watermark">浮水印</button>
+    <button data-tab="snap">擷取畫面</button>
+    <button data-tab="copytext">複製文字</button>
+    <button data-tab="clean">文字整理</button>
+    <button data-tab="help">❓ 說明</button>
+    <button data-tab="feedback">💡 回報區</button>
+  </nav>
+  <span class="privacy">🔒 檔案只在這台電腦上處理，不會上傳</span>
+  <span class="namebar">📁 檔名 <select id="nameQuick" title="存檔時用哪一組命名規則"></select><button id="btnNaming" title="管理命名規則：新增、修改、刪除">⚙</button></span>
+</header>
+<div id="libErr" hidden>PDF 元件載入失敗：這個工具第一次使用需要連上網路，請確認網路後重新整理頁面（F5）。</div>
+<section class="view" id="view-organize">
+  <div class="bar tools">
+    <button class="primary" id="orgAdd">＋ 加入 PDF／圖片</button>
+    <input type="file" id="orgFile" multiple accept="application/pdf,.pdf,image/png,image/jpeg" hidden>
+    <span id="orgInfo" class="muted"></span>
+    <span class="sp"></span>
+    <button id="undoBtn" disabled>↶ 復原</button>
+    <button id="orgClear">清空</button>
+  </div>
+  <div class="bar tools">
+    選取
+    <button id="selAll">全選</button><button id="selNone">全不選</button><button id="selInv">反選</button>
+    <span class="sep"></span>
+    <button id="rotL">⟲ 左轉</button><button id="rotR">⟳ 右轉</button><button id="delSel">刪除</button>
+    <span class="sep"></span>
+    裁半
+    <select id="splitDir"><option value="lr">左右切</option><option value="tb">上下切</option></select>
+    <select id="splitOrder"><option value="first">先左後右</option><option value="second">先右後左</option></select>
+    中線 <input type="number" id="splitPos" value="50" min="10" max="90" step="1">%
+    <button id="splitBtn">✂ 裁成兩半</button>
+    <span class="hint">沒選頁時，旋轉和裁半會套用到全部頁</span>
+  </div>
+  <div id="gridWrap">
+    <div class="empty" id="orgEmpty"><b>把 PDF 或圖片拖到這裡</b>可以一次放很多個檔；點縮圖選取頁面、雙擊放大看、拖拉排順序</div>
+    <div class="files" id="orgFiles"></div>
+    <div class="grid" id="grid"></div>
+  </div>
+  <div class="bar export">
+    <button class="primary" id="expAll" title="快速鍵 Ctrl+S">存成一個 PDF（全部頁）</button>
+    <button id="expSel">只存選取的頁</button>
+    <button id="expEach">每頁存一個檔（ZIP）</button>
+    <span class="sep"></span>
+    依頁碼拆檔 <input type="text" id="rangeInp" placeholder="例：1-3, 4-8, 9">
+    <button id="expRange">拆檔（ZIP）</button>
+  </div>
+</section>
+<section class="view" id="view-viewer" hidden>
+  <aside class="side">
+    <div data-panel="addtext">
+      <h2>工具</h2>
+      <div class="seg" id="atTools"><button data-tool="text" class="on">文字</button><button data-tool="rect">白底遮蓋</button><button data-tool="redact" title="機密資料用：存檔時連同底下的字一起刪掉">⬛ 塗銷</button></div>
+      <div class="row" id="atRedactRow" hidden>塗銷顏色 <div class="seg" id="atRedactColor"><button data-c="black" class="on">⬛ 黑</button><button data-c="white">⬜ 白</button></div></div>
+      <p class="hint" id="atHint"></p>
+      <h2>文字樣式</h2>
+      <label class="row">字型
+        <select id="atFont"><option value="jh">微軟正黑體</option><option value="kai">標楷體</option><option value="ming">新細明體</option></select>
+      </label>
+      <label class="row">字級 <input type="number" id="atSize" value="12" min="4" max="200" step="1"> pt</label>
+      <div class="row">顏色 <input type="color" id="atColor" value="#000000">
+        <button class="sw" data-c="#000000">黑</button><button class="sw" data-c="#1d4ed8">藍</button><button class="sw" data-c="#d32f2f">紅</button>
+      </div>
+      <label class="chk"><input type="checkbox" id="atBold">粗體</label>
+      <label class="chk"><input type="checkbox" id="atBg">文字加白底（蓋掉底下原本的字）</label>
+      <h2>已加的內容</h2>
+      <p class="hint" id="atInfo">還沒加任何東西</p>
+      <div class="row"><button id="atDel">刪除選取的</button><button id="atClearPage">清除這頁</button></div>
+      <h2></h2>
+      <button class="primary wide" id="atSave" title="快速鍵 Ctrl+S">存成 PDF</button>
+      <p class="hint">加上去的字會用高解析度「印」在頁面上，任何電腦、手機打開都不會變亂碼或方框。缺點是之後沒辦法再選取、複製這些字。</p>
+      <p class="hint">有「⬛ 塗銷」的頁，存檔時會整頁轉成圖片，框底下的字真的刪掉（那幾頁其他字也不能再選取）。</p>
+    </div>
+    <div data-panel="watermark">
+      <div class="seg" id="wmMode"><button data-m="add" class="on">➕ 加浮水印</button><button data-m="remove">➖ 去除浮水印</button></div>
+      <div id="wmAddBox">
+        <h2>浮水印內容</h2>
+        <div class="seg" id="wmKind"><button data-k="text" class="on">文字</button><button data-k="image">圖片（例如公司 logo）</button></div>
+        <div id="wmTextBox">
+          <input type="text" id="wmText" value="機密文件" maxlength="40" style="width:100%;margin-top:6px">
+          <div class="row">常用：<button class="wmq">機密文件</button><button class="wmq">僅供內部使用</button><button class="wmq">草稿</button><button class="wmq">副本</button><button class="wmq">作廢</button></div>
+          <label class="row">字型
+            <select id="wmFont"><option value="jh">微軟正黑體</option><option value="kai">標楷體</option><option value="ming">新細明體</option></select>
+          </label>
+          <div class="row">顏色 <input type="color" id="wmColor" value="#d32f2f">
+            <button class="sw" data-c="#d32f2f">紅</button><button class="sw" data-c="#808080">灰</button><button class="sw" data-c="#1d4ed8">藍</button>
+          </div>
+          <label class="chk"><input type="checkbox" id="wmBold" checked>粗體</label>
+        </div>
+        <div id="wmImgBox" hidden>
+          <div class="row"><button id="wmPickImg">選擇圖片…</button><span class="hint" id="wmImgName">還沒選圖片</span></div>
+          <input type="file" id="wmImgFile" accept="image/png,image/jpeg" hidden>
+          <p class="hint">建議用去背的 PNG。圖片只在這台電腦處理，不會上傳。</p>
+        </div>
+        <h2>樣式</h2>
+        <label class="row">大小 <input type="range" id="wmScale" min="10" max="100" value="60"> <span id="wmScaleLbl"></span></label>
+        <label class="row">濃淡 <input type="range" id="wmOpacity" min="5" max="100" value="20"> <span id="wmOpacityLbl"></span></label>
+        <label class="row">角度
+          <select id="wmAngle"><option value="45">斜放（左下往右上）</option><option value="0">水平</option><option value="-45">反斜（左上往右下）</option><option value="90">直的</option></select>
+        </label>
+        <label class="row">排法
+          <select id="wmLayout"><option value="center">頁面中間一個</option><option value="tile">滿版重複</option></select>
+        </label>
+        <h2>加在哪幾頁</h2>
+        <select id="wmPages"><option value="all">全部頁</option><option value="cur">只有目前這頁</option><option value="range">自訂頁碼…</option></select>
+        <input type="text" id="wmRange" placeholder="例如 1-3, 5" hidden style="width:100%;margin-top:6px">
+        <label class="chk"><input type="checkbox" id="wmFlat">防止別人去掉（整頁轉成圖片）</label>
+        <p class="hint">勾了以後浮水印跟頁面合成一張圖，別人很難去掉；缺點是檔案變大、那幾頁的字不能再選取複製。</p>
+        <h2></h2>
+        <button class="primary wide" id="wmSave" title="快速鍵 Ctrl+S">加浮水印並存檔</button>
+        <p class="hint">畫面上看到的就是存出來的樣子（換頁可以檢查每一頁）。存成新檔，原檔不會被改動。</p>
+      </div>
+      <div id="wmRemoveBox" hidden>
+        <h2>能去掉的</h2>
+        <p class="hint">用 Acrobat、Word 或本工具加的「浮水印物件」，以及標成浮水印的註解、圖層。</p>
+        <h2>去不掉的</h2>
+        <p class="hint">掃描檔（整頁是一張圖），或浮水印直接畫在內容裡、跟文字混在一起。這種可以改用「加字」分頁的「白底遮蓋」蓋掉。</p>
+        <p class="hint">⚠ 只用在公司自己的文件（例如去掉自己加的「草稿」）。別人有著作權的文件請不要去浮水印。</p>
+        <h2></h2>
+        <button id="wmScan">🔍 檢查這份有沒有浮水印</button>
+        <p class="hint" id="wmScanInfo"></p>
+        <button class="primary wide" id="wmRemove" title="快速鍵 Ctrl+S">去除浮水印並存檔</button>
+      </div>
+    </div>
+    <div data-panel="snap">
+      <h2>怎麼用</h2>
+      <p class="hint">在頁面上按住滑鼠拖出要擷取的範圍，再按「複製圖片」，就能直接貼到 LINE、Word、Email。</p>
+      <label class="row">解析度
+        <select id="snDpi"><option value="150">150 dpi（一般）</option><option value="200" selected>200 dpi（清楚）</option><option value="300">300 dpi（列印用）</option></select>
+      </label>
+      <div class="preview" id="snPrev"><span class="hint">還沒框選範圍</span></div>
+      <p class="hint" id="snInfo"></p>
+      <div class="row"><button class="primary" id="snCopy" disabled>複製圖片</button><button id="snSave" disabled>下載 PNG</button></div>
+      <h2>整頁</h2>
+      <div class="row"><button id="snPage">這一頁存成 PNG</button></div>
+    </div>
+    <div data-panel="copytext">
+      <h2>取出文字</h2>
+      <div class="row"><button class="primary" id="ctPage">這一頁</button><button id="ctAll">全部頁</button></div>
+      <p class="hint">也可以在頁面上拖出範圍，只取框內的字。</p>
+      <label class="row">掃描檔辨識（OCR）
+        <select id="ctOcr"><option value="auto">自動：沒有文字才辨識</option><option value="always">一律用辨識</option><option value="never">不辨識</option></select>
+      </label>
+      <div class="row"><span class="hint" id="ctStatus"></span><button id="ctStop" hidden>停止</button></div>
+      <h2>結果</h2>
+      <label class="row">整理方式
+        <select id="ctMode">
+          <option value="smart">智慧合併（推薦）</option>
+          <option value="blank">只在空行處分段</option>
+          <option value="all">全部接成一段</option>
+          <option value="sentence">一句一行</option>
+          <option value="keep">保留原本換行</option>
+          <option value="raw">不整理（原始文字）</option>
+        </select>
+      </label>
+      <textarea id="ctOut" spellcheck="false" placeholder="取出的文字會出現在這裡，也可以直接修改"></textarea>
+      <div class="row"><button class="primary" id="ctCopy">複製</button><button id="ctSend">送到「文字整理」細調</button></div>
+      <div class="row"><button id="ctAddDict" title="在上面結果裡選取打錯的字，再按這裡">選取的字加入常錯字</button><button id="ctDict">📖 對照表</button></div>
+      <p class="hint" id="ctDictInfo"></p>
+    </div>
+  </aside>
+  <div class="vmain">
+    <div class="bar">
+      <button class="primary" id="vOpen">開啟 PDF</button>
+      <input type="file" id="vFile" accept="application/pdf,.pdf,image/png,image/jpeg" hidden>
+      <select id="vDocSel" title="已開啟的檔案，點選切換" hidden></select>
+      <span class="sp"></span>
+      <button id="vPrev" title="上一頁（PageUp）">◀</button>
+      <input type="number" id="vPageNum" value="1" min="1"> <span class="muted">/ <span id="vPageCount">0</span></span>
+      <button id="vNext" title="下一頁（PageDown）">▶</button>
+      <span class="sep"></span>
+      <button id="vZoomOut" title="縮小">－</button><span id="vZoomLbl" class="muted">100%</span><button id="vZoomIn" title="放大">＋</button>
+    </div>
+    <div class="vscroll" id="vScroll">
+      <div class="empty" id="vEmpty"><b>把 PDF 拖到這裡</b>或按左上角「開啟 PDF」。在任何一個分頁開過的檔案，這裡都能直接用，不用重選。</div>
+      <div class="stage" id="vStage" hidden><canvas id="vCanvas"></canvas><div class="overlay" id="vOverlay"></div></div>
+    </div>
+  </div>
+</section>
+<section class="view" id="view-clean" hidden>
+  <div class="bar">
+    <span class="muted">把 PDF 複製出來亂掉的文字（斷行、字中間有空格、怪字）整理乾淨。照 ①②③ 做就好；設定會自動記住，「複製文字」分頁也用同一套。</span>
+    <span class="sp"></span>
+    <span class="hint" id="c_status"></span>
+    <button id="c_btnSample" title="放一段範例文字進去，看整理前後的差別">👀 先看範例</button>
+    <button id="c_btnDict">📖 常錯字對照表</button>
+    <button id="c_btnOne" title="熟手捷徑：讀剪貼簿 → 用目前的整理方式整理 → 放回剪貼簿，回去直接 Ctrl+V">⚡ 一鍵整理剪貼簿</button>
+  </div>
+  <div class="cmain">
+    <section class="pane" id="c_paneIn">
+      <div class="pane-head">
+        <strong><b class="step-no">1</b>放入原文</strong>
+        <button id="c_btnPaste" title="把剪貼簿裡的文字貼進來">貼上</button>
+        <button id="c_btnPdf" disabled>📄 取出目前 PDF 的文字</button>
+        <button id="c_btnClear">清空</button>
+      </div>
+      <textarea id="c_inp" spellcheck="false" placeholder="三種放法，選一種：&#10;・在 PDF 上選取文字按 Ctrl+C，再點這個框按 Ctrl+V&#10;・按上面的「貼上」&#10;・在其他分頁開過 PDF → 按「📄 取出目前 PDF 的文字」&#10;&#10;想先看效果？按最上面的「👀 先看範例」。"></textarea>
+      <div class="stats" id="c_inStats"></div>
+    </section>
+    <aside class="cside">
+      <h2 class="step-h"><b class="step-no">2</b>選整理方式</h2>
+      <div class="cpre" id="c_presets">
+        <button data-preset="doc"><b>📄 一般文件（推薦）</b><small>接回被 PDF 切斷的句子、刪掉字中間的空格。公文、程序書、說明書用這個。</small></button>
+        <button data-preset="email"><b>✉ 貼到 Email／LINE</b><small>跟一般文件一樣，另外段落之間空一行、刪掉頁碼，貼出去比較好讀。</small></button>
+        <button data-preset="table"><b>📋 表格／清單</b><small>原本的換行全部保留，只刪多餘空格、修怪字。一格一行的資料用這個。</small></button>
+        <button data-preset="sentence"><b>✂ 一句一行</b><small>每句話自己一行，方便逐句核對或翻譯。</small></button>
+        <button data-preset="all"><b>➖ 全部接成一段</b><small>整份接成一段，貼到只能填一行的表單欄位用。</small></button>
+        <p class="cpre-custom" id="c_custom" hidden>✏ 目前是自訂：下面的細項設定改過了。點上面任一種就換回來。</p>
+      </div>
+      <details class="cadv" id="c_adv">
+        <summary>⚙ 細項設定（看不懂可以不用管）</summary>
+        <h2>換行怎麼處理</h2>
+        <select id="c_mode">
+          <option value="smart">智慧合併（推薦）</option>
+          <option value="blank">只在空行處分段</option>
+          <option value="all">全部接成一段</option>
+          <option value="sentence">一句一行</option>
+          <option value="keep">保留原本換行</option>
+        </select>
+        <p class="desc mode" id="c_modeDesc"></p>
+        <h2>空格</h2>
+        <label><input type="checkbox" id="c_cjkSpace" checked>刪除中文字之間的空格</label>
+        <p class="desc">例：「食 品 安 全」→「食品安全」</p>
+        <label style="display:block">中文和英文／數字之間
+          <select id="c_latinSpace" style="margin-top:4px">
+            <option value="keep">保持原樣</option>
+            <option value="remove">空格全部刪掉</option>
+            <option value="add">統一加一個空格</option>
+          </select>
+        </label>
+        <p class="desc mode">例：「HACCP 計畫」刪掉＝「HACCP計畫」；「共3頁」加空格＝「共 3 頁」</p>
+        <label><input type="checkbox" id="c_multiSpace" checked>連續空格縮成一個</label>
+        <p class="desc">例：「A　　　B」→「A B」</p>
+        <h2>其他修正</h2>
+        <label><input type="checkbox" id="c_fixChars" checked>修正 PDF 怪字</label>
+        <p class="desc">長得一樣、電腦卻當成別的字，搜尋找不到。例：「⾃主」→「自主」、ﬁ 連字、看不見的隱形字元</p>
+        <label><input type="checkbox" id="c_shortLine" checked>短行當作段落結尾</label>
+        <p class="desc">標題、段落最後一行通常比較短，用行的長短判斷哪裡該分段</p>
+        <label><input type="checkbox" id="c_dehyphen" checked>英文斷字接回</label>
+        <p class="desc">例：「effec- / tiveness」→「effectiveness」</p>
+        <label><input type="checkbox" id="c_pageNum">刪除只有頁碼的行</label>
+        <p class="desc">例：整行只有「3」「- 3 -」「第 3 頁」會刪掉。表格一格一行、整行都是數字時請關掉</p>
+        <label><input type="checkbox" id="c_fullPunct">中文旁的半形標點轉全形</label>
+        <p class="desc">例：「目的,範圍」→「目的，範圍」</p>
+        <label><input type="checkbox" id="c_blankLine">段落之間空一行</label>
+        <p class="desc">段落中間多一個空行，貼到 Email 比較好讀</p>
+        <button id="c_btnReset">恢復預設設定</button>
+      </details>
+    </aside>
+    <section class="pane" id="c_paneOut">
+      <div class="pane-head">
+        <strong><b class="step-no">3</b>複製結果</strong>
+        <button class="primary" id="c_btnCopy">📋 複製結果</button>
+      </div>
+      <textarea id="c_out" spellcheck="false" placeholder="整理好的文字會自動出現在這裡。&#10;按右上角「📋 複製結果」，再到 Word、LINE、Email 按 Ctrl+V 貼上。&#10;&#10;要自己斷行，直接在這裡按 Enter 就好（左邊原文或整理方式一改，這裡手動改的會被蓋掉）。"></textarea>
+      <div class="ctools">
+        <span class="muted">要微調？先在上面選取文字，再按：</span>
+        <button id="c_btnJoin" title="把選取的幾行接成一行；沒有選取就把游標所在行跟下一行接起來">接成一行</button>
+        <button id="c_btnNoSpace" title="刪掉選取範圍內所有空格">刪掉空格</button>
+        <button id="c_btnAddDict" title="選取打錯的字，記進常錯字對照表，以後自動修正">加入常錯字</button>
+      </div>
+      <div class="stats" id="c_outStats"></div>
+    </section>
+  </div>
+</section>
+<div class="modal" id="dictModal" hidden>
+  <div class="modal-box" role="dialog" aria-labelledby="dictTitle">
+    <div class="modal-head">
+      <strong id="dictTitle">📖 常錯字對照表</strong>
+      <span class="hint" id="dictCount"></span>
+      <button id="dictClose" title="關閉（Esc）">✕</button>
+    </div>
+    <p class="hint">記下 OCR 或 PDF 常弄錯的字，之後「複製文字」和「文字整理」的結果會自動改成正確的。存在這台電腦的瀏覽器裡，只有你自己看得到。</p>
+    <div class="row">
+      <input type="text" id="dictFrom" placeholder="錯的字，例：滷昧">
+      →
+      <input type="text" id="dictTo" placeholder="正確的字，例：滷味（留空＝刪掉）">
+      <button class="primary" id="dictAdd">新增</button>
+    </div>
+    <div class="row"><input type="text" id="dictSearch" placeholder="🔍 搜尋對照表"></div>
+    <div class="dict-list" id="dictList"></div>
+    <div class="row">
+      <button id="dictExport">匯出（備份／分享給同事）</button>
+      <button id="dictImport">匯入</button>
+      <input type="file" id="dictFile" accept=".txt,text/plain" hidden>
+    </div>
+    <p class="hint">⚠ 清除瀏覽器資料會連對照表一起清掉，建議偶爾按「匯出」備份。匯出的是純文字檔，一行一組「錯字=正確」，可以用記事本修改，也能傳給同事匯入。</p>
+  </div>
+</div>
+<section class="view" id="view-help" hidden>
+  <div class="docwrap"><div class="doc">
+    <h2>快速上手</h2>
+    <ol>
+      <li>把 PDF（或 JPG／PNG 照片）<b>拖進視窗</b>，或按各分頁的「加入」「開啟 PDF」。</li>
+      <li>拉進來一次，<b>五個分頁都能用</b>，不用重選；加字、擷取、複製文字上方的下拉選單可以切換檔案。</li>
+      <li>做完按存檔或 <b>Ctrl+S</b>：Chrome、Edge 會跳出「另存新檔」視窗，自己選資料夾（也可以直接蓋掉原檔）；其他瀏覽器存到<b>「下載」資料夾</b>。不想跳視窗，到右上「📁 檔名 ⚙」取消勾選。</li>
+    </ol>
+    <div class="tip">🔒 所有處理都在你自己的瀏覽器裡完成，PDF <b>不會上傳</b>到任何地方。只有在「回報區」發的回報、投票和留言會送到網路上。</div>
+    <h2>各功能怎麼用</h2>
+    <h3>合併・分割・裁半</h3>
+    <ul>
+      <li>一次拖進好幾個檔就能合併；<b>拖拉縮圖</b>排順序，<b>點一下</b>選取，<b>雙擊</b>放大看，按住 Shift 點可以一次選一段。</li>
+      <li>「裁成兩半」：A3 一張印兩頁的掃描檔，可以切成左右（或上下）兩頁，中線位置可調。沒選頁時會套用全部頁。</li>
+      <li>存檔四種：存成一份、只存選取的頁、每頁一個檔（ZIP）、依頁碼拆（例如輸入 1-3, 4-8）。弄錯了按「↶ 復原」。</li>
+    </ul>
+    <h3>加字</h3>
+    <ul>
+      <li>點頁面任何位置就能打字，可選正黑體、標楷體、新細明體、字級、顏色、粗體。拖左上角 ✥ 移動。</li>
+      <li>「白底遮蓋」：拖出白色方框蓋掉錯字，再在上面加正確的字（只是蓋住，原本的字還在）。</li>
+      <li>「⬛ 塗銷」：遮<b>機密資料</b>用，可選黑色或白色（白色看起來像空白、比較不突兀）。存檔時那一頁會整頁轉成圖片，框底下的字真的被刪掉，複製、搜尋都找不到。</li>
+    </ul>
+    <h3>浮水印</h3>
+    <ul>
+      <li>「➕ 加浮水印」：打字（或按「機密文件」「草稿」這些常用字）或選公司 logo 圖片，調大小、濃淡、角度，可以只放中間一個或滿版重複。畫面上看到的就是存出來的樣子。</li>
+      <li>可以選全部頁、只有目前這頁、或自訂頁碼（例如 1-3, 5）。勾「防止別人去掉」會整頁轉成圖片，別人很難去掉，但字不能再選取。</li>
+      <li>「➖ 去除浮水印」：能去掉 Acrobat、Word、本工具加的浮水印；掃描檔或直接畫在內容裡的去不掉（改用「加字」的白底遮蓋）。只用在公司自己的文件。</li>
+    </ul>
+    <h3>擷取畫面</h3>
+    <ul><li>在頁面上拖出範圍 → 「複製圖片」直接貼到 LINE、Word、Email，或下載 PNG。要印出來請選 300 dpi。</li></ul>
+    <h3>複製文字</h3>
+    <ul>
+      <li>取一頁、全部頁，或在頁面上拖框只取框內的字；斷行、多餘空格會自動整理。</li>
+      <li>掃描檔（圖片）沒有文字，會自動用 OCR 辨識；第一次用要下載辨識資料，稍等一下。</li>
+    </ul>
+    <h3>文字整理</h3>
+    <ul>
+      <li>照畫面上的 ①②③ 做：① 把 PDF 複製的文字貼到左邊（或按「📄 取出目前 PDF 的文字」）→ ② 中間選整理方式，不知道選哪個就用「一般文件」→ ③ 右邊按「📋 複製結果」，再到 Word、LINE 貼上。</li>
+      <li>第一次用可以先按「👀 先看範例」看整理前後的差別。細項設定收在中間下面，看不懂可以不用管。</li>
+      <li>熟了以後：「⚡ 一鍵整理剪貼簿」＝讀剪貼簿、整理完直接放回剪貼簿，回去按 Ctrl+V 就好。</li>
+    </ul>
+    <h3>常錯字對照表</h3>
+    <ul><li>OCR 常認錯的字，在結果裡選取 → 按「加入常錯字」（複製文字分頁叫「選取的字加入常錯字」）→ 輸入正確的字。以後會自動改正。</li></ul>
+    <h3>命名規則</h3>
+    <ul>
+      <li>右上角「📁 檔名」選這次存檔要用哪一組規則；按 ⚙ 新增自己的規則，例如 <code>{日期}-{自訂}-{序號}</code> → 20261028-品管課-001.pdf。</li>
+      <li>每組規則的序號分開算，每天從 001 開始。</li>
+    </ul>
+    <h2>常見問題</h2>
+    <details><summary>畫面上方出現「PDF 元件載入失敗」</summary><p>這個工具要從網路下載 PDF 處理元件，請確認有連上網路，再按 F5 重新整理。</p></details>
+    <details><summary>加上去的字為什麼不能選取、複製？</summary><p>為了保證中文在任何電腦、手機打開都<b>不會變亂碼或方框</b>，加的字是用高解析度「印」在頁面上。代價是之後沒辦法再選取這些字。</p></details>
+    <details><summary>白底遮蓋可以拿來遮機密資料嗎？</summary><p><b>不行。</b>白底只是蓋住看不到，底下原本的字還在，別人用複製或搜尋還是找得到。機密資料請改用「⬛ 塗銷」（可選黑色或白色）：存檔時有塗銷的頁會整頁轉成圖片，框底下的字真的刪掉；代價是那幾頁其他的字也不能再選取、複製。存好後可以用「複製文字」分頁檢查一次。</p></details>
+    <details><summary>OCR 辨識有錯字怎麼辦？</summary><p>1. 掃描時設 300 dpi、頁面放正；2. 只框選需要的那段，避開表格線和印章；3. 常認錯的字加進「常錯字對照表」，以後自動改；4. 重要文件可用 Windows 剪取工具（Win＋Shift＋S →「文字動作」）再辨識一次對照。手寫字基本上認不出來。</p></details>
+    <details><summary>有密碼或有保護的 PDF 可以用嗎？</summary><p>有「開啟密碼」的會請你輸入密碼。只有「禁止編輯」保護的 PDF，在「合併・分割・裁半」存檔時會改用圖片方式存（文字不能再選取），「加字」則無法使用。</p></details>
+    <details><summary>存好的檔案在哪裡？檔名可以改嗎？</summary><p>Chrome、Edge 存檔時會跳出「另存新檔」視窗，存在你選的資料夾，檔名可以直接改（預設照右上角的命名規則）。不想跳視窗：到右上「📁 檔名 ⚙」取消「跳出另存新檔視窗」，就會存到瀏覽器的「下載」資料夾。</p></details>
+    <details><summary>換電腦或清除瀏覽器資料後，對照表和命名規則不見了</summary><p>這兩樣存在你這台電腦的瀏覽器裡。平常記得按「匯出」備份，換電腦後用「匯入」就能還原，也可以把檔案傳給同事匯入。</p></details>
+    <details><summary>手機可以用嗎？</summary><p>可以開、可以合併拆檔、擷取、取字；加字和框選這類精細動作用電腦會比較順手。</p></details>
+    <h2>想要改善？</h2>
+    <p>用起來哪裡不順、遇到錯誤、或希望多什麼功能，都歡迎到 <button id="helpToFb">💡 回報區</button> 回報；看到別人的回報也可以按 ▲ 投票，票多的優先做。自己的留言寫錯了可以按「刪除」再重留。</p>
+    <p class="hint" id="helpVer"></p>
+  </div></div>
+</section>
+<section class="view" id="view-feedback" hidden>
+  <div class="docwrap"><div class="wp">
+    <div class="wp-head">
+      <div>
+        <h2>💡 回報區</h2>
+        <p class="hint">遇到問題、想要新功能、覺得哪裡好用，都在這裡回報；也可以投票選出下一個要改善的地方。</p>
+      </div>
+      <button class="primary" id="wpNew">＋ 我要回報</button>
+    </div>
+    <div class="wp-tabs" id="wpTabs"></div>
+    <div class="row">
+      <input type="search" id="wpSearch" placeholder="🔍 搜尋回報…">
+      <select id="wpArea" title="只看某個功能"><option value="">所有功能</option></select>
+      <button id="wpReload" title="重新整理清單">⟳</button>
+    </div>
+    <div class="hint" id="wpStatus"></div>
+    <div id="wpList"></div>
+  </div></div>
+</section>
+<div class="modal" id="wpFormModal" hidden>
+  <div class="modal-box fb-form" role="dialog" aria-labelledby="wpFormTitle">
+    <div class="modal-head"><strong id="wpFormTitle">＋ 我要回報</strong><button id="wpFormClose" title="關閉（Esc）">✕</button></div>
+    <div class="warn">⚠ <b>標題和說明會公開</b>給所有使用者看；稱呼和聯絡方式只有管理者看得到。請不要填密碼、客戶資料或其他機密，這裡也<b>不會</b>附上你的 PDF。</div>
+    <label class="blk">哪個功能？<span class="req">（必選）</span></label>
+    <div class="fb-chips" id="fbArea"></div>
+    <label class="blk">是哪一種？<span class="req">（必選）</span></label>
+    <div class="fb-chips" id="fbType"></div>
+    <label class="blk" for="fbTitle">標題<span class="req">（必填，40 字內）</span></label>
+    <input type="text" id="fbTitle" maxlength="40" style="width:100%" placeholder="一句話說重點，例：加字可以選更多字型">
+    <label class="blk" for="fbMsg">說明（選填）</label>
+    <textarea id="fbMsg" maxlength="2000" placeholder="越具體越好：在哪個步驟、看到什麼、希望變怎樣"></textarea>
+    <div class="hint" id="fbCount">0／2000 字</div>
+    <div class="row" style="gap:12px;align-items:flex-start">
+      <div style="flex:1;min-width:180px"><label class="blk" for="fbName">稱呼（選填，不公開）</label><input type="text" id="fbName" maxlength="40" placeholder="例：品管課 小王"></div>
+      <div style="flex:1;min-width:180px"><label class="blk" for="fbContact">聯絡方式（選填，不公開）</label><input type="text" id="fbContact" maxlength="80" placeholder="分機、LINE 或 Email"></div>
+    </div>
+    <div class="fb-hp" aria-hidden="true"><label>網站<input type="text" id="fbWebsite" tabindex="-1" autocomplete="off"></label></div>
+    <p class="hint" id="fbAuto"></p>
+    <div id="fbResult"></div>
+    <div class="row">
+      <button class="primary" id="fbSend">送出</button>
+      <button id="fbCopy" title="網路不通時，可以把內容複製起來用 LINE 傳給管理者">複製內容</button>
+    </div>
+  </div>
+</div>
+<div class="modal" id="wpDetail" hidden>
+  <div class="modal-box wp-detail" role="dialog" aria-labelledby="wpDTitle">
+    <div class="modal-head"><span class="hint" id="wpDId"></span><button id="wpDClose" title="關閉（Esc）">✕</button></div>
+    <div class="wp-dtop">
+      <button class="wp-vote" id="wpDVote" title="投一票；再按一次取消"><span>▲</span><b id="wpDVotes">0</b></button>
+      <div style="flex:1;min-width:0"><h3 id="wpDTitle"></h3><div class="wp-meta" id="wpDMeta"></div></div>
+    </div>
+    <div class="wp-body" id="wpDBody"></div>
+    <div class="wp-reply" id="wpDReply" hidden></div>
+    <h3 class="wp-ch" id="wpDCh">留言</h3>
+    <div id="wpDCmts"></div>
+    <div class="row wp-cform">
+      <input type="text" id="wpCNick" maxlength="20" placeholder="暱稱（選填，會公開）">
+      <input type="text" id="wpCText" maxlength="500" placeholder="寫下留言…（會公開）">
+      <button class="primary" id="wpCSend">留言</button>
+    </div>
+  </div>
+</div>
+<div class="modal lightbox" id="lb" hidden>
+  <button class="lb-nav" id="lbPrev" title="上一頁（←）">◀</button>
+  <div class="lb-main">
+    <div class="lb-img" id="lbImg"></div>
+    <div class="lb-cap">
+      <span id="lbCap"></span>
+      <label class="chk"><input type="checkbox" id="lbSel">選取這頁</label>
+      <button id="lbClose" title="關閉（Esc）">✕ 關閉</button>
+    </div>
+  </div>
+  <button class="lb-nav" id="lbNext" title="下一頁（→）">▶</button>
+</div>
+<div class="modal" id="nameModal" hidden>
+  <div class="modal-box nm-box" role="dialog" aria-labelledby="nameTitle">
+    <div class="modal-head">
+      <strong id="nameTitle">📁 存檔命名規則</strong>
+      <button id="nameClose" title="關閉（Esc）">✕</button>
+    </div>
+    <p class="hint">可以建好幾組規則，存檔前在右上角「檔名」選要用哪一組，五個分頁都會照它命名。存在這台電腦的瀏覽器裡，每個人設自己的。</p>
+    <div class="nm-body">
+      <div class="nm-list">
+        <div class="hint">我的命名規則（點一下＝套用並編輯）</div>
+        <div id="nameList"></div>
+        <div class="row"><button id="nameNew">＋ 新增</button><button id="nameDup">複製</button><button id="nameDel">刪除</button></div>
+      </div>
+      <div class="nm-edit">
+        <label class="row">規則名稱 <input type="text" id="nameLabel" placeholder="例：報價單、檢驗報告、會議紀錄"></label>
+        <label class="row">格式 <input type="text" id="nameTpl" spellcheck="false"></label>
+        <div class="row vars" id="nameVars">插入：</div>
+        <div class="row vars" id="namePresets">常用格式：</div>
+        <label class="row">自訂文字 <input type="text" id="nameCustom" placeholder="填進 {自訂}，例：品管課、廠商簡稱"></label>
+        <div class="namepv" id="namePreview"></div>
+        <div class="row"><span class="hint" id="nameSeqInfo"></span><button id="nameSeqReset">這組序號歸零</button></div>
+      </div>
+    </div>
+    <label class="chk" id="namePickRow"><input type="checkbox" id="namePick">存檔時跳出「另存新檔」視窗，自己選存在哪個資料夾（也可以直接蓋掉原檔）；沒勾就存到「下載」資料夾</label>
+    <label class="chk"><input type="checkbox" id="nameConfirm">每次存檔前讓我確認、修改檔名（沒有跳「另存新檔」視窗時才用得到）</label>
+    <details><summary class="hint" style="cursor:pointer">格式欄位說明</summary>
+    <table class="vartable">
+      <tr><td><code>{原檔名}</code></td><td>原本的檔名；好幾個檔合併時是「合併」</td></tr>
+      <tr><td><code>{動作}</code></td><td>整理、選取、拆檔、加字、加浮水印、去浮水印、擷取、整頁</td></tr>
+      <tr><td><code>{日期}</code> <code>{時間}</code></td><td>存檔當下，例：20261028、1435</td></tr>
+      <tr><td><code>{頁碼}</code></td><td>擷取或拆檔時的頁碼；格式裡沒放的話會自動加在最後，避免檔名重複</td></tr>
+      <tr><td><code>{序號}</code></td><td>每組規則各自計算，每天從 001 開始，每存一次加 1</td></tr>
+      <tr><td><code>{自訂}</code></td><td>這組規則「自訂文字」填的內容</td></tr>
+    </table>
+    <p class="hint">檔名不能用的符號 \ / : * ? " &lt; &gt; | 會自動換成 _。</p>
+    </details>
+    <div class="row">
+      <button id="nameExport" title="存成純文字檔，可備份或傳給同事">匯出規則</button>
+      <button id="nameImport">匯入規則</button>
+      <input type="file" id="nameFile" accept=".txt,text/plain" hidden>
+      <span style="flex:1"></span><button class="primary" id="nameOk">完成</button>
+    </div>
+  </div>
+</div>
+<div id="busy" hidden><div id="busyMsg">處理中…</div></div>
+<div id="toast"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js" integrity="sha384-SnzOobpRMLXZ52iJvZm/C0fYw0OQemTXzTjIsdsfMcrCtCEe9qgzxTd3RSklO5x2" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js" integrity="sha384-weMABwrltA6jWR8DDe9Jp5blk+tZQh7ugpCsF3JwSA53WZM9/14PjS5LAJNHNjAI" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+function el(tag, props, ...kids) {
+  const e = document.createElement(tag);
+  if (props) for (const [k, v] of Object.entries(props)) {
+    if (k === 'class') e.className = v;
+    else if (k === 'text') e.textContent = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v);
+  }
+  for (const k of kids.flat()) if (k != null) e.append(k);
+  return e;
+}
+let toastTimer;
+function toast(msg, ms = 2600) {
+  const t = $('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), ms);
+}
+function busy(msg) { $('busy').hidden = !msg; if (msg) $('busyMsg').textContent = msg; }
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const stem = n => n.replace(/\.[^.]+$/, '');
+const normRot = a => ((Math.round(a / 90) * 90) % 360 + 360) % 360;
+const isPdfFile = f => f.type === 'application/pdf' || /\.pdf$/i.test(f.name);
+const isImgFile = f => /^image\/(png|jpeg)$/.test(f.type) || /\.(png|jpe?g)$/i.test(f.name);
+function download(data, name, type = 'application/pdf') {
+  const blob = data instanceof Blob ? data : new Blob([data], { type });
+  const url = URL.createObjectURL(blob);
+  const a = el('a', { href: url, download: name });
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
+const canvasBlob = (c, type = 'image/png', q) => new Promise(r => c.toBlob(r, type, q));
+async function canvasBytes(c, type, q) { return new Uint8Array(await (await canvasBlob(c, type, q)).arrayBuffer()); }
+function friendly(e) {
+  const n = e && e.name;
+  if (n === 'PasswordException') return '需要密碼或已取消';
+  if (n === 'InvalidPDFException') return '檔案損壞或不是 PDF';
+  if (n === 'MissingPDFException') return '找不到檔案';
+  return '無法讀取這個檔案';
+}
+function visToBase(u, v, r) {
+  if (r === 90) return { x: v, y: 1 - u };
+  if (r === 180) return { x: 1 - u, y: 1 - v };
+  if (r === 270) return { x: 1 - v, y: u };
+  return { x: u, y: v };
+}
+function mapRect(rc, r) {
+  const a = visToBase(rc.x0, rc.y0, r), b = visToBase(rc.x1, rc.y1, r);
+  return { x0: Math.min(a.x, b.x), y0: Math.min(a.y, b.y), x1: Math.max(a.x, b.x), y1: Math.max(a.y, b.y) };
+}
+function visibleBox(pg) {
+  const m = pg.getMediaBox(), c = pg.getCropBox();
+  const x0 = Math.max(m.x, c.x), y0 = Math.max(m.y, c.y);
+  const x1 = Math.min(m.x + m.width, c.x + c.width), y1 = Math.min(m.y + m.height, c.y + c.height);
+  return x1 > x0 && y1 > y0 ? { x: x0, y: y0, width: x1 - x0, height: y1 - y0 } : m;
+}
+function visRectToPdf(pg, rc) {
+  const R = normRot(pg.getRotation().angle), b = visibleBox(pg), n = mapRect(rc, R);
+  return { x: b.x + n.x0 * b.width, y: b.y + (1 - n.y1) * b.height, width: (n.x1 - n.x0) * b.width, height: (n.y1 - n.y0) * b.height };
+}
+function rotCanvas(src, r) {
+  if (!r) return src;
+  const c = document.createElement('canvas');
+  c.width = r % 180 ? src.height : src.width;
+  c.height = r % 180 ? src.width : src.height;
+  const ctx = c.getContext('2d');
+  ctx.translate(c.width / 2, c.height / 2);
+  ctx.rotate(r * Math.PI / 180);
+  ctx.drawImage(src, -src.width / 2, -src.height / 2);
+  return c;
+}
+const LIBS_OK = !!(window.pdfjsLib && window.PDFLib && window.JSZip);
+if (!LIBS_OK) $('libErr').hidden = false;
+const PDFJS_BASE = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+if (window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_BASE + 'pdf.worker.min.js';
+function openPdfjs(bytes) {
+  const task = pdfjsLib.getDocument({
+    data: bytes.slice(),
+    cMapUrl: PDFJS_BASE + 'cmaps/', cMapPacked: true,
+    standardFontDataUrl: PDFJS_BASE + 'standard_fonts/'
+  });
+  task.onPassword = (update, reason) => {
+    const p = window.prompt(reason === pdfjsLib.PasswordResponses.INCORRECT_PASSWORD
+      ? '密碼不對，請再輸入一次：' : '這份 PDF 有設開啟密碼，請輸入：');
+    if (p === null) task.destroy(); else update(p);
+  };
+  return task.promise;
+}
+async function loadLib(bytes) {
+  try { return await PDFLib.PDFDocument.load(bytes, { updateMetadata: false }); }
+  catch (e) { if (/encrypt/i.test(String(e && e.message))) return null; throw e; }
+}
+async function renderToCanvas(page, scale, region) {
+  const vp = page.getViewport({ scale });
+  const c = document.createElement('canvas');
+  let transform;
+  if (region) {
+    c.width = Math.max(1, Math.round((region.x1 - region.x0) * vp.width));
+    c.height = Math.max(1, Math.round((region.y1 - region.y0) * vp.height));
+    transform = [1, 0, 0, 1, -region.x0 * vp.width, -region.y0 * vp.height];
+  } else {
+    c.width = Math.round(vp.width); c.height = Math.round(vp.height);
+  }
+  await page.render({ canvasContext: c.getContext('2d'), viewport: vp, transform }).promise;
+  return c;
+}
+const VIEWER_TABS = ['addtext', 'watermark', 'snap', 'copytext'];
+let curTab = 'organize';
+function setTab(t) {
+  curTab = t;
+  for (const b of $('tabs').children) b.classList.toggle('on', b.dataset.tab === t);
+  $('view-organize').hidden = t !== 'organize';
+  $('view-viewer').hidden = !VIEWER_TABS.includes(t);
+  $('view-clean').hidden = t !== 'clean';
+  $('view-help').hidden = t !== 'help';
+  $('view-feedback').hidden = t !== 'feedback';
+  if (t === 'feedback') fbEnter(); else if (t !== 'help') fbFrom = t;
+  if (VIEWER_TABS.includes(t)) {
+    V.mode = t;
+    for (const p of document.querySelectorAll('[data-panel]')) p.hidden = p.dataset.panel !== t;
+    $('vOverlay').dataset.mode = t;
+    vRender();
+  }
+  try { localStorage.setItem('pdfBox.tab', t); } catch (e) {}
+}
+for (const b of $('tabs').children) b.onclick = () => setTab(b.dataset.tab);
+window.addEventListener('dragover', e => { if ([...e.dataTransfer.types].includes('Files')) e.preventDefault(); });
+window.addEventListener('drop', e => {
+  if (!e.dataTransfer.files.length) return;
+  e.preventDefault();
+  openFiles(e.dataTransfer.files);
+});
+async function openFiles(files) {
+  const used = await addFiles(files, { toGrid: curTab === 'organize' });
+  if (!used.length) return;
+  if (VIEWER_TABS.includes(curTab)) await vUse(used[0]);
+  else if (!A.count() && !CT.running) await vUse(used[0]);
+}
+const org = { docs: [], pages: [], sel: new Set(), hist: [], seq: 1, last: -1, drag: null, thumbs: new Map(), queue: Promise.resolve() };
+async function imageToPdf(file) {
+  const bmp = await createImageBitmap(file);
+  const c = document.createElement('canvas');
+  c.width = bmp.width; c.height = bmp.height;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height); ctx.drawImage(bmp, 0, 0);
+  const png = /png/i.test(file.type) || /\.png$/i.test(file.name);
+  const data = await canvasBytes(c, png ? 'image/png' : 'image/jpeg', 0.92);
+  const doc = await PDFLib.PDFDocument.create();
+  const img = png ? await doc.embedPng(data) : await doc.embedJpg(data);
+  const [W, H] = img.width > img.height ? [841.89, 595.28] : [595.28, 841.89];
+  const k = Math.min(W / img.width, H / img.height);
+  doc.addPage([W, H]).drawImage(img, { x: (W - img.width * k) / 2, y: (H - img.height * k) / 2, width: img.width * k, height: img.height * k });
+  return doc.save();
+}
+async function addFiles(files, { toGrid = false } = {}) {
+  const list = [...files], used = [], added = [], newIds = [];
+  if (!list.length || !LIBS_OK) return used;
+  busy('讀取檔案中…');
+  let histPushed = false;
+  try {
+    for (const f of list) {
+      if (!isPdfFile(f) && !isImgFile(f)) { toast(`「${f.name}」不是 PDF 或 JPG/PNG 圖片，已略過`, 3500); continue; }
+      const key = `${f.name}|${f.size}|${f.lastModified}`;
+      let di = org.docs.findIndex(d => d.key === key);
+      const isNew = di < 0;
+      if (isNew) {
+        try {
+          busy(`讀取「${f.name}」…`);
+          const bytes = isImgFile(f) ? await imageToPdf(f) : new Uint8Array(await f.arrayBuffer());
+          const pdf = await openPdfjs(bytes);
+          di = org.docs.push({ key, name: f.name, bytes, pdf }) - 1;
+        } catch (e) { console.error(e); toast(`「${f.name}」打不開：${friendly(e)}`, 4000); continue; }
+      }
+      const inGrid = org.pages.some(p => p.doc === di);
+      if (isNew || (toGrid && !inGrid)) {
+        if (!histPushed && org.pages.length) { pushHist(); histPushed = true; }
+        for (let i = 0; i < org.docs[di].pdf.numPages; i++) { newIds.push(org.seq); org.pages.push({ id: org.seq++, doc: di, index: i, rot: 0, crop: null }); }
+        added.push(`${org.docs[di].name}（${org.docs[di].pdf.numPages} 頁）`);
+      } else if (toGrid) toast(`「${f.name}」已經在下面了`);
+      used.push(di);
+    }
+  } finally { busy(null); }
+  org.flash = new Set(newIds);
+  orgRender(); vDocList();
+  org.flash = null;
+  if (newIds.length) {
+    const first = $('grid').querySelector(`[data-id="${newIds[0]}"]`);
+    if (first && curTab === 'organize') first.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    toast(`已加入 ${added.join('、')}，排在最後面`, Math.min(8000, 3000 + added.length * 800));
+  }
+  return used;
+}
+function thumbSrc(doc, index) {
+  const key = doc + ':' + index;
+  if (!org.thumbs.has(key)) {
+    const p = org.queue.then(async () => {
+      const page = await org.docs[doc].pdf.getPage(index + 1);
+      const vp1 = page.getViewport({ scale: 1 });
+      return renderToCanvas(page, 340 / Math.max(vp1.width, vp1.height));
+    });
+    org.queue = p.catch(() => {});
+    org.thumbs.set(key, p);
+  }
+  return org.thumbs.get(key);
+}
+function drawItem(src, it, maxW, maxH) {
+  const c = it.crop || { x0: 0, y0: 0, x1: 1, y1: 1 };
+  const sx = c.x0 * src.width, sy = c.y0 * src.height, sw = (c.x1 - c.x0) * src.width, sh = (c.y1 - c.y0) * src.height;
+  const ow = it.rot % 180 ? sh : sw, oh = it.rot % 180 ? sw : sh;
+  const k = Math.min(maxW / ow, maxH / oh, 2);
+  const out = document.createElement('canvas');
+  out.width = Math.max(1, Math.round(ow * k)); out.height = Math.max(1, Math.round(oh * k));
+  const ctx = out.getContext('2d');
+  ctx.translate(out.width / 2, out.height / 2); ctx.rotate(it.rot * Math.PI / 180);
+  ctx.drawImage(src, sx, sy, sw, sh, -sw * k / 2, -sh * k / 2, sw * k, sh * k);
+  return out;
+}
+const gridDocs = () => [...new Set(org.pages.map(p => p.doc))];
+const DOC_COLORS = ['#2463eb', '#e8710a', '#0f9d58', '#d81b60', '#8e24aa', '#00897b', '#7cb342', '#c62828'];
+const docColor = di => DOC_COLORS[di % DOC_COLORS.length];
+function srcLabel(p, multi) {
+  const name = multi ? stem(org.docs[p.doc].name) + ' ' : '';
+  return `${name}原第${p.index + 1}頁${p.crop ? ' ✂' : ''}`;
+}
+function orgRender() {
+  const g = $('grid');
+  g.replaceChildren();
+  $('orgEmpty').hidden = org.pages.length > 0;
+  const nDocs = gridDocs().length;
+  org.pages.forEach((p, i) => {
+    const thumb = el('div', { class: 'thumb' });
+    const miniBtn = (title, text, fn) => el('button', { title, text, onclick: e => { e.stopPropagation(); org.miniAt = Date.now(); fn(); } });
+    const mini = el('div', { class: 'mini' },
+      miniBtn('放大看（也可以雙擊縮圖）', '🔍', () => lbShow(i)),
+      miniBtn('左轉', '⟲', () => rotate([p.id], -90)),
+      miniBtn('右轉', '⟳', () => rotate([p.id], 90)),
+      miniBtn('把這頁裁成兩半（照上面的裁半設定）', '✂', () => splitPages([p.id])),
+      miniBtn('只把這頁存成 PDF', '⬇', () => orgSaveOne(p)),
+      miniBtn('刪除這頁', '✕', () => removePages([p.id])));
+    const d = org.docs[p.doc];
+    const card = el('div', { class: 'card' + (org.sel.has(p.id) ? ' sel' : '') + (org.flash && org.flash.has(p.id) ? ' new' : ''), draggable: 'true', 'data-id': p.id,
+      style: `--doc:${docColor(p.doc)}`, title: `${d.name}\n原檔第 ${p.index + 1}／${d.pdf.numPages} 頁${p.crop ? '（裁過）' : ''}\n點一下選取、雙擊放大看、拖拉排順序` },
+      el('span', { class: 'stripe' }), thumb, el('span', { class: 'check' }), mini,
+      el('div', { class: 'cap' }, el('b', { text: String(i + 1) }), el('span', { class: 'src', text: srcLabel(p, nDocs > 1) })));
+    card.addEventListener('click', e => onCardClick(e, p.id, i));
+    card.addEventListener('dblclick', e => {
+      if (e.target.closest('.mini') || Date.now() - (org.miniAt || 0) < 700) return;
+      e.preventDefault(); lbShow(i);
+    });
+    card.addEventListener('dragstart', e => {
+      org.drag = p.id; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', String(p.id));
+      card.classList.add('dragging');
+    });
+    card.addEventListener('dragend', () => { org.drag = null; card.classList.remove('dragging'); clearDropMarks(); });
+    card.addEventListener('dragover', e => {
+      if (org.drag == null) return;
+      e.preventDefault();
+      const r = card.getBoundingClientRect(), after = e.clientX > r.left + r.width / 2;
+      clearDropMarks(); card.classList.add(after ? 'drop-after' : 'drop-before');
+    });
+    card.addEventListener('drop', e => {
+      if (org.drag == null) return;
+      e.preventDefault(); e.stopPropagation();
+      const r = card.getBoundingClientRect();
+      moveTo(p.id, e.clientX > r.left + r.width / 2);
+    });
+    g.append(card);
+    thumbSrc(p.doc, p.index)
+      .then(src => thumb.append(drawItem(src, p, 152, 192)))
+      .catch(() => thumb.append(el('span', { class: 'hint', text: '無法顯示' })));
+  });
+  orgFilesRender();
+  $('undoBtn').disabled = !org.hist.length;
+  for (const id of ['expAll', 'expEach', 'expRange']) $(id).disabled = !org.pages.length;
+  orgSelUpdate();
+}
+function orgFilesRender() {
+  const docs = gridDocs();
+  $('orgFiles').replaceChildren(...(docs.length ? [el('span', { class: 'hint', text: '檔案：' })] : []), ...docs.map(di => {
+    const d = org.docs[di], ids = org.pages.filter(p => p.doc === di).map(p => p.id);
+    return el('button', { class: 'fchip', style: `--doc:${docColor(di)}`, title: `${d.name}\n點一下選取這個檔的 ${ids.length} 頁`,
+      onclick: () => { org.sel = new Set(ids); org.last = -1; orgSelUpdate(); toast(`已選取「${d.name}」的 ${ids.length} 頁`); } },
+      el('i'), el('span', { text: d.name }), el('small', { text: `${ids.length} 頁` }));
+  }));
+}
+function orgSelUpdate() {
+  for (const c of $('grid').children) c.classList.toggle('sel', org.sel.has(+c.dataset.id));
+  const n = org.pages.length;
+  $('orgInfo').textContent = n ? `${gridDocs().length} 個檔，共 ${n} 頁${org.sel.size ? `，已選 ${org.sel.size} 頁` : ''}` : '';
+  $('expSel').disabled = !org.sel.size;
+}
+function clearDropMarks() { for (const c of $('grid').children) c.classList.remove('drop-before', 'drop-after'); }
+function onCardClick(e, id, i) {
+  if (e.shiftKey && org.last >= 0 && org.last < org.pages.length) {
+    const [a, b] = [Math.min(org.last, i), Math.max(org.last, i)];
+    for (let k = a; k <= b; k++) org.sel.add(org.pages[k].id);
+  } else if (org.sel.has(id)) org.sel.delete(id);
+  else org.sel.add(id);
+  org.last = i;
+  orgSelUpdate();
+}
+const LB = { i: -1, token: 0 };
+async function lbShow(i) {
+  if (i < 0 || i >= org.pages.length) return;
+  LB.i = i;
+  const p = org.pages[i], token = ++LB.token;
+  $('lb').hidden = false;
+  $('lbCap').textContent = `第 ${i + 1}／${org.pages.length} 頁　${srcLabel(p, gridDocs().length > 1)}`;
+  $('lbSel').checked = org.sel.has(p.id);
+  $('lbPrev').disabled = i === 0;
+  $('lbNext').disabled = i === org.pages.length - 1;
+  try {
+    const page = await org.docs[p.doc].pdf.getPage(p.index + 1);
+    const vp1 = page.getViewport({ scale: 1 }), c = p.crop || { x0: 0, y0: 0, x1: 1, y1: 1 };
+    let ow = (c.x1 - c.x0) * vp1.width, oh = (c.y1 - c.y0) * vp1.height;
+    if (p.rot % 180) [ow, oh] = [oh, ow];
+    const narrow = window.innerWidth < 600;
+    const s = Math.min((window.innerWidth - (narrow ? 90 : 150)) / ow, (window.innerHeight - 90) / oh);
+    const cssW = ow * s, cssH = oh * s, dpr = window.devicePixelRatio || 1;
+    thumbSrc(p.doc, p.index).then(src => {
+      if (token !== LB.token || $('lbImg').dataset.token === String(token)) return;
+      const ph = drawItem(src, p, cssW, cssH);
+      ph.style.width = cssW + 'px'; ph.style.height = cssH + 'px';
+      $('lbImg').replaceChildren(ph);
+    }).catch(() => {});
+    const cv = rotCanvas(await renderToCanvas(page, clamp(s * dpr, 0.3, 6), p.crop), p.rot);
+    if (token !== LB.token) return;
+    cv.style.width = cssW + 'px'; cv.style.height = cssH + 'px';
+    $('lbImg').dataset.token = String(token);
+    $('lbImg').replaceChildren(cv);
+  } catch (e) {
+    console.error(e);
+    if (token === LB.token) $('lbImg').replaceChildren(el('span', { text: '這頁無法顯示' }));
+  }
+}
+function lbClose() { $('lb').hidden = true; LB.token++; $('lbImg').replaceChildren(); delete $('lbImg').dataset.token; }
+$('lbPrev').onclick = () => lbShow(LB.i - 1);
+$('lbNext').onclick = () => lbShow(LB.i + 1);
+$('lbClose').onclick = lbClose;
+$('lb').addEventListener('click', e => { if (e.target === $('lb')) lbClose(); });
+$('lbSel').onchange = () => {
+  const p = org.pages[LB.i];
+  if (!p) return;
+  if ($('lbSel').checked) org.sel.add(p.id); else org.sel.delete(p.id);
+  orgSelUpdate();
+};
+document.addEventListener('keydown', e => {
+  if ($('lb').hidden) return;
+  if (e.key === 'ArrowLeft') { e.preventDefault(); lbShow(LB.i - 1); }
+  else if (e.key === 'ArrowRight') { e.preventDefault(); lbShow(LB.i + 1); }
+  else if (e.key === 'Escape') lbClose();
+});
+function pushHist() {
+  org.last = -1;
+  org.hist.push({ pages: org.pages.map(p => ({ ...p, crop: p.crop && { ...p.crop } })), sel: [...org.sel] });
+  if (org.hist.length > 40) org.hist.shift();
+}
+function undo() {
+  const h = org.hist.pop();
+  if (!h) return;
+  org.last = -1;
+  org.pages = h.pages; org.sel = new Set(h.sel);
+  orgRender(); toast('已復原上一步');
+}
+function moveTo(targetId, after) {
+  const ids = org.sel.has(org.drag) ? org.pages.filter(p => org.sel.has(p.id)).map(p => p.id) : [org.drag];
+  if (ids.includes(targetId)) return;
+  pushHist();
+  const moving = org.pages.filter(p => ids.includes(p.id));
+  const rest = org.pages.filter(p => !ids.includes(p.id));
+  rest.splice(rest.findIndex(p => p.id === targetId) + (after ? 1 : 0), 0, ...moving);
+  org.pages = rest;
+  orgRender();
+}
+const targetIds = () => org.sel.size ? [...org.sel] : org.pages.map(p => p.id);
+function rotate(ids, deg) {
+  if (!ids.length) return;
+  pushHist();
+  for (const p of org.pages) if (ids.includes(p.id)) p.rot = normRot(p.rot + deg);
+  orgRender();
+}
+function removePages(ids) {
+  if (!ids.length) { toast('請先點選要刪除的頁'); return; }
+  pushHist();
+  org.pages = org.pages.filter(p => !ids.includes(p.id));
+  for (const id of ids) org.sel.delete(id);
+  orgRender(); toast(`已刪除 ${ids.length} 頁（可按復原）`);
+}
+function subCrop(p, h) {
+  const c = p.crop || { x0: 0, y0: 0, x1: 1, y1: 1 };
+  const m = mapRect(h, p.rot), w = c.x1 - c.x0, hh = c.y1 - c.y0;
+  return { x0: c.x0 + m.x0 * w, y0: c.y0 + m.y0 * hh, x1: c.x0 + m.x1 * w, y1: c.y0 + m.y1 * hh };
+}
+function splitPages(only) {
+  if (!org.pages.length) return;
+  const ids = new Set(only || targetIds());
+  const dir = $('splitDir').value, pos = clamp((+$('splitPos').value || 50) / 100, 0.1, 0.9);
+  const halves = dir === 'lr'
+    ? [{ x0: 0, y0: 0, x1: pos, y1: 1 }, { x0: pos, y0: 0, x1: 1, y1: 1 }]
+    : [{ x0: 0, y0: 0, x1: 1, y1: pos }, { x0: 0, y0: pos, x1: 1, y1: 1 }];
+  if ($('splitOrder').value === 'second') halves.reverse();
+  pushHist();
+  const next = [], newSel = new Set();
+  for (const p of org.pages) {
+    if (!ids.has(p.id)) { next.push(p); continue; }
+    for (const h of halves) { const q = { ...p, id: org.seq++, crop: subCrop(p, h) }; next.push(q); newSel.add(q.id); }
+  }
+  org.pages = next; org.sel = newSel;
+  orgRender(); toast(`已把 ${ids.size} 頁裁成 ${ids.size * 2} 頁（新的頁已選取，可按復原）`, 3500);
+}
+function updateSplitOrderLabels() {
+  const lr = $('splitDir').value === 'lr', o = $('splitOrder').options;
+  o[0].text = lr ? '先左後右' : '先上後下';
+  o[1].text = lr ? '先右後左' : '先下後上';
+}
+function applyCrop(pg, crop) {
+  const r = visRectToPdf(pg, crop);
+  pg.setMediaBox(r.x, r.y, r.width, r.height);
+  pg.setCropBox(r.x, r.y, r.width, r.height);
+  pg.setTrimBox(r.x, r.y, r.width, r.height);
+  pg.setBleedBox(r.x, r.y, r.width, r.height);
+  pg.setArtBox(r.x, r.y, r.width, r.height);
+}
+async function rasterItem(it) {
+  const page = await org.docs[it.doc].pdf.getPage(it.index + 1);
+  const scale = 200 / 72;
+  const c = rotCanvas(await renderToCanvas(page, scale, it.crop), it.rot);
+  return { canvas: c, w: c.width / scale, h: c.height / scale };
+}
+async function buildPdf(items, libCache) {
+  const out = await PDFLib.PDFDocument.create();
+  const slots = new Array(items.length), byDoc = new Map();
+  items.forEach((it, i) => { if (!byDoc.has(it.doc)) byDoc.set(it.doc, []); byDoc.get(it.doc).push(i); });
+  for (const [di, idxs] of byDoc) {
+    if (!libCache.has(di)) libCache.set(di, await loadLib(org.docs[di].bytes));
+    const lib = libCache.get(di);
+    if (lib) {
+      const copied = await out.copyPages(lib, idxs.map(i => items[i].index));
+      idxs.forEach((i, k) => { slots[i] = { page: copied[k] }; });
+    } else {
+      libCache.rastered = true;
+      for (const i of idxs) slots[i] = { raster: await rasterItem(items[i]) };
+    }
+  }
+  for (let i = 0; i < items.length; i++) {
+    const it = items[i], s = slots[i];
+    if (s.page) {
+      const pg = out.addPage(s.page);
+      if (it.crop) applyCrop(pg, it.crop);
+      pg.setRotation(PDFLib.degrees(normRot(pg.getRotation().angle + it.rot)));
+    } else {
+      const img = await out.embedJpg(await canvasBytes(s.raster.canvas, 'image/jpeg', 0.9));
+      out.addPage([s.raster.w, s.raster.h]).drawImage(img, { x: 0, y: 0, width: s.raster.w, height: s.raster.h });
+    }
+  }
+  return out.save();
+}
+const outStem = () => { const d = gridDocs(); return d.length === 1 ? stem(org.docs[d[0]].name) : '合併'; };
+function parseRanges(s, max) {
+  const out = [];
+  for (const part of s.replace(/\s*[-~～－–]\s*/g, '-').split(/[,，、;；\s]+/).filter(Boolean)) {
+    const m = part.match(/^(\d+)(?:-(\d+))?$/);
+    if (!m) throw new Error(`看不懂「${part}」，請用 1-3, 4-8 這種寫法`);
+    let a = +m[1], b = m[2] ? +m[2] : a;
+    if (a > b) [a, b] = [b, a];
+    if (a < 1 || b > max) throw new Error(`「${part}」超出範圍（目前共 ${max} 頁）`);
+    out.push([a, b]);
+  }
+  if (!out.length) throw new Error('請輸入頁碼範圍，例如 1-3, 4-8');
+  return out;
+}
+async function orgExport(kind) {
+  if (!org.pages.length) return;
+  const cache = new Map();
+  let r;
+  try {
+    if (kind === 'all' || kind === 'sel') {
+      const items = kind === 'all' ? org.pages : org.pages.filter(p => org.sel.has(p.id));
+      if (!items.length) { toast('請先點選要存的頁'); return; }
+      r = await saveAs(() => { busy(`產生 PDF 中（${items.length} 頁）…`); return buildPdf(items, cache); },
+        { src: outStem(), action: kind === 'all' ? '整理' : '選取', ext: '.pdf' });
+      if (!r) return;
+    } else {
+      let groups;
+      if (kind === 'each') groups = org.pages.map((p, i) => [i + 1, i + 1]);
+      else groups = parseRanges($('rangeInp').value, org.pages.length);
+      const seq = usesSeq() ? seqNext(true) : 0;
+      r = await saveAs(async () => {
+        const zip = new JSZip(), pad = String(org.pages.length).length, used = new Set();
+        for (let g = 0; g < groups.length; g++) {
+          const [a, b] = groups[g];
+          busy(`產生第 ${g + 1}／${groups.length} 個檔…`);
+          const label = a === b ? String(a).padStart(pad, '0') : `${String(a).padStart(pad, '0')}-${String(b).padStart(pad, '0')}`;
+          let name = makeName({ src: outStem(), action: '拆檔', page: label, ext: '.pdf' }, seq);
+          for (let k = 2; used.has(name); k++) name = name.replace(/(?:-\d+)?\.pdf$/, `-${k}.pdf`);
+          used.add(name);
+          zip.file(name, await buildPdf(org.pages.slice(a - 1, b), cache));
+        }
+        busy('壓縮成 ZIP…');
+        return zip.generateAsync({ type: 'blob' });
+      }, { src: outStem(), action: '拆檔', ext: '.zip' }, 'application/zip', seq);
+      if (!r) return;
+    }
+    toast(cache.rastered ? savedMsg(r) + '。注意：有檔案是加密 PDF，那些頁改用圖片方式存（文字不能再選取）' : savedMsg(r), cache.rastered ? 6000 : 3000);
+  } catch (e) {
+    console.error(e);
+    toast(e instanceof Error && /^(看不懂|「|請輸入)/.test(e.message) ? e.message : '存檔失敗，這份 PDF 可能有損壞', 4500);
+  } finally { busy(null); }
+}
+$('orgAdd').onclick = () => $('orgFile').click();
+$('orgFile').onchange = e => { openFiles(e.target.files); e.target.value = ''; };
+$('orgClear').onclick = () => {
+  if (!org.pages.length) return;
+  if (!confirm('清空這裡排好的頁面？\n（原始檔案不會被刪；已開啟的檔案在加字、擷取、複製文字還能用）')) return;
+  pushHist();
+  org.pages = []; org.sel = new Set();
+  orgRender(); toast('已清空（可按復原）');
+};
+$('undoBtn').onclick = undo;
+$('selAll').onclick = () => { org.sel = new Set(org.pages.map(p => p.id)); orgRender(); };
+$('selNone').onclick = () => { org.sel.clear(); orgRender(); };
+$('selInv').onclick = () => { org.sel = new Set(org.pages.filter(p => !org.sel.has(p.id)).map(p => p.id)); orgRender(); };
+$('rotL').onclick = () => rotate(targetIds(), -90);
+$('rotR').onclick = () => rotate(targetIds(), 90);
+$('delSel').onclick = () => removePages([...org.sel]);
+$('splitBtn').onclick = () => splitPages();
+async function orgSaveOne(p) {
+  const cache = new Map();
+  try {
+    const r = await saveAs(() => { busy('產生 PDF 中…'); return buildPdf([p], cache); },
+      { src: stem(org.docs[p.doc].name), action: '單頁', page: String(p.index + 1), ext: '.pdf' });
+    if (r) toast(savedMsg(r));
+  } catch (e) { console.error(e); toast('存檔失敗，這份 PDF 可能有損壞', 4500); }
+  finally { busy(null); }
+}
+$('splitDir').onchange = updateSplitOrderLabels;
+$('expAll').onclick = () => orgExport('all');
+$('expSel').onclick = () => orgExport('sel');
+$('expEach').onclick = () => orgExport('each');
+$('expRange').onclick = () => orgExport('range');
+const V = { doc: -1, pdf: null, bytes: null, name: '', page: 1, count: 0, zoom: 1, css: null, pt: null, task: null, mode: 'addtext', sel: null };
+const ov = $('vOverlay');
+async function vUse(di) {
+  const d = org.docs[di];
+  if (!d || di === V.doc) { vDocList(); return; }
+  if (CT.running) { toast('還在取字中，請等做完或按「停止」再換檔'); vDocList(); return; }
+  if (A.count() && !confirm('目前這份加的字還沒存，確定要換檔嗎？')) { vDocList(); return; }
+  Object.assign(V, { doc: di, pdf: d.pdf, bytes: d.bytes, name: d.name, page: 1, count: d.pdf.numPages, sel: null, zoom: 1 });
+  A.reset(); CT.raw = ''; ctShow(); snUpdate(); vDocList();
+  $('vPageCount').textContent = d.pdf.numPages; $('vPageNum').max = d.pdf.numPages;
+  $('vEmpty').hidden = true; $('vStage').hidden = false;
+  await vRender();
+}
+function vDocList() {
+  const s = $('vDocSel');
+  s.replaceChildren(...org.docs.map((d, i) => el('option', { value: String(i), text: d.name })));
+  s.hidden = !org.docs.length;
+  if (V.doc >= 0) s.value = String(V.doc);
+  s.title = V.name || '已開啟的檔案，點選切換';
+  $('c_btnPdf').disabled = !V.pdf;
+  $('c_btnPdf').title = V.pdf ? `取出「${V.name}」全部頁的文字` : '請先在任一分頁開啟 PDF';
+}
+$('vDocSel').onchange = e => vUse(+e.target.value);
+async function vOpenFile(f) { if (f) await openFiles([f]); }
+async function vRender() {
+  if (!V.pdf || $('view-viewer').hidden) return;
+  const n = V.page;
+  const page = await V.pdf.getPage(n);
+  if (n !== V.page) return;
+  const base = page.getViewport({ scale: 1 });
+  const avail = Math.max(240, $('vScroll').clientWidth - 34);
+  const s = Math.min(avail / base.width, 1.5) * V.zoom;
+  const dpr = window.devicePixelRatio || 1;
+  V.css = { w: base.width * s, h: base.height * s, scale: s };
+  V.pt = { w: base.width, h: base.height };
+  const stage = $('vStage');
+  stage.style.width = V.css.w + 'px'; stage.style.height = V.css.h + 'px';
+  $('vPageNum').value = n;
+  $('vZoomLbl').textContent = Math.round(V.zoom * 100) + '%';
+  drawOverlay();
+  if (V.task) V.task.cancel();
+  const vp = page.getViewport({ scale: s * dpr });
+  const c = document.createElement('canvas');
+  c.width = Math.floor(vp.width); c.height = Math.floor(vp.height);
+  c.style.width = V.css.w + 'px'; c.style.height = V.css.h + 'px';
+  const task = page.render({ canvasContext: c.getContext('2d'), viewport: vp });
+  V.task = task;
+  try { await task.promise; }
+  catch (e) { if (e && e.name === 'RenderingCancelledException') return; throw e; }
+  if (V.task !== task) return;
+  V.task = null;
+  c.id = 'vCanvas';
+  $('vCanvas').replaceWith(c);
+}
+function vGo(n) {
+  if (!V.pdf) return;
+  n = clamp(Math.round(n) || 1, 1, V.count);
+  if (n === V.page) { $('vPageNum').value = n; return; }
+  V.page = n; V.sel = null; A.active = null;
+  snUpdate(); vRender();
+}
+$('vOpen').onclick = () => $('vFile').click();
+$('vFile').onchange = e => { vOpenFile(e.target.files[0]); e.target.value = ''; };
+$('vPrev').onclick = () => vGo(V.page - 1);
+$('vNext').onclick = () => vGo(V.page + 1);
+$('vPageNum').onchange = e => vGo(+e.target.value);
+$('vZoomIn').onclick = () => { V.zoom = clamp(V.zoom * 1.25, 0.4, 4); vRender(); };
+$('vZoomOut').onclick = () => { V.zoom = clamp(V.zoom / 1.25, 0.4, 4); vRender(); };
+let resizeTimer;
+window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(vRender, 200); });
+const isTyping = () => { const a = document.activeElement; return a && (a.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)); };
+document.addEventListener('keydown', e => {
+  if ($('view-viewer').hidden || isTyping()) return;
+  if (e.key === 'PageDown') { e.preventDefault(); vGo(V.page + 1); }
+  else if (e.key === 'PageUp') { e.preventDefault(); vGo(V.page - 1); }
+  else if ((e.key === 'Delete' || e.key === 'Backspace') && V.mode === 'addtext' && A.active) { e.preventDefault(); A.remove(A.active); }
+});
+const placeBox = (node, rc) => {
+  Object.assign(node.style, { left: rc.x0 * V.css.w + 'px', top: rc.y0 * V.css.h + 'px', width: (rc.x1 - rc.x0) * V.css.w + 'px', height: (rc.y1 - rc.y0) * V.css.h + 'px' });
+  return node;
+};
+function drawOverlay() {
+  ov.replaceChildren();
+  ov.dataset.tool = A.tool;
+  if (!V.css) return;
+  if (V.mode === 'addtext') for (const a of A.list()) ov.append(annoEl(a));
+  else if (V.mode === 'watermark') wmPreview();
+  else if (V.sel) ov.append(placeBox(el('div', { class: 'selbox' }), V.sel));
+  atInfo();
+}
+ov.addEventListener('mousedown', e => { if (e.target === ov) e.preventDefault(); });
+ov.addEventListener('pointerdown', e => {
+  if (!V.pdf || e.button !== 0 || e.target !== ov || V.mode === 'watermark') return;
+  const r = ov.getBoundingClientRect();
+  const px = ev => clamp((ev.clientX - r.left) / r.width, 0, 1), py = ev => clamp((ev.clientY - r.top) / r.height, 0, 1);
+  const x0 = px(e), y0 = py(e);
+  if (V.mode === 'addtext' && A.tool === 'text') { e.preventDefault(); A.addText(x0, y0); return; }
+  e.preventDefault();
+  if (V.mode === 'addtext') A.setActive(null);
+  ov.setPointerCapture(e.pointerId);
+  const box = el('div', { class: V.mode === 'addtext' ? 'anno rect drawing' : 'selbox' });
+  if (V.mode !== 'addtext') for (const b of ov.querySelectorAll('.selbox')) b.remove();
+  ov.append(box);
+  let rc = { x0, y0, x1: x0, y1: y0 };
+  const move = ev => {
+    const x1 = px(ev), y1 = py(ev);
+    rc = { x0: Math.min(x0, x1), y0: Math.min(y0, y1), x1: Math.max(x0, x1), y1: Math.max(y0, y1) };
+    placeBox(box, rc);
+  };
+  const up = () => {
+    ov.removeEventListener('pointermove', move);
+    ov.removeEventListener('pointerup', up);
+    ov.removeEventListener('pointercancel', up);
+    box.remove();
+    const tiny = (rc.x1 - rc.x0) * r.width < 6 || (rc.y1 - rc.y0) * r.height < 6;
+    if (V.mode === 'addtext') { if (!tiny) A.addRect(rc); return; }
+    V.sel = tiny ? null : rc;
+    drawOverlay();
+    if (V.mode === 'snap') snUpdate();
+    if (V.mode === 'copytext' && V.sel) ctRun('sel');
+  };
+  ov.addEventListener('pointermove', move);
+  ov.addEventListener('pointerup', up);
+  ov.addEventListener('pointercancel', up);
+});
+const FONT_CSS = {
+  jh: '"Microsoft JhengHei","微軟正黑體","PingFang TC","Noto Sans TC",sans-serif',
+  kai: '"DFKai-SB","標楷體","BiauKai","Kaiti TC",serif',
+  ming: '"PMingLiU","新細明體","Songti TC",serif'
+};
+const A = {
+  tool: 'text', redColor: 'black', byPage: new Map(), active: null, seq: 1,
+  list(p = V.page) { if (!this.byPage.has(p)) this.byPage.set(p, []); return this.byPage.get(p); },
+  count() { let n = 0; for (const l of this.byPage.values()) n += l.filter(a => a.type === 'rect' || a.text.trim()).length; return n; },
+  reset() { this.byPage.clear(); this.active = null; },
+  style() { return { font: $('atFont').value, size: clamp(+$('atSize').value || 12, 4, 200), color: $('atColor').value, bold: $('atBold').checked, bg: $('atBg').checked }; },
+  addText(x, y) {
+    const st = this.style();
+    const a = { id: this.seq++, type: 'text', x, y: Math.max(0, y - st.size * 0.65 / V.pt.h), text: '', ...st };
+    this.list().push(a); this.active = a;
+    drawOverlay();
+    const ct = ov.querySelector(`[data-id="${a.id}"] .content`);
+    if (ct) ct.focus();
+  },
+  addRect(rc) {
+    const redact = this.tool === 'redact';
+    const a = { id: this.seq++, type: 'rect', x: rc.x0, y: rc.y0, w: rc.x1 - rc.x0, h: rc.y1 - rc.y0, redact, white: redact && this.redColor === 'white' };
+    this.list().push(a); this.active = a;
+    drawOverlay();
+  },
+  remove(a) {
+    const l = this.list(), i = l.indexOf(a);
+    if (i >= 0) l.splice(i, 1);
+    if (this.active === a) this.active = null;
+    const node = ov.querySelector(`[data-id="${a.id}"]`);
+    if (node) node.remove();
+    atInfo();
+  },
+  setActive(a) {
+    this.active = a;
+    for (const n of ov.querySelectorAll('.anno')) n.classList.toggle('active', !!a && n.dataset.id === String(a.id));
+    if (a && a.type === 'text') {
+      $('atFont').value = a.font; $('atSize').value = a.size; $('atColor').value = a.color;
+      $('atBold').checked = a.bold; $('atBg').checked = a.bg;
+    }
+  }
+};
+function styleText(node, a) {
+  Object.assign(node.style, {
+    fontFamily: FONT_CSS[a.font], fontSize: a.size * V.css.scale + 'px', color: a.color,
+    fontWeight: a.bold ? 'bold' : 'normal', background: a.bg ? '#fff' : 'transparent'
+  });
+}
+function dragHandle(handle, a, wrap, kind) {
+  handle.addEventListener('pointerdown', e => {
+    if (e.button !== 0 || (kind === 'move' && e.target !== handle)) return;
+    e.preventDefault(); e.stopPropagation();
+    A.setActive(a);
+    const r = ov.getBoundingClientRect(), sx = e.clientX, sy = e.clientY;
+    const o = { x: a.x, y: a.y, w: a.w, h: a.h };
+    handle.setPointerCapture(e.pointerId);
+    const mv = ev => {
+      const dx = (ev.clientX - sx) / r.width, dy = (ev.clientY - sy) / r.height;
+      if (kind === 'move') {
+        a.x = clamp(o.x + dx, -0.3, 0.98); a.y = clamp(o.y + dy, -0.05, 0.98);
+        wrap.style.left = a.x * r.width + 'px'; wrap.style.top = a.y * r.height + 'px';
+      } else {
+        a.w = clamp(o.w + dx, 0.005, 1 - a.x); a.h = clamp(o.h + dy, 0.005, 1 - a.y);
+        wrap.style.width = a.w * r.width + 'px'; wrap.style.height = a.h * r.height + 'px';
+      }
+    };
+    const up = () => {
+      handle.removeEventListener('pointermove', mv);
+      handle.removeEventListener('pointerup', up);
+      handle.removeEventListener('pointercancel', up);
+    };
+    handle.addEventListener('pointermove', mv);
+    handle.addEventListener('pointerup', up);
+    handle.addEventListener('pointercancel', up);
+  });
+}
+function annoEl(a) {
+  const del = el('button', { class: 'del', title: '刪除', text: '✕', onclick: e => { e.stopPropagation(); A.remove(a); } });
+  del.addEventListener('pointerdown', e => e.stopPropagation());
+  if (a.type === 'rect') {
+    const wrap = placeBox(el('div', { class: 'anno rect' + (a.redact ? ' redact' : '') + (a.white ? ' white' : '') + (A.active === a ? ' active' : ''), 'data-id': a.id, title: (a.redact ? '塗銷（存檔時連底下的字一起刪掉；紅色虛線只是畫面上的記號，不會存進去）。' : '') + '拖曳移動，拉右下角調整大小' }),
+      { x0: a.x, y0: a.y, x1: a.x + a.w, y1: a.y + a.h });
+    const handle = el('span', { class: 'handle' });
+    wrap.append(handle, del);
+    dragHandle(wrap, a, wrap, 'move');
+    dragHandle(handle, a, wrap, 'size');
+    return wrap;
+  }
+  const wrap = el('div', { class: 'anno text' + (A.active === a ? ' active' : ''), 'data-id': a.id });
+  wrap.style.left = a.x * V.css.w + 'px'; wrap.style.top = a.y * V.css.h + 'px';
+  const ct = el('div', { class: 'content', contenteditable: 'plaintext-only', spellcheck: 'false' });
+  ct.textContent = a.text;
+  styleText(ct, a);
+  ct.addEventListener('focus', () => A.setActive(a));
+  ct.addEventListener('input', () => { a.text = ct.innerText.replace(/\n+$/, ''); atInfo(); });
+  ct.addEventListener('blur', () => setTimeout(() => { if (!a.text.trim() && document.activeElement !== ct) A.remove(a); }, 0));
+  const grip = el('span', { class: 'grip', title: '拖曳移動', text: '✥' });
+  dragHandle(grip, a, wrap, 'move');
+  wrap.append(grip, ct, del);
+  return wrap;
+}
+function atInfo() {
+  if (!V.pdf) return;
+  const here = A.list().filter(a => a.type === 'rect' || a.text.trim()).length;
+  const all = A.count();
+  $('atInfo').textContent = all ? `這頁 ${here} 個，全部 ${all} 個（會一起存）` : '還沒加任何東西';
+}
+function onStyleChange() {
+  const a = A.active;
+  if (!a || a.type !== 'text') return;
+  Object.assign(a, A.style());
+  const ct = ov.querySelector(`[data-id="${a.id}"] .content`);
+  if (ct) styleText(ct, a);
+}
+for (const id of ['atFont', 'atSize', 'atColor', 'atBold', 'atBg']) {
+  $(id).addEventListener('input', onStyleChange);
+  $(id).addEventListener('change', onStyleChange);
+}
+for (const b of document.querySelectorAll('[data-panel=addtext] .sw')) b.onclick = () => { $('atColor').value = b.dataset.c; onStyleChange(); };
+const AT_HINT = {
+  text: '點頁面任何位置就能打字，按 Enter 換行。拖曳文字框左上的 ✥ 移動，點 ✕ 刪除。',
+  rect: '在頁面上拖出一個框，用白色蓋掉不要的內容；選取後可拖曳移動、拉右下角調整大小。⚠ 只是蓋住看不到，底下原本的字還在，用複製或搜尋還是找得到，機密資料請用「⬛ 塗黑」。',
+  redact: '遮機密資料用：拖出框蓋住要刪的內容，顏色可選黑或白（白色看起來像空白，比較不突兀）。存檔時，有塗銷的頁會整頁轉成圖片，框底下的字真的被刪掉，複製、搜尋都找不到；代價是那幾頁其他的字也不能再選取。'
+};
+function setTool(t) {
+  A.tool = t;
+  for (const b of $('atTools').children) b.classList.toggle('on', b.dataset.tool === t);
+  $('atHint').textContent = AT_HINT[t];
+  $('atRedactRow').hidden = t !== 'redact';
+  ov.dataset.tool = t;
+}
+for (const b of $('atTools').children) b.onclick = () => setTool(b.dataset.tool);
+for (const b of $('atRedactColor').children) b.onclick = () => {
+  A.redColor = b.dataset.c;
+  for (const x of $('atRedactColor').children) x.classList.toggle('on', x === b);
+  if (A.active && A.active.redact) { A.active.white = A.redColor === 'white'; drawOverlay(); }
+};
+$('atDel').onclick = () => { if (A.active) A.remove(A.active); else toast('請先點選要刪除的文字框或遮蓋框'); };
+$('atClearPage').onclick = () => {
+  if (!A.list().length) return;
+  if (!confirm('清除這一頁加的所有東西？')) return;
+  A.byPage.set(V.page, []); A.active = null; drawOverlay();
+};
+async function textCanvas(a, K) {
+  const lines = a.text.split('\n');
+  const fontAt = px => `${a.bold ? 'bold ' : ''}${px}px ${FONT_CSS[a.font]}`;
+  try { await document.fonts.load(fontAt(a.size * K), a.text); } catch (e) {}
+  const m = document.createElement('canvas').getContext('2d');
+  m.font = fontAt(a.size);
+  const w1 = Math.max(1, ...lines.map(l => m.measureText(l).width)) * 1.3 + a.size * 0.3;
+  const h1 = (lines.length * 1.3 + 0.2) * a.size;
+  K = Math.min(K, 16000 / w1, 16000 / h1);
+  const px = a.size * K, font = fontAt(px);
+  m.font = font;
+  const padX = px * 0.15, padY = px * 0.1, lh = px * 1.3;
+  const c = document.createElement('canvas');
+  c.width = Math.ceil(Math.max(1, ...lines.map(l => m.measureText(l).width)) + padX * 2);
+  c.height = Math.ceil(lines.length * lh + padY * 2);
+  const ctx = c.getContext('2d');
+  if (a.bg) { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height); }
+  ctx.font = font; ctx.fillStyle = a.color; ctx.textBaseline = 'middle';
+  lines.forEach((l, i) => ctx.fillText(l, padX, padY + i * lh + lh / 2));
+  return { c, K };
+}
+async function exportAddText() {
+  if (!V.pdf) { toast('請先開啟 PDF'); return; }
+  if (!A.count()) { toast('還沒加任何字或遮蓋框'); return; }
+  if (document.activeElement) document.activeElement.blur();
+  busy('產生 PDF 中…');
+  try {
+    const lib = await loadLib(V.bytes);
+    if (!lib) { toast('這份 PDF 有加密保護，沒辦法直接加字。可以先到「合併・分割・裁半」另存一份，再拿新檔來加字。', 7000); return; }
+    const redPages = new Set();
+    const r = await saveAs(async () => {
+    busy('產生 PDF 中…');
+    const pages = lib.getPages(), K = 5;
+    for (const [pn, list] of A.byPage) {
+      const pg = pages[pn - 1];
+      if (!pg || !list.length) continue;
+      const R = normRot(pg.getRotation().angle), b = visibleBox(pg);
+      const VW = R % 180 ? b.height : b.width, VH = R % 180 ? b.width : b.height;
+      for (const a of list) {
+        if (a.type === 'rect') {
+          const r = visRectToPdf(pg, { x0: a.x, y0: a.y, x1: a.x + a.w, y1: a.y + a.h });
+          pg.drawRectangle({ x: r.x, y: r.y, width: r.width, height: r.height, color: a.redact && !a.white ? PDFLib.rgb(0, 0, 0) : PDFLib.rgb(1, 1, 1), borderWidth: 0 });
+          if (a.redact) redPages.add(pn);
+        } else if (a.text.trim()) {
+          const { c, K: k } = await textCanvas(a, K);
+          const img = await lib.embedPng(await canvasBytes(rotCanvas(c, (360 - R) % 360), 'image/png'));
+          const r = visRectToPdf(pg, { x0: a.x, y0: a.y, x1: a.x + c.width / k / VW, y1: a.y + c.height / k / VH });
+          pg.drawImage(img, { x: r.x, y: r.y, width: r.width, height: r.height });
+        }
+      }
+    }
+    const bytes = await lib.save();
+    return redPages.size ? flattenPages(bytes, redPages) : bytes;
+    }, { src: stem(V.name), action: '加字', ext: '.pdf' });
+    if (!r) return;
+    const red = redPages.size ? `；塗銷的 ${redPages.size} 頁已轉成圖片，框底下的字已刪除` : '';
+    toast((r.picked ? `已存檔：${r.name}` : '已存成新的 PDF（在「下載」資料夾），原檔沒有被改動') + red, red ? 6000 : 3000);
+  } catch (e) { console.error(e); toast('存檔失敗，這份 PDF 可能有損壞', 4500); }
+  finally { busy(null); }
+}
+$('atSave').onclick = exportAddText;
+async function flattenPages(bytes, redPages) {
+  const src = await openPdfjs(bytes), lib = await PDFLib.PDFDocument.load(bytes), out = await PDFLib.PDFDocument.create();
+  try {
+    const n = lib.getPageCount();
+    for (let i = 0; i < n; i++) {
+      if (!redPages.has(i + 1)) { const [cp] = await out.copyPages(lib, [i]); out.addPage(cp); continue; }
+      busy(`塗銷的頁轉成圖片中（第 ${i + 1} 頁）…`);
+      const page = await src.getPage(i + 1), vp1 = page.getViewport({ scale: 1 });
+      let scale = 250 / 72;
+      const px = vp1.width * vp1.height * scale * scale;
+      if (px > 40e6) scale *= Math.sqrt(40e6 / px);
+      const c = await renderToCanvas(page, scale);
+      const flat = document.createElement('canvas');
+      flat.width = c.width; flat.height = c.height;
+      const ctx = flat.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, flat.width, flat.height); ctx.drawImage(c, 0, 0);
+      const img = await out.embedJpg(await canvasBytes(flat, 'image/jpeg', 0.92));
+      out.addPage([vp1.width, vp1.height]).drawImage(img, { x: 0, y: 0, width: vp1.width, height: vp1.height });
+    }
+  } finally { src.destroy(); }
+  return out.save();
+}
+const WM_KEY = 'pdfBox.wm';
+const wm = { mode: 'add', kind: 'text', img: null, imgName: '' };
+const WM_OPTS = ['wmText', 'wmFont', 'wmColor', 'wmBold', 'wmScale', 'wmOpacity', 'wmAngle', 'wmLayout'];
+function wmGet() {
+  const o = {};
+  for (const id of WM_OPTS) { const e = $(id); o[id] = e.type === 'checkbox' ? e.checked : e.value; }
+  return o;
+}
+try {
+  const s = JSON.parse(localStorage.getItem(WM_KEY) || 'null');
+  if (s) for (const id of WM_OPTS) if (id in s) { const e = $(id); if (e.type === 'checkbox') e.checked = !!s[id]; else e.value = s[id]; }
+} catch (e) {}
+function wmDraw(ctx, W, H, k) {
+  const o = wmGet(), size = +o.wmScale / 100, deg = +o.wmAngle, rad = -deg * Math.PI / 180;
+  const tile = o.wmLayout === 'tile';
+  const span = deg === 0 ? W : Math.abs(deg) === 90 ? H : Math.min(W, H) * Math.SQRT2;
+  const w = span * size * (tile ? 0.4 : 0.9) * k;
+  let draw, h;
+  if (wm.kind === 'image') {
+    if (!wm.img) return false;
+    h = w * wm.img.height / wm.img.width;
+    draw = () => ctx.drawImage(wm.img, -w / 2, -h / 2, w, h);
+  } else {
+    const text = o.wmText.trim();
+    if (!text) return false;
+    const font = px => `${o.wmBold ? 'bold ' : ''}${px}px ${FONT_CSS[o.wmFont]}`;
+    ctx.font = font(100);
+    const px = 100 * w / Math.max(1, ctx.measureText(text).width);
+    ctx.font = font(px); ctx.fillStyle = o.wmColor; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    h = px * 1.2;
+    draw = () => ctx.fillText(text, 0, 0);
+  }
+  ctx.save();
+  ctx.globalAlpha = +o.wmOpacity / 100;
+  ctx.translate(W * k / 2, H * k / 2);
+  ctx.rotate(rad);
+  if (!tile) draw();
+  else {
+    const R = Math.hypot(W, H) * k / 2, gx = w * 1.5, gy = Math.max(h * 3, w * 0.5);
+    for (let y = -R, row = 0; y <= R; y += gy, row++)
+      for (let x = -R + (row % 2 ? gx / 2 : 0); x <= R; x += gx) { ctx.save(); ctx.translate(x, y); draw(); ctx.restore(); }
+  }
+  ctx.restore();
+  return true;
+}
+function wmTargets(max) {
+  const v = $('wmPages').value;
+  if (v === 'cur') return [V.page];
+  if (v === 'all') return Array.from({ length: max }, (_, i) => i + 1);
+  const set = new Set();
+  for (const [a, b] of parseRanges($('wmRange').value, max)) for (let i = a; i <= b; i++) set.add(i);
+  return [...set].sort((x, y) => x - y);
+}
+function wmPreview() {
+  if (wm.mode !== 'add' || !V.css || !V.pt) return;
+  let on = true;
+  try { on = wmTargets(V.count).includes(V.page); } catch (e) {}
+  if (!on) { ov.append(el('div', { class: 'wm-off hint', text: '這一頁不加浮水印' })); return; }
+  const dpr = window.devicePixelRatio || 1, k = V.css.scale * dpr;
+  const c = el('canvas', { class: 'wmprev' });
+  c.width = Math.round(V.pt.w * k); c.height = Math.round(V.pt.h * k);
+  wmDraw(c.getContext('2d'), V.pt.w, V.pt.h, k);
+  ov.append(c);
+}
+function wmChanged() {
+  try { localStorage.setItem(WM_KEY, JSON.stringify(wmGet())); } catch (e) {}
+  $('wmScaleLbl').textContent = $('wmScale').value + '%';
+  $('wmOpacityLbl').textContent = $('wmOpacity').value + '%';
+  $('wmRange').hidden = $('wmPages').value !== 'range';
+  $('wmTextBox').hidden = wm.kind !== 'text';
+  $('wmImgBox').hidden = wm.kind !== 'image';
+  $('wmAddBox').hidden = wm.mode !== 'add';
+  $('wmRemoveBox').hidden = wm.mode !== 'remove';
+  for (const b of $('wmMode').children) b.classList.toggle('on', b.dataset.m === wm.mode);
+  for (const b of $('wmKind').children) b.classList.toggle('on', b.dataset.k === wm.kind);
+  if (V.mode === 'watermark') drawOverlay();
+}
+for (const id of [...WM_OPTS, 'wmPages', 'wmRange']) $(id).addEventListener('input', wmChanged);
+for (const b of $('wmMode').children) b.onclick = () => { wm.mode = b.dataset.m; wmChanged(); };
+for (const b of $('wmKind').children) b.onclick = () => { wm.kind = b.dataset.k; wmChanged(); if (wm.kind === 'image' && !wm.img) $('wmImgFile').click(); };
+for (const b of document.querySelectorAll('.wmq')) b.onclick = () => { $('wmText').value = b.textContent; wmChanged(); };
+for (const b of document.querySelectorAll('[data-panel=watermark] .sw')) b.onclick = () => { $('wmColor').value = b.dataset.c; wmChanged(); };
+$('wmPickImg').onclick = () => $('wmImgFile').click();
+$('wmImgFile').onchange = async e => {
+  const f = e.target.files[0]; e.target.value = '';
+  if (!f) return;
+  try { wm.img = await createImageBitmap(f); wm.imgName = f.name; }
+  catch (err) { toast('這張圖片讀不進來，請換 PNG 或 JPG'); return; }
+  $('wmImgName').textContent = f.name;
+  wm.kind = 'image'; wmChanged();
+};
+async function wmSave() {
+  if (!V.pdf) { toast('請先開啟 PDF'); return; }
+  if (wm.kind === 'image' && !wm.img) { toast('請先選浮水印圖片'); return; }
+  if (wm.kind === 'text' && !$('wmText').value.trim()) { toast('請先輸入浮水印文字'); return; }
+  let targets;
+  try { targets = wmTargets(V.count); } catch (e) { toast(e.message, 4000); return; }
+  busy('產生 PDF 中…');
+  try {
+    const lib = await loadLib(V.bytes);
+    if (!lib) { toast('這份 PDF 有加密保護，沒辦法直接加浮水印。可以先到「合併・分割・裁半」另存一份，再拿新檔來加。', 7000); return; }
+    const flat = $('wmFlat').checked;
+    const r = await saveAs(async () => {
+      busy('加浮水印中…');
+      const pages = lib.getPages(), cache = new Map();
+      const tag = lib.context.obj({ Type: 'Pagination', Subtype: 'Watermark' });
+      for (const pn of targets) {
+        const pg = pages[pn - 1];
+        if (!pg) continue;
+        const R = normRot(pg.getRotation().angle), b = visibleBox(pg);
+        const VW = R % 180 ? b.height : b.width, VH = R % 180 ? b.width : b.height;
+        const key = `${VW.toFixed(1)}x${VH.toFixed(1)}x${R}`;
+        if (!cache.has(key)) {
+          const k = Math.min(200 / 72, Math.sqrt(16e6 / (VW * VH)));
+          const c = document.createElement('canvas');
+          c.width = Math.round(VW * k); c.height = Math.round(VH * k);
+          wmDraw(c.getContext('2d'), VW, VH, k);
+          cache.set(key, await lib.embedPng(await canvasBytes(rotCanvas(c, (360 - R) % 360), 'image/png')));
+        }
+        pg.pushOperators(PDFLib.PDFOperator.of('BDC', [PDFLib.PDFName.of('Artifact'), tag]));
+        pg.drawImage(cache.get(key), { x: b.x, y: b.y, width: b.width, height: b.height });
+        pg.pushOperators(PDFLib.PDFOperator.of('EMC'));
+      }
+      const bytes = await lib.save();
+      return flat ? flattenPages(bytes, new Set(targets)) : bytes;
+    }, { src: stem(V.name), action: '加浮水印', ext: '.pdf' });
+    if (!r) return;
+    toast(`${r.picked ? `已存檔：${r.name}` : '已存成新的 PDF（在「下載」資料夾），原檔沒有被改動'}；共 ${targets.length} 頁加了浮水印`, 4000);
+  } catch (e) { console.error(e); toast('存檔失敗，這份 PDF 可能有損壞', 4500); }
+  finally { busy(null); }
+}
+$('wmSave').onclick = wmSave;
+const latin1 = u8 => { let s = ''; for (let i = 0; i < u8.length; i += 8192) s += String.fromCharCode.apply(null, u8.subarray(i, i + 8192)); return s; };
+const fromLatin1 = s => { const u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i) & 255; return u; };
+function pdfText(v) { return v && v.decodeText ? v.decodeText() : v ? String(v) : ''; }
+function streamText(lib, v) {
+  const s = v instanceof PDFLib.PDFRef ? lib.context.lookup(v) : v;
+  if (s instanceof PDFLib.PDFRawStream) return latin1(PDFLib.decodePDFRawStream(s).decode());
+  return null;
+}
+const isWmName = s => /watermark|浮水印|水印/i.test(s);
+function wmCuts(t, isWmMark, wmForms) {
+  const cuts = [], stack = [];
+  let i = 0, opStart = -1;
+  const n = t.length, WS = /[\s\0]/, DELIM = /[\s\0()<>\[\]{}\/%]/;
+  const skipStr = j => { let d = 0; for (; j < n; j++) { const c = t[j]; if (c === '\\') j++; else if (c === '(') d++; else if (c === ')' && --d === 0) return j + 1; } return n; };
+  const skipDict = j => {
+    let d = 0;
+    while (j < n) {
+      if (t[j] === '(') { j = skipStr(j); continue; }
+      if (t.startsWith('<<', j)) { d++; j += 2; continue; }
+      if (t.startsWith('>>', j)) { j += 2; if (--d === 0) return j; continue; }
+      j++;
+    }
+    return n;
+  };
+  while (i < n) {
+    const c = t[i];
+    if (WS.test(c)) { i++; continue; }
+    if (c === '%') { while (i < n && t[i] !== '\n' && t[i] !== '\r') i++; continue; }
+    const s = i;
+    if (c === '(') i = skipStr(i);
+    else if (t.startsWith('<<', i)) i = skipDict(i);
+    else if (c === '<') { const e = t.indexOf('>', i); i = e < 0 ? n : e + 1; }
+    else if (c === '[' || c === ']' || c === '{' || c === '}') i++;
+    else if (c === '/') { i++; while (i < n && !DELIM.test(t[i])) i++; }
+    else {
+      while (i < n && !DELIM.test(t[i])) i++;
+      if (i === s) { i++; continue; }
+      const word = t.slice(s, i);
+      if (/^[+\-.\d]/.test(word) || word === 'true' || word === 'false' || word === 'null') { if (opStart < 0) opStart = s; continue; }
+      const from = opStart < 0 ? s : opStart;
+      if (word === 'BI') {
+        const id = t.indexOf('ID', i), m = id < 0 ? null : /[\s\0]EI(?=[\s\0]|$)/g;
+        if (m) { m.lastIndex = id + 2; const r = m.exec(t); i = r ? r.index + 3 : n; } else i = n;
+      } else if (word === 'BDC' || word === 'BMC') {
+        const inWm = stack.some(x => x.wm);
+        stack.push({ start: from, wm: !inWm && word === 'BDC' && isWmMark(t.slice(from, s)) });
+      } else if (word === 'EMC') {
+        const top = stack.pop();
+        if (top && top.wm) cuts.push([top.start, i]);
+      } else if (word === 'Do' && wmForms.size && !stack.some(x => x.wm)) {
+        const m = t.slice(from, s).match(/\/([^\s\/]+)\s*$/);
+        if (m && wmForms.has(m[1])) cuts.push([from, i]);
+      }
+      opStart = -1;
+      continue;
+    }
+    if (opStart < 0) opStart = s;
+  }
+  return cuts;
+}
+function wmStripDoc(lib) {
+  const { PDFName, PDFDict, PDFArray, PDFRef } = PDFLib, ctx = lib.context;
+  const look = v => v instanceof PDFRef ? ctx.lookup(v) : v;
+  const N = s => PDFName.of(s);
+  let pages = 0, items = 0;
+  const doneForms = new Set();
+  const markChecker = res => {
+    const props = res && look(res.get(N('Properties')));
+    const prop = name => props instanceof PDFDict ? look(props.get(N(name))) : null;
+    return ops => {
+      const m = ops.match(/^\s*\/([^\s\/<\[(]+)\s*([\s\S]*)$/);
+      if (!m) return false;
+      const [, tag, rest] = m, named = rest.match(/^\/([^\s\/<]+)/);
+      if (tag === 'Artifact') {
+        if (/\/Watermark\b/.test(rest)) return true;
+        const d = named && prop(named[1]);
+        return d instanceof PDFDict && String(d.get(N('Subtype'))) === '/Watermark';
+      }
+      if (tag === 'OC' && named) {
+        const d = prop(named[1]);
+        return d instanceof PDFDict && isWmName(pdfText(look(d.get(N('Name')))));
+      }
+      return false;
+    };
+  };
+  const formsOf = res => {
+    const set = new Set(), xo = res && look(res.get(N('XObject')));
+    if (!(xo instanceof PDFDict)) return set;
+    for (const [k, v] of xo.entries()) {
+      const st = look(v);
+      const pi = st && st.dict && look(st.dict.get(N('PieceInfo')));
+      const ct = pi instanceof PDFDict && look(pi.get(N('ADBE_CompoundType')));
+      if (ct instanceof PDFDict && String(ct.get(N('Private'))) === '/Watermark') set.add(k.decodeText());
+    }
+    return set;
+  };
+  const strip = (t, res) => {
+    const cuts = wmCuts(t, markChecker(res), formsOf(res));
+    for (let j = cuts.length - 1; j >= 0; j--) t = t.slice(0, cuts[j][0]) + t.slice(cuts[j][1]);
+    return { t, n: cuts.length };
+  };
+  for (const pg of lib.getPages()) {
+    let found = 0;
+    const node = pg.node, res = look(node.Resources && node.Resources());
+    const annots = look(node.get(N('Annots')));
+    if (annots instanceof PDFArray) {
+      const keep = annots.asArray().filter(a => { const d = look(a); return !(d instanceof PDFDict && String(d.get(N('Subtype'))) === '/Watermark'); });
+      if (keep.length !== annots.size()) { found += annots.size() - keep.length; node.set(N('Annots'), ctx.obj(keep)); }
+    }
+    const cv = look(node.get(N('Contents')));
+    const parts = cv instanceof PDFArray ? cv.asArray() : cv ? [node.get(N('Contents'))] : [];
+    try {
+      const texts = parts.map(p => streamText(lib, p));
+      if (texts.length && texts.every(x => x !== null)) {
+        const r = strip(texts.join('\n'), res);
+        if (r.n) { found += r.n; node.set(N('Contents'), ctx.register(ctx.flateStream(fromLatin1(r.t)))); }
+      }
+    } catch (e) { console.warn('內容串流讀不懂，跳過這頁', e); }
+    const xo = res && look(res.get(N('XObject')));
+    if (xo instanceof PDFDict) for (const [, v] of xo.entries()) {
+      if (!(v instanceof PDFRef) || doneForms.has(v.toString())) continue;
+      doneForms.add(v.toString());
+      const st = look(v);
+      if (!(st instanceof PDFLib.PDFRawStream) || String(st.dict.get(N('Subtype'))) !== '/Form') continue;
+      try {
+        const r = strip(streamText(lib, st), look(st.dict.get(N('Resources'))) || res);
+        if (!r.n) continue;
+        found += r.n;
+        const ns = ctx.flateStream(fromLatin1(r.t));
+        for (const [k, val] of st.dict.entries()) if (!['Length', 'Filter', 'DecodeParms'].includes(k.decodeText())) ns.dict.set(k, val);
+        ctx.assign(v, ns);
+      } catch (e) { console.warn('表單物件讀不懂，跳過', e); }
+    }
+    if (found) { pages++; items += found; }
+  }
+  return { pages, items };
+}
+async function wmCheck() {
+  if (!V.pdf) { toast('請先開啟 PDF'); return null; }
+  const lib = await loadLib(V.bytes);
+  if (!lib) { toast('這份 PDF 有加密保護，沒辦法去浮水印', 5000); return null; }
+  const r = wmStripDoc(lib);
+  $('wmScanInfo').textContent = r.items
+    ? `找到 ${r.pages} 頁有浮水印（共 ${r.items} 個），可以去除。`
+    : '沒找到標成浮水印的東西。可能是掃描檔，或浮水印直接畫在內容裡，這種沒辦法自動去掉，可以改用「加字」分頁的白底遮蓋。';
+  return { lib, r };
+}
+$('wmScan').onclick = async () => {
+  busy('檢查中…');
+  try { await wmCheck(); } catch (e) { console.error(e); toast('檢查失敗，這份 PDF 可能有損壞', 4500); }
+  finally { busy(null); }
+};
+async function wmRemove() {
+  busy('檢查中…');
+  try {
+    const chk = await wmCheck();
+    if (!chk) return;
+    if (!chk.r.items) { toast('沒找到可以去除的浮水印', 4000); return; }
+    const r = await saveAs(() => chk.lib.save(), { src: stem(V.name), action: '去浮水印', ext: '.pdf' });
+    if (!r) return;
+    toast(`${r.picked ? `已存檔：${r.name}` : '已存成新的 PDF（在「下載」資料夾），原檔沒有被改動'}；${chk.r.pages} 頁的浮水印已去除`, 4000);
+  } catch (e) { console.error(e); toast('處理失敗，這份 PDF 可能有損壞', 4500); }
+  finally { busy(null); }
+}
+$('wmRemove').onclick = wmRemove;
+wmChanged();
+async function snapCanvas(whole) {
+  const page = await V.pdf.getPage(V.page);
+  const vp1 = page.getViewport({ scale: 1 }), rc = whole ? null : V.sel;
+  let scale = +$('snDpi').value / 72;
+  const px = (rc ? rc.x1 - rc.x0 : 1) * vp1.width * scale * (rc ? rc.y1 - rc.y0 : 1) * vp1.height * scale;
+  if (px > 40e6) scale *= Math.sqrt(40e6 / px);
+  return renderToCanvas(page, scale, rc);
+}
+let snPrevToken = 0;
+async function snUpdate() {
+  const token = ++snPrevToken;
+  const has = !!(V.pdf && V.sel);
+  $('snCopy').disabled = $('snSave').disabled = !has;
+  $('snPage').disabled = !V.pdf;
+  const box = $('snPrev');
+  if (!has) { box.replaceChildren(el('span', { class: 'hint', text: '還沒框選範圍' })); $('snInfo').textContent = ''; return; }
+  const sel = V.sel;
+  const page = await V.pdf.getPage(V.page);
+  const c = await renderToCanvas(page, 1.5, sel);
+  if (token !== snPrevToken) return;
+  box.replaceChildren(c);
+  const vp1 = page.getViewport({ scale: 1 }), k = +$('snDpi').value / 72;
+  $('snInfo').textContent = `輸出約 ${Math.round((sel.x1 - sel.x0) * vp1.width * k)} × ${Math.round((sel.y1 - sel.y0) * vp1.height * k)} 像素`;
+}
+$('snDpi').onchange = snUpdate;
+$('snCopy').onclick = async () => {
+  if (!V.sel) return;
+  try {
+    const blob = snapCanvas(false).then(c => canvasBlob(c, 'image/png'));
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+    toast('圖片已複製，可以直接貼到 LINE、Word、Email');
+  } catch (e) {
+    console.error(e);
+    toast('瀏覽器不讓複製圖片，改成下載檔案');
+    await saveAs(async () => canvasBlob(await snapCanvas(false)), { src: stem(V.name), action: '擷取', page: String(V.page), ext: '.png' }, 'image/png');
+  }
+};
+$('snSave').onclick = async () => {
+  if (!V.sel) return;
+  busy('產生圖片中…');
+  try { const r = await saveAs(async () => { busy('產生圖片中…'); return canvasBlob(await snapCanvas(false)); }, { src: stem(V.name), action: '擷取', page: String(V.page), ext: '.png' }, 'image/png'); if (r) toast(savedMsg(r)); }
+  finally { busy(null); }
+};
+$('snPage').onclick = async () => {
+  if (!V.pdf) { toast('請先開啟 PDF'); return; }
+  busy('產生圖片中…');
+  try { const r = await saveAs(async () => { busy('產生圖片中…'); return canvasBlob(await snapCanvas(true)); }, { src: stem(V.name), action: '整頁', page: String(V.page), ext: '.png' }, 'image/png'); if (r) toast(savedMsg(r)); }
+  finally { busy(null); }
+};
+const CT = { raw: '', running: false, stop: false };
+const TESS_URL = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
+const TESS_SRI = 'sha384-GJqSu7vueQ9qN0E9yLPb3Wtpd7OrgK8KmYzC8T1IysG1bcvxvIO4qtYR/D3A991F';
+function ctStatus(s) { $('ctStatus').textContent = $('c_status').textContent = s || ''; }
+function withTimeout(p, ms, msg) {
+  let t;
+  return Promise.race([p, new Promise((_, rej) => { t = setTimeout(() => rej(new Error(msg)), ms); })]).finally(() => clearTimeout(t));
+}
+function loadScript(src, ms, integrity) {
+  return withTimeout(new Promise((res, rej) => {
+    const s = el('script', { src });
+    if (integrity) { s.integrity = integrity; s.crossOrigin = 'anonymous'; s.referrerPolicy = 'no-referrer'; }
+    s.onload = res; s.onerror = () => rej(new Error('辨識元件下載失敗，請確認網路'));
+    document.head.append(s);
+  }), ms, '辨識元件下載逾時，請確認網路後再試');
+}
+let ocrPromise = null, ocrPrefix = '';
+function getOcr() {
+  if (!ocrPromise) {
+    ocrPromise = (async () => {
+      ctStatus('第一次使用要下載文字辨識元件（約 20MB，之後就快了），請稍候…');
+      if (!window.Tesseract) await loadScript(TESS_URL, 30000, TESS_SRI);
+      return withTimeout(Tesseract.createWorker('chi_tra+eng', 1, {
+        logger: m => {
+          if (m.status === 'recognizing text') ctStatus(`${ocrPrefix}辨識中 ${Math.round(m.progress * 100)}%`);
+          else if (m.status) ctStatus(`${ocrPrefix}準備辨識元件中… ${m.progress ? Math.round(m.progress * 100) + '%' : ''}`);
+        }
+      }), 180000, '辨識元件下載逾時，請確認網路後再試');
+    })();
+    ocrPromise.catch(() => { ocrPromise = null; });
+  }
+  return ocrPromise;
+}
+async function ocrPage(pn, rc) {
+  const worker = await getOcr();
+  const page = await V.pdf.getPage(pn);
+  const vp1 = page.getViewport({ scale: 1 });
+  const longPt = Math.max((rc ? rc.x1 - rc.x0 : 1) * vp1.width, (rc ? rc.y1 - rc.y0 : 1) * vp1.height);
+  const c = await renderToCanvas(page, clamp(3000 / longPt, 2, 6), rc);
+  const { data } = await worker.recognize(c);
+  return toFullPunct(data.text || '');
+}
+async function pageText(pn, rc) {
+  const page = await V.pdf.getPage(pn);
+  const vp = page.getViewport({ scale: 1 });
+  const tc = await page.getTextContent();
+  let out = '', lastY = null;
+  for (const it of tc.items) {
+    if (!('str' in it)) continue;
+    const t = it.transform, h = it.height || Math.hypot(t[2], t[3]) || 10;
+    if (rc) {
+      const [vx, vy] = vp.convertToViewportPoint(t[4] + it.width / 2, t[5] + h / 2);
+      const nx = vx / vp.width, ny = vy / vp.height;
+      if (nx < rc.x0 || nx > rc.x1 || ny < rc.y0 || ny > rc.y1) continue;
+    }
+    if (lastY !== null && Math.abs(t[5] - lastY) > h * 0.6 && out && !out.endsWith('\n')) out += '\n';
+    out += it.str;
+    if (it.hasEOL) out += '\n';
+    lastY = t[5];
+  }
+  return out;
+}
+async function ctRun(scope) {
+  if (!V.pdf) { toast('請先開啟 PDF'); return false; }
+  if (CT.running) { toast('還在處理上一個，請稍等或按停止'); return false; }
+  const ocrMode = $('ctOcr').value, rc = scope === 'sel' ? V.sel : null;
+  const pns = scope === 'all' ? Array.from({ length: V.count }, (_, i) => i + 1) : [V.page];
+  CT.running = true; CT.stop = false;
+  $('ctStop').hidden = false;
+  const parts = [];
+  let ocrUsed = 0, failed = false;
+  try {
+    for (const pn of pns) {
+      if (CT.stop) break;
+      ocrPrefix = pns.length > 1 ? `第 ${pn}／${pns.length} 頁：` : '';
+      ctStatus(`${ocrPrefix}讀取文字中…`);
+      let t = ocrMode === 'always' ? '' : await pageText(pn, rc);
+      if (ocrMode === 'always' || (ocrMode === 'auto' && t.replace(/\s/g, '').length < (rc ? 1 : 5))) {
+        t = await ocrPage(pn, rc);
+        ocrUsed++;
+      }
+      parts.push(t.trim());
+    }
+  } catch (e) {
+    console.error(e); failed = true;
+    ctStatus(e instanceof Error && /辨識元件/.test(e.message) ? e.message : '處理失敗，請再試一次');
+  } finally {
+    CT.running = false; $('ctStop').hidden = true; ocrPrefix = '';
+  }
+  if (!parts.length) return false;
+  CT.raw = parts.join('\n');
+  ctShow();
+  if (!failed) {
+    const what = scope === 'sel' ? '框選範圍' : scope === 'all' ? `全部 ${parts.length} 頁` : `第 ${V.page} 頁`;
+    ctStatus(!CT.raw.trim() ? `${what}沒有找到文字${ocrMode === 'never' ? '（可能是掃描檔，請把辨識改成「自動」）' : ''}`
+      : `已取出${what}${ocrUsed ? `（其中 ${ocrUsed} 頁用 OCR 辨識，可能有錯字，請核對）` : ''}${CT.stop ? '，已停止' : ''}`);
+  }
+  return true;
+}
+function ctShow() {
+  const mode = $('ctMode').value;
+  const r = CT.raw && mode !== 'raw' ? processText(CT.raw, { ...getOpts(), mode }) : null;
+  $('ctOut').value = !CT.raw ? '' : r ? r.text : CT.raw;
+  $('ctDictInfo').textContent = r && r.dict ? `常錯字對照表已自動修正 ${r.dict} 處` : '';
+}
+$('ctPage').onclick = () => ctRun('page');
+$('ctAll').onclick = () => ctRun('all');
+$('ctStop').onclick = () => { CT.stop = true; ctStatus('停止中…（這一頁做完就停）'); };
+$('ctMode').onchange = () => { try { localStorage.setItem('pdfBox.ctMode', $('ctMode').value); } catch (e) {} ctShow(); };
+$('ctCopy').onclick = async () => { if (await copyText($('ctOut'))) toast('已複製，可以貼上了'); };
+$('ctSend').onclick = () => {
+  if (!CT.raw) { toast('還沒有取出文字'); return; }
+  $('c_inp').value = CT.raw; setTab('clean'); run();
+};
+const HAN = '\\u2E80-\\u2FDF\\u3005\\u3007\\u3021-\\u3029\\u3400-\\u4DBF\\u4E00-\\u9FFF\\uF900-\\uFAFF\\u{20000}-\\u{2FA1F}';
+const CJK = HAN + '\\u3001-\\u303F\\u3040-\\u30FF\\u3100-\\u312F\\uFE30-\\uFE4F\\uFF01-\\uFF65';
+const SP = '[ \\t\\u3000]';
+const reCJKSpace = new RegExp(`([${CJK}])${SP}+(?=[${CJK}])`, 'gu');
+const reHanLatin = new RegExp(`([${HAN}])${SP}+(?=[A-Za-z0-9])`, 'gu');
+const reLatinHan = new RegExp(`([A-Za-z0-9])${SP}+(?=[${HAN}])`, 'gu');
+const reHanLatinAdd = new RegExp(`([${HAN}])(?=[A-Za-z0-9])`, 'gu');
+const reLatinHanAdd = new RegExp(`([A-Za-z0-9])(?=[${HAN}])`, 'gu');
+const reIsCJK = new RegExp(`[${CJK}]`, 'u');
+const reWide = /[⺀-￯]/u;
+const END_RE = /(?:[。！？!?；;：:…]|\.|[。！？!?.][」』"”’）)])$/u;
+const LIST_RE = /^(?:[•●○■□◆◇▪▫‧・·※★☆►▶*＊]|[-–—]\s|\d{1,3}(?:[、．)）]|\.(?!\d))|[（(]\s*\d{1,3}\s*[)）]|[（(][一二三四五六七八九十]+[)）]|[一二三四五六七八九十百]+[、．]|[壹貳參肆伍陸柒捌玖拾]+[、．]|第[一二三四五六七八九十百\d]+[章節條項款]|[①-⑳⑴-⒇❶-❿]|[A-Za-z][.)]\s)/u;
+const PAGE_RE = /^(?:[-–—]\s*\d{1,4}\s*[-–—]|第\s*\d{1,4}\s*頁(?:\s*[，,／/]?\s*共\s*\d{1,4}\s*頁)?|\d{1,4}\s*[/／]\s*\d{1,4}|(?:page|p\.)\s*\d{1,4}(?:\s*(?:of|\/)\s*\d{1,4})?|\d{1,4})$/i;
+const MODE_DESC = {
+  smart: '看行尾標點、行的長短、條列符號判斷哪裡是真的分段，其他被 PDF 硬切的換行全部接回去。',
+  blank: '原文有空行的地方才分段，其他換行全部接起來。',
+  all: '不管段落，整份接成一段。',
+  sentence: '先接起來，再在。！？等句尾斷開，一句一行。',
+  keep: '換行完全不動，只處理空格和怪字。'
+};
+function width(s) { let w = 0; for (const ch of s) w += reWide.test(ch) ? 2 : 1; return w; }
+function countSpaces(s) { return (s.match(/[ \t　]/g) || []).length; }
+function joinTwo(a, b, o) {
+  if (o.dehyphen && /[A-Za-z]-$/.test(a) && /^[a-z]/.test(b)) return a.slice(0, -1) + b;
+  const last = [...a].pop(), first = [...b][0];
+  if (reIsCJK.test(last) || reIsCJK.test(first)) return a + b;
+  return a + ' ' + b;
+}
+function typicalWidth(lines) {
+  const ws = lines.filter(Boolean).map(width).sort((x, y) => x - y);
+  if (ws.length < 3) return 0;
+  return ws[Math.floor((ws.length - 1) * 0.8)];
+}
+function endsPara(line, typ, o) {
+  const end = END_RE.test(line);
+  if (!o.shortLine || !typ) return end;
+  const r = width(line) / typ;
+  if (r < 0.6) return true;
+  if (r < 0.9) return end;
+  return false;
+}
+function mergeLines(lines, o) {
+  const smart = o.mode === 'smart' || o.mode === 'sentence';
+  const typ = typicalWidth(lines);
+  const nonBlank = lines.filter(Boolean).length;
+  let gaps = 0;
+  for (let i = 1; i < lines.length; i++) if (!lines[i] && lines[i - 1]) gaps++;
+  const ignoreBlank = smart && nonBlank >= 4 && gaps / nonBlank > 0.6;
+  const paras = [];
+  let cur = '';
+  const flush = () => { if (cur) { paras.push(cur); cur = ''; } };
+  for (const l of lines) {
+    if (!l) { if (o.mode !== 'all' && !ignoreBlank) flush(); continue; }
+    if (smart && cur && LIST_RE.test(l)) flush();
+    cur = cur ? joinTwo(cur, l, o) : l;
+    if (smart && endsPara(l, typ, o)) flush();
+  }
+  flush();
+  return paras;
+}
+function splitSentences(p) {
+  return p
+    .replace(/([。！？!?]+[」』"”’）)]*)\s*(?=\S)/gu, '$1\n')
+    .replace(/([.]["”’)]?)\s+(?=[A-Z])/g, '$1\n')
+    .split('\n').map(s => s.trim()).filter(Boolean);
+}
+function toFullPunct(s) {
+  const map = { ',': '，', ';': '；', ':': '：', '?': '？', '!': '！' };
+  s = s.replace(new RegExp(`([${HAN}])\\s*([,;:?!])\\s*`, 'gu'), (m, h, p) => h + map[p]);
+  s = s.replace(new RegExp(`\\s*([,;:?!])\\s*(?=[${HAN}])`, 'gu'), (m, p) => map[p]);
+  s = s.replace(new RegExp(`([${HAN}])\\.(?=\\s|$)`, 'gu'), '$1。');
+  s = s.replace(new RegExp(`\\(([^()\\n]*[${HAN}][^()\\n]*)\\)`, 'gu'), '（$1）');
+  return s;
+}
+function processText(src, o) {
+  const st = { fixed: 0, pages: 0 };
+  let t = src.replace(/\r\n?/g, '\n').replace(/\f/g, '\n').replace(/ /g, ' ');
+  if (o.fixChars) {
+    t = t.replace(/[​-‍⁠﻿­]/g, () => { st.fixed++; return ''; });
+    t = t.replace(/[⺀-⿟豈-﫿ﬀ-ﬆ]/g, c => {
+      const n = c.normalize('NFKC');
+      if (n !== c) st.fixed++;
+      return n;
+    });
+  }
+  const spacesBefore = countSpaces(t);
+  let lines = t.split('\n').map(l => l.trim());
+  if (o.pageNum) lines = lines.filter(l => { const hit = l && PAGE_RE.test(l); if (hit) st.pages++; return !hit; });
+  lines = lines.map(l => {
+    if (o.cjkSpace) l = l.replace(reCJKSpace, '$1');
+    if (o.latinSpace === 'remove') l = l.replace(reHanLatin, '$1').replace(reLatinHan, '$1');
+    if (o.multiSpace) l = l.replace(/[ \t　]{2,}/g, ' ');
+    return l;
+  });
+  let paras;
+  if (o.mode === 'keep') {
+    paras = lines.filter((l, i) => l || (i > 0 && lines[i - 1]));
+    while (paras.length && !paras[paras.length - 1]) paras.pop();
+  } else {
+    paras = mergeLines(lines, o);
+    if (o.mode === 'sentence') paras = paras.flatMap(splitSentences);
+  }
+  paras = paras.map(p => {
+    if (o.latinSpace === 'add') p = p.replace(reHanLatinAdd, '$1 ').replace(reLatinHanAdd, '$1 ');
+    if (o.fullPunct) p = toFullPunct(p);
+    if (o.multiSpace) p = p.replace(/[ \t]{2,}/g, ' ');
+    return p;
+  });
+  const sep = o.blankLine && o.mode !== 'keep' ? '\n\n' : '\n';
+  const fx = applyDict(paras.join(sep));
+  const text = fx.text;
+  return {
+    text,
+    dict: fx.n,
+    inLines: lines.filter(Boolean).length + st.pages,
+    outLines: paras.filter(Boolean).length,
+    spaces: Math.max(0, spacesBefore - countSpaces(text)),
+    fixed: st.fixed,
+    pages: st.pages
+  };
+}
+const OPT_IDS = ['mode', 'latinSpace', 'cjkSpace', 'multiSpace', 'fixChars', 'shortLine', 'dehyphen', 'pageNum', 'fullPunct', 'blankLine'];
+const STORE_KEY = 'pdfTextTool.opts';
+const opt = id => $('c_' + id);
+function getOpts() {
+  const o = {};
+  for (const id of OPT_IDS) { const e = opt(id); o[id] = e.type === 'checkbox' ? e.checked : e.value; }
+  return o;
+}
+function setOpts(s) {
+  for (const id of OPT_IDS) {
+    if (!(id in s)) continue;
+    const e = opt(id);
+    if (e.type === 'checkbox') e.checked = !!s[id]; else e.value = s[id];
+  }
+}
+const DEFAULTS = getOpts();
+try { const s = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); if (s) setOpts(s); } catch (e) {}
+const PRESETS = {
+  doc: {},
+  email: { blankLine: true, pageNum: true },
+  table: { mode: 'keep' },
+  sentence: { mode: 'sentence' },
+  all: { mode: 'all' }
+};
+const presetOpts = k => ({ ...DEFAULTS, ...PRESETS[k] });
+function presetNow() {
+  const cur = JSON.stringify(getOpts());
+  return Object.keys(PRESETS).find(k => JSON.stringify(presetOpts(k)) === cur) || '';
+}
+function presetShow() {
+  const k = presetNow();
+  for (const b of document.querySelectorAll('#c_presets [data-preset]')) {
+    b.classList.toggle('on', b.dataset.preset === k);
+    b.setAttribute('aria-pressed', b.dataset.preset === k);
+  }
+  $('c_custom').hidden = !!k;
+}
+function run() {
+  const o = getOpts();
+  $('c_modeDesc').textContent = MODE_DESC[o.mode];
+  presetShow();
+  const src = $('c_inp').value;
+  $('c_paneIn').classList.toggle('cur', !src.trim());
+  $('c_paneOut').classList.toggle('cur', !!src.trim());
+  if (!src.trim()) { $('c_out').value = ''; $('c_inStats').textContent = ''; $('c_outStats').textContent = ''; return; }
+  const r = processText(src, o);
+  $('c_out').value = r.text;
+  $('c_inStats').textContent = `${[...src].length} 字，${r.inLines} 行`;
+  const parts = [`${r.inLines} 行 → ${r.outLines} 行`];
+  if (r.spaces) parts.push(`刪掉 ${r.spaces} 個空格`);
+  if (r.fixed) parts.push(`修正 ${r.fixed} 個怪字`);
+  if (r.pages) parts.push(`刪掉 ${r.pages} 行頁碼`);
+  if (r.dict) parts.push(`常錯字修正 ${r.dict} 處`);
+  $('c_outStats').textContent = parts.join('｜');
+}
+async function copyText(ta) {
+  const text = ta.value;
+  if (!text) { toast('沒有東西可以複製'); return false; }
+  try { await navigator.clipboard.writeText(text); }
+  catch (e) { ta.select(); document.execCommand('copy'); }
+  return true;
+}
+$('c_inp').addEventListener('input', run);
+function optsChanged() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(getOpts())); } catch (e) {}
+  run(); ctShow();
+}
+for (const id of OPT_IDS) opt(id).addEventListener('change', optsChanged);
+for (const b of document.querySelectorAll('#c_presets [data-preset]')) b.onclick = () => {
+  setOpts(presetOpts(b.dataset.preset));
+  optsChanged();
+};
+$('c_btnCopy').onclick = async () => {
+  if (!await copyText($('c_out'))) return;
+  toast('已複製，到 Word、LINE、Email 按 Ctrl+V 貼上');
+  const b = $('c_btnCopy');
+  b.textContent = '✅ 已複製';
+  clearTimeout(b._t); b._t = setTimeout(() => { b.textContent = '📋 複製結果'; }, 1500);
+};
+$('c_btnClear').onclick = () => { $('c_inp').value = ''; run(); $('c_inp').focus(); };
+$('c_btnPaste').onclick = async () => {
+  try { $('c_inp').value = await navigator.clipboard.readText(); run(); }
+  catch (e) { toast('瀏覽器不讓讀剪貼簿，請點左邊框框按 Ctrl+V'); $('c_inp').focus(); }
+};
+$('c_btnOne').onclick = async () => {
+  try {
+    $('c_inp').value = await navigator.clipboard.readText();
+    run();
+    if (await copyText($('c_out'))) toast('整理好了，已放回剪貼簿，回去直接 Ctrl+V');
+  } catch (e) { toast('瀏覽器不讓讀剪貼簿，請點左邊框框按 Ctrl+V'); $('c_inp').focus(); }
+};
+$('c_btnReset').onclick = () => {
+  setOpts(DEFAULTS);
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  run(); ctShow(); toast('已恢復預設設定');
+};
+$('c_btnJoin').onclick = () => {
+  const ta = $('c_out'), v = ta.value;
+  let s = ta.selectionStart, e = ta.selectionEnd;
+  s = v.lastIndexOf('\n', s - 1) + 1;
+  if (ta.selectionStart === ta.selectionEnd) {
+    const le = v.indexOf('\n', s);
+    if (le < 0) { toast('已經是最後一行'); return; }
+    e = v.indexOf('\n', le + 1);
+  } else {
+    if (e > s && v[e - 1] === '\n') e--;
+    e = v.indexOf('\n', e);
+  }
+  if (e < 0) e = v.length;
+  const o = getOpts();
+  const merged = v.slice(s, e).split('\n').map(x => x.trim()).filter(Boolean)
+    .reduce((a, b) => a ? joinTwo(a, b, o) : b, '');
+  ta.setRangeText(merged, s, e, 'select');
+  ta.focus();
+};
+$('c_btnNoSpace').onclick = () => {
+  const ta = $('c_out');
+  if (ta.selectionStart === ta.selectionEnd) { toast('請先在結果裡選取一段文字'); return; }
+  const part = ta.value.slice(ta.selectionStart, ta.selectionEnd);
+  ta.setRangeText(part.replace(/[ \t　]+/g, ''), ta.selectionStart, ta.selectionEnd, 'select');
+  ta.focus();
+};
+$('c_btnPdf').onclick = async () => {
+  if (await ctRun('all') && CT.raw) { $('c_inp').value = CT.raw; run(); }
+};
+$('c_btnSample').onclick = () => {
+  $('c_inp').value = [
+    '食 品 安 全 管 理 程 序 書',
+    '',
+    '一、目的',
+    '為 確 保 本 公 司 生 產 之 滷 味 製 品 符 合 食 品 安 全 衛 生 管 理 法 規 定 ， 特 訂 定 本 程 序 ， 作 為 各 單 位 執 行',
+    '⾃主管理及每⽇檢查的依據 。',
+    '二、適用範圍',
+    '（一）原料驗收、前處理、滷製、冷卻及包裝等各',
+    '製程站別 。',
+    '（二）委外加工之半成品 。',
+    '3',
+    'The HACCP plan shall be reviewed annually to verify its effec-',
+    'tiveness and compliance with current regulations.'
+  ].join('\n');
+  run();
+};
+const NAME_KEY = 'pdfBox.naming', SEQ_KEY = 'pdfBox.seq2';
+const DEFAULT_RULE = { name: '原檔名_動作（預設）', tpl: '{原檔名}_{動作}', custom: '' };
+const NAME_VARS = ['原檔名', '動作', '日期', '時間', '頁碼', '序號', '自訂'];
+const NAME_PRESETS = [
+  ['原檔名_動作', '{原檔名}_{動作}'],
+  ['日期-原檔名', '{日期}-{原檔名}'],
+  ['原檔名_動作_日期', '{原檔名}_{動作}_{日期}'],
+  ['日期-自訂-序號', '{日期}-{自訂}-{序號}'],
+  ['自訂_原檔名_日期', '{自訂}_{原檔名}_{日期}']
+];
+const newRuleId = () => 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+let nm = { rules: [], active: '', confirm: false, pick: true };
+(function nmLoad() {
+  let s = null;
+  try { s = JSON.parse(localStorage.getItem(NAME_KEY) || 'null'); } catch (e) {}
+  if (s && Array.isArray(s.rules)) {
+    nm.rules = s.rules.filter(r => r && typeof r.tpl === 'string')
+      .map(r => ({ id: String(r.id || newRuleId()), name: String(r.name || '未命名'), tpl: r.tpl, custom: String(r.custom || '') }));
+    nm.active = s.active; nm.confirm = !!s.confirm; nm.pick = s.pick !== false;
+  } else if (s && typeof s.tpl === 'string') {
+    nm.confirm = !!s.confirm;
+    if (s.tpl !== DEFAULT_RULE.tpl || s.custom) nm.rules.push({ id: newRuleId(), name: '我的格式', tpl: s.tpl, custom: String(s.custom || '') });
+  }
+  if (!nm.rules.some(r => r.tpl === DEFAULT_RULE.tpl && r.name === DEFAULT_RULE.name) && !(s && Array.isArray(s.rules) && s.rules.length))
+    nm.rules.unshift({ id: newRuleId(), ...DEFAULT_RULE });
+  if (!nm.rules.length) nm.rules.push({ id: newRuleId(), ...DEFAULT_RULE });
+  if (!nm.rules.some(r => r.id === nm.active)) nm.active = nm.rules[nm.rules.length - 1].id;
+})();
+const curRule = () => nm.rules.find(r => r.id === nm.active) || nm.rules[0];
+function nmStore() {
+  try { localStorage.setItem(NAME_KEY, JSON.stringify(nm)); } catch (e) { toast('命名規則存不進瀏覽器（可能是無痕視窗）'); }
+  nameQuickRender();
+}
+const ymd = d => `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+const hhmm = d => `${String(d.getHours()).padStart(2, '0')}${String(d.getMinutes()).padStart(2, '0')}`;
+function seqAll() { try { const v = JSON.parse(localStorage.getItem(SEQ_KEY) || '{}'); return v && typeof v === 'object' ? v : {}; } catch (e) { return {}; } }
+function seqNext(peek, id = curRule().id) {
+  const today = ymd(new Date()), all = seqAll();
+  const s = all[id] && all[id].date === today ? all[id] : { date: today, n: 0 };
+  if (peek) return s.n + 1;
+  s.n++; all[id] = s;
+  try { localStorage.setItem(SEQ_KEY, JSON.stringify(all)); } catch (e) {}
+  return s.n;
+}
+function cleanName(s) {
+  return s.replace(/[\\/:*?"<>|\u0000-\u001f]/g, '_')
+    .replace(/\s+/g, ' ')
+    .replace(/([_\- ])\1+/g, '$1')
+    .replace(/^[ ._\-]+|[ ._\-]+$/g, '')
+    .slice(0, 150);
+}
+function makeName(info, seq, rule = curRule()) {
+  let tpl = rule.tpl.trim() || DEFAULT_RULE.tpl;
+  if (info.page != null && !tpl.includes('{頁碼}')) tpl += '_第{頁碼}頁';
+  const d = new Date();
+  const map = { 原檔名: info.src, 動作: info.action, 日期: ymd(d), 時間: hhmm(d), 頁碼: info.page ?? '', 序號: String(seq || 1).padStart(3, '0'), 自訂: rule.custom.trim() };
+  const s = cleanName(tpl.replace(/\{(原檔名|動作|日期|時間|頁碼|序號|自訂)\}/g, (_, k) => map[k]));
+  return (s || 'PDF工具箱') + info.ext;
+}
+const usesSeq = () => curRule().tpl.includes('{序號}');
+const SAVE_TYPES = { '.pdf': ['PDF 檔', 'application/pdf'], '.zip': ['ZIP 壓縮檔', 'application/zip'], '.png': ['PNG 圖片', 'image/png'] };
+async function saveAs(make, info, type = 'application/pdf', seq = usesSeq() ? seqNext(true) : 0) {
+  let name = makeName(info, seq), handle = null;
+  if (nm.pick && window.showSaveFilePicker) {
+    const [desc, mime] = SAVE_TYPES[info.ext] || ['檔案', type];
+    busy(null);
+    try { handle = await window.showSaveFilePicker({ id: 'pdfbox-save', suggestedName: name, types: [{ description: desc, accept: { [mime]: [info.ext] } }] }); }
+    catch (e) {
+      if (e && e.name === 'AbortError') { toast('已取消存檔'); return false; }
+      console.warn(e); handle = null;
+    }
+  } else if (nm.confirm) {
+    busy(null);
+    const v = window.prompt('存檔名稱（可以直接修改）：', name);
+    if (v === null) { toast('已取消存檔'); return false; }
+    const base = cleanName(v.trim().replace(new RegExp(info.ext.replace('.', '\\.') + '$', 'i'), ''));
+    name = (base || stem(name)) + info.ext;
+  }
+  const data = await make();
+  if (usesSeq()) seqNext();
+  if (handle) {
+    const w = await handle.createWritable();
+    await w.write(data instanceof Blob ? data : new Blob([data], { type }));
+    await w.close();
+    return { picked: true, name: handle.name };
+  }
+  download(data, name, type);
+  return { picked: false, name };
+}
+const savedMsg = r => r.picked ? `已存檔：${r.name}` : '已存檔，請到「下載」資料夾查看';
+function nameQuickRender() {
+  const s = $('nameQuick');
+  s.replaceChildren(...nm.rules.map(r => el('option', { value: r.id, text: r.name })));
+  s.value = curRule().id;
+  s.title = `存檔時用哪一組命名規則（目前格式：${curRule().tpl}）`;
+}
+$('nameQuick').onchange = e => { nm.active = e.target.value; nmStore(); toast(`存檔命名改用「${curRule().name}」`); };
+function nameRender() {
+  const r = curRule();
+  $('nameList').replaceChildren(...nm.rules.map(x => el('button', {
+    class: 'nm-item' + (x.id === r.id ? ' on' : ''), title: '點一下套用並編輯',
+    onclick: () => { nm.active = x.id; nmStore(); nameRender(); }
+  }, x.name, el('small', { text: x.tpl }))));
+  $('nameLabel').value = r.name; $('nameTpl').value = r.tpl; $('nameCustom').value = r.custom;
+  $('nameConfirm').checked = nm.confirm;
+  $('namePick').checked = nm.pick;
+  $('namePickRow').hidden = !window.showSaveFilePicker;
+  $('nameDel').disabled = nm.rules.length <= 1;
+  namePreview();
+}
+function namePreview() {
+  const seq = seqNext(true), src = V.name ? stem(V.name) : '原本檔名';
+  const rows = [
+    ['加字', makeName({ src, action: '加字', ext: '.pdf' }, seq)],
+    ['擷取第 3 頁', makeName({ src, action: '擷取', page: '3', ext: '.png' }, seq)],
+    ['拆檔第 1-3 頁', makeName({ src, action: '拆檔', page: '1-3', ext: '.pdf' }, seq)]
+  ];
+  $('namePreview').replaceChildren(...rows.map(([k, v]) => el('div', {}, el('b', { text: k }), v)));
+  $('nameSeqInfo').textContent = usesSeq() ? `今天下一個序號：${String(seq).padStart(3, '0')}` : '格式裡沒有用 {序號}';
+  $('nameSeqReset').hidden = !usesSeq();
+}
+function nameSave() {
+  const r = curRule();
+  r.name = $('nameLabel').value.trim() || '未命名';
+  r.tpl = $('nameTpl').value; r.custom = $('nameCustom').value;
+  nm.confirm = $('nameConfirm').checked;
+  nm.pick = $('namePick').checked;
+  nmStore();
+  const item = $('nameList').querySelector('.nm-item.on');
+  if (item) item.replaceChildren(r.name, el('small', { text: r.tpl }));
+  namePreview();
+}
+function nameAdd(rule) {
+  nm.rules.push({ id: newRuleId(), ...rule });
+  nm.active = nm.rules[nm.rules.length - 1].id;
+  nmStore(); nameRender();
+  $('nameLabel').focus(); $('nameLabel').select();
+}
+$('nameNew').onclick = () => nameAdd({ name: '新規則', tpl: DEFAULT_RULE.tpl, custom: '' });
+$('nameDup').onclick = () => { const r = curRule(); nameAdd({ name: r.name + '（複製）', tpl: r.tpl, custom: r.custom }); };
+$('nameDel').onclick = () => {
+  if (nm.rules.length <= 1) return;
+  const r = curRule();
+  if (!confirm(`刪除命名規則「${r.name}」？`)) return;
+  nm.rules = nm.rules.filter(x => x !== r);
+  nm.active = nm.rules[0].id;
+  nmStore(); nameRender(); toast(`已刪除「${r.name}」`);
+};
+function nameExport() {
+  const lines = ['# PDF 工具箱 命名規則（一行一組：名稱 | 格式 | 自訂文字）'];
+  for (const r of nm.rules) lines.push(`${r.name} | ${r.tpl} | ${r.custom}`);
+  download('﻿' + lines.join('\r\n'), `命名規則_${ymd(new Date())}.txt`, 'text/plain;charset=utf-8');
+}
+async function nameImport(file) {
+  if (!file) return;
+  let text;
+  try { text = await file.text(); } catch (e) { toast('讀不到這個檔'); return; }
+  let add = 0, upd = 0, bad = 0;
+  for (let line of text.replace(/^﻿/, '').split(/\r?\n/)) {
+    line = line.trim();
+    if (!line || line.startsWith('#')) continue;
+    const [name, tpl, custom = ''] = line.split('|').map(x => x.trim());
+    if (!name || !tpl) { bad++; continue; }
+    const r = nm.rules.find(x => x.name === name);
+    if (r) { r.tpl = tpl; r.custom = custom; upd++; }
+    else { nm.rules.push({ id: newRuleId(), name, tpl, custom }); add++; }
+  }
+  nmStore(); nameRender();
+  toast(`匯入完成：新增 ${add} 組、更新 ${upd} 組${bad ? `，${bad} 行看不懂已略過（格式是 名稱 | 格式 | 自訂文字）` : ''}`, 4500);
+}
+$('nameExport').onclick = nameExport;
+$('nameImport').onclick = () => $('nameFile').click();
+$('nameFile').onchange = e => { nameImport(e.target.files[0]); e.target.value = ''; };
+function nameInsert(text) {
+  const t = $('nameTpl'), s = t.selectionStart ?? t.value.length, e = t.selectionEnd ?? s;
+  t.setRangeText(text, s, e, 'end'); t.focus(); nameSave();
+}
+for (const v of NAME_VARS) $('nameVars').append(el('button', { text: `{${v}}`, onclick: () => nameInsert(`{${v}}`) }));
+for (const [label, tpl] of NAME_PRESETS) $('namePresets').append(el('button', { text: label, title: tpl, onclick: () => { $('nameTpl').value = tpl; nameSave(); } }));
+for (const id of ['nameLabel', 'nameTpl', 'nameCustom']) $(id).addEventListener('input', nameSave);
+$('nameConfirm').onchange = nameSave;
+$('namePick').onchange = nameSave;
+$('nameSeqReset').onclick = () => {
+  const all = seqAll();
+  all[curRule().id] = { date: ymd(new Date()), n: 0 };
+  try { localStorage.setItem(SEQ_KEY, JSON.stringify(all)); } catch (e) {}
+  namePreview(); toast(`「${curRule().name}」今天的序號已歸零，下一個從 001 開始`);
+};
+nameQuickRender();
+$('btnNaming').onclick = () => { $('nameModal').hidden = false; nameRender(); $('nameTpl').focus(); };
+const nameClose = () => { $('nameModal').hidden = true; };
+$('nameClose').onclick = nameClose;
+$('nameOk').onclick = nameClose;
+$('nameModal').addEventListener('click', e => { if (e.target === $('nameModal')) nameClose(); });
+const DICT_KEY = 'pdfBox.fixDict';
+let dict = [];
+try { const d = JSON.parse(localStorage.getItem(DICT_KEY) || '[]'); if (Array.isArray(d)) dict = d.filter(r => r && typeof r.from === 'string' && r.from); } catch (e) {}
+function dictSave() {
+  try { localStorage.setItem(DICT_KEY, JSON.stringify(dict)); }
+  catch (e) { toast('對照表存不進瀏覽器（可能是無痕視窗），請用「匯出」另存'); }
+  run(); ctShow(); dictRender();
+}
+function applyDict(t) {
+  let n = 0;
+  const rules = dict.filter(r => r.on !== false && r.from && r.from !== r.to).sort((a, b) => b.from.length - a.from.length);
+  for (const r of rules) {
+    const parts = t.split(r.from);
+    if (parts.length > 1) { n += parts.length - 1; t = parts.join(r.to); }
+  }
+  return { text: t, n };
+}
+function dictUpsert(from, to, on = true) {
+  const r = dict.find(x => x.from === from);
+  if (r) { const changed = r.to !== to || r.on === false; r.to = to; r.on = on; return changed ? 'update' : 'same'; }
+  dict.unshift({ from, to, on });
+  return 'add';
+}
+function dictOpen(from = '') {
+  $('dictModal').hidden = false;
+  $('dictFrom').value = from; $('dictTo').value = ''; $('dictSearch').value = '';
+  dictRender();
+  (from ? $('dictTo') : $('dictFrom')).focus();
+}
+function dictClose() { $('dictModal').hidden = true; }
+function dictRender() {
+  const on = dict.filter(r => r.on !== false).length;
+  $('dictCount').textContent = dict.length ? `共 ${dict.length} 組${on < dict.length ? `（啟用 ${on} 組）` : ''}` : '';
+  const q = $('dictSearch').value.trim();
+  const rows = dict.filter(r => !q || r.from.includes(q) || r.to.includes(q));
+  const list = $('dictList');
+  if (!rows.length) {
+    list.replaceChildren(el('div', { class: 'dict-empty', text: dict.length ? '找不到符合的' : '還沒有任何對照。在結果裡選取打錯的字，按「加入常錯字」最快。' }));
+    return;
+  }
+  list.replaceChildren(...rows.map(r => {
+    const chk = el('input', { type: 'checkbox', title: '打勾＝啟用；取消＝暫停這組' });
+    chk.checked = r.on !== false;
+    const fi = el('input', { type: 'text', title: '錯的字' }), ti = el('input', { type: 'text', title: '正確的字（留空＝刪掉）' });
+    fi.value = r.from; ti.value = r.to;
+    const row = el('div', { class: 'dict-row' + (r.on === false ? ' off' : '') }, chk, fi, el('span', { text: '→' }), ti,
+      el('button', { class: 'del', title: '刪除這組', text: '✕', onclick: () => { dict = dict.filter(x => x !== r); dictSave(); } }));
+    chk.onchange = () => { r.on = chk.checked; dictSave(); };
+    fi.onchange = () => {
+      const v = fi.value.trim();
+      if (!v) { toast('錯的字不能空白；不要這組請按 ✕'); fi.value = r.from; return; }
+      if (dict.some(x => x !== r && x.from === v)) { toast(`「${v}」已經有了`); fi.value = r.from; return; }
+      r.from = v; dictSave();
+    };
+    ti.onchange = () => { r.to = ti.value.trim(); dictSave(); };
+    return row;
+  }));
+}
+function dictAddFromInputs() {
+  const from = $('dictFrom').value.trim(), to = $('dictTo').value.trim();
+  if (!from) { toast('請輸入錯的字'); $('dictFrom').focus(); return; }
+  if (from === to) { toast('錯字跟正確的字一樣，不用加'); return; }
+  const res = dictUpsert(from, to);
+  dictSave();
+  toast(res === 'add' ? `已加入：${from} → ${to || '（刪掉）'}` : res === 'update' ? `已更新：${from} → ${to || '（刪掉）'}` : '這組已經有了');
+  $('dictFrom').value = ''; $('dictTo').value = ''; $('dictFrom').focus();
+}
+function dictFromSelection(ta) {
+  const s = ta.value.slice(ta.selectionStart, ta.selectionEnd).trim();
+  if (!s) { toast('請先在結果裡用滑鼠選取打錯的字'); ta.focus(); return; }
+  if (s.length > 40) { toast('選太長了，請只選打錯的那幾個字'); return; }
+  dictOpen(s);
+}
+function dictExport() {
+  if (!dict.length) { toast('對照表是空的'); return; }
+  const lines = ['# PDF 工具箱 常錯字對照表（一行一組：錯字=正確；開頭 #停用 的是暫停中的）'];
+  for (const r of dict) lines.push(`${r.on === false ? '#停用 ' : ''}${r.from}=${r.to}`);
+  download('﻿' + lines.join('\r\n'), `常錯字對照表_${ymd(new Date())}.txt`, 'text/plain;charset=utf-8');
+}
+async function dictImport(file) {
+  if (!file) return;
+  let text;
+  try { text = await file.text(); } catch (e) { toast('讀不到這個檔'); return; }
+  let add = 0, upd = 0, bad = 0;
+  for (let line of text.replace(/^﻿/, '').split(/\r?\n/)) {
+    line = line.trim();
+    if (!line) continue;
+    let on = true;
+    if (line.startsWith('#停用')) { on = false; line = line.slice(3).trim(); }
+    else if (line.startsWith('#')) continue;
+    const m = line.match(/^(.+?)\s*(?:=|→|->|\t)\s*(.*)$/);
+    if (!m || !m[1].trim() || m[1].trim() === m[2].trim()) { bad++; continue; }
+    const res = dictUpsert(m[1].trim(), m[2].trim(), on);
+    if (res === 'add') add++; else if (res === 'update') upd++;
+  }
+  dictSave();
+  toast(`匯入完成：新增 ${add} 組、更新 ${upd} 組${bad ? `，${bad} 行看不懂已略過（格式是 錯字=正確）` : ''}`, 4500);
+}
+$('dictAdd').onclick = dictAddFromInputs;
+for (const id of ['dictFrom', 'dictTo']) $(id).addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); dictAddFromInputs(); } });
+$('dictSearch').addEventListener('input', dictRender);
+$('dictClose').onclick = dictClose;
+$('dictModal').addEventListener('click', e => { if (e.target === $('dictModal')) dictClose(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { dictClose(); nameClose(); } });
+$('dictExport').onclick = dictExport;
+$('dictImport').onclick = () => $('dictFile').click();
+$('dictFile').onchange = e => { dictImport(e.target.files[0]); e.target.value = ''; };
+$('ctDict').onclick = () => dictOpen();
+$('c_btnDict').onclick = () => dictOpen();
+$('ctAddDict').onclick = () => dictFromSelection($('ctOut'));
+$('c_btnAddDict').onclick = () => dictFromSelection($('c_out'));
+const TOOL_VERSION = '2026-10-28';
+const FEEDBACK_URL = 'https://script.google.com/macros/s/AKfycbxE8eYdivdGN6_0Tsl77DFwX3urPMCQ3VKfxSgyMR4iQlf9-Nqxo68ju_zXIc3DaFgu/exec';
+const FB_AREAS = ['合併・分割・裁半', '加字', '擷取畫面', '複製文字（OCR）', '文字整理', '常錯字對照表', '命名規則', '整體・其他'];
+const FB_TAB_AREA = { organize: '合併・分割・裁半', addtext: '加字', watermark: '加字', snap: '擷取畫面', copytext: '複製文字（OCR）', clean: '文字整理' };
+const FB_TYPES = [['bug', '🐞 問題回報'], ['idea', '💡 功能許願'], ['good', '👍 好用的地方']];
+const WP_TABS = [['hot', '熱門'], ['new', '最新'], ['開放中', '開放中'], ['已排程', '已排程'], ['進行中', '進行中'], ['已完成', '已完成'], ['mine', '我發的']];
+const WP_MINE_KEY = 'pdfBox.myWishes', WP_VOTER_KEY = 'pdfBox.voter', WP_NICK_KEY = 'pdfBox.nick';
+const fb = { area: '', type: '', last: 0 };
+const WP = { items: [], voted: new Set(), tab: 'hot', loadedAt: 0, loading: false, cur: null, cmts: [], lastCmt: 0 };
+let fbFrom = 'organize';
+function wpVoter() {
+  const rnd = () => (crypto.randomUUID ? crypto.randomUUID() : 'v' + Date.now().toString(36) + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2));
+  try {
+    let v = localStorage.getItem(WP_VOTER_KEY);
+    if (!v) { v = rnd(); localStorage.setItem(WP_VOTER_KEY, v); }
+    return v;
+  } catch (e) { return WP.tmpVoter || (WP.tmpVoter = rnd()); }
+}
+function wpMine() { try { const v = JSON.parse(localStorage.getItem(WP_MINE_KEY) || '[]'); return new Set(Array.isArray(v) ? v : []); } catch (e) { return new Set(); } }
+async function wpApi(action, data = {}) {
+  if (!FEEDBACK_URL) throw Object.assign(new Error('nourl'), { code: 'nourl' });
+  const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 30000);
+  try {
+    const res = await fetch(FEEDBACK_URL, { method: 'POST', body: JSON.stringify({ action, voter: wpVoter(), ...data }), signal: ctl.signal, redirect: 'follow' });
+    let j = null;
+    try { j = await res.json(); } catch (e) {}
+    if (!j || !j.ok) throw Object.assign(new Error('rejected'), { code: (j && j.error) || 'server' });
+    return j;
+  } catch (e) {
+    throw Object.assign(new Error(e.message), { code: e.name === 'AbortError' ? 'timeout' : (typeof e.code === 'string' ? e.code : 'network') });
+  } finally { clearTimeout(timer); }
+}
+function wpWhy(e) {
+  return { timeout: '等太久沒有回應（網路可能不穩）', busy: '現在使用的人太多，請過幾分鐘再試', invalid: '內容格式有問題',
+    gone: '這則已經下架或刪除', notmine: '只能刪自己留的言', nourl: '回報區還沒設定好' }[e && e.code] || '網路或回報區暫時連不上';
+}
+function wpAge(t) {
+  const s = (Date.now() - t) / 1000;
+  if (s < 60) return '剛剛';
+  if (s < 3600) return `${Math.floor(s / 60)} 分鐘前`;
+  if (s < 86400) return `${Math.floor(s / 3600)} 小時前`;
+  const d = Math.floor(s / 86400);
+  if (d < 30) return `${d} 天前`;
+  if (d < 365) return `${Math.floor(d / 30)} 個月${d % 30 ? (d % 30) + ' 天' : ''}前`;
+  return `${Math.floor(d / 365)} 年前`;
+}
+async function wpLoad(force) {
+  if (WP.loading) return;
+  if (!force && WP.loadedAt && Date.now() - WP.loadedAt < 60000) { wpRender(); return; }
+  WP.loading = true;
+  $('wpStatus').textContent = '載入中…（第一次可能要等幾秒）';
+  try {
+    const j = await wpApi('list');
+    WP.items = Array.isArray(j.items) ? j.items : [];
+    WP.voted = new Set(j.voted || []);
+    WP.loadedAt = Date.now();
+    $('wpStatus').textContent = '';
+  } catch (e) {
+    console.error(e);
+    $('wpStatus').textContent = `載不到回報區：${wpWhy(e)}。請稍後按 ⟳ 再試。`;
+  } finally { WP.loading = false; wpRender(); }
+}
+function wpFiltered() {
+  const q = $('wpSearch').value.trim().toLowerCase(), area = $('wpArea').value, t = WP.tab;
+  let list = WP.items.filter(w => (!area || w.area === area) && (!q || `${w.title}\n${w.body}`.toLowerCase().includes(q)));
+  const byVotes = (a, b) => b.votes - a.votes || b.t - a.t, byNew = (a, b) => b.t - a.t;
+  if (t === 'hot') return list.filter(w => ['開放中', '已排程', '進行中'].includes(w.status)).sort(byVotes);
+  if (t === 'new') return list.sort(byNew);
+  if (t === 'mine') { const mine = wpMine(); return list.filter(w => mine.has(w.id)).sort(byNew); }
+  return list.filter(w => w.status === t).sort(byVotes);
+}
+function wpVoteBtn(w) {
+  const on = WP.voted.has(w.id);
+  const b = el('button', { class: 'wp-vote' + (on ? ' on' : ''), title: on ? '已投票，再按一次取消' : '投一票' }, el('span', { text: '▲' }), el('b', { text: String(w.votes) }));
+  b.addEventListener('click', e => { e.stopPropagation(); wpVote(w); });
+  return b;
+}
+function wpMeta(w) {
+  return [el('span', { class: 'wp-pill s-' + w.status, text: w.status }), el('span', { class: 'wp-pill', text: w.area }),
+    el('span', { text: w.type }), el('span', { text: `💬 ${w.cmts}` }), el('span', { text: wpAge(w.t) })];
+}
+function wpRender() {
+  for (const b of $('wpTabs').children) b.classList.toggle('on', b.dataset.v === WP.tab);
+  const list = wpFiltered();
+  if (!list.length) {
+    $('wpList').replaceChildren(WP.loadedAt ? el('div', { class: 'wp-empty', text: WP.items.length ? '這裡沒有符合的回報' : '還沒有人回報，按右上「＋ 我要回報」當第一個！' }) : '');
+    return;
+  }
+  $('wpList').replaceChildren(...list.map(w => {
+    const c = el('div', { class: 'wp-card', 'data-id': w.id }, wpVoteBtn(w),
+      el('div', { class: 'wp-main' }, el('div', { class: 'wp-title', text: w.title }),
+        w.body ? el('div', { class: 'wp-desc', text: w.body }) : null, el('div', { class: 'wp-meta' }, ...wpMeta(w))));
+    c.onclick = () => wpOpen(w);
+    return c;
+  }));
+}
+async function wpVote(w) {
+  if (w.pending) return;
+  w.pending = true;
+  const was = WP.voted.has(w.id), flip = on => { if (on) { WP.voted.add(w.id); w.votes++; } else { WP.voted.delete(w.id); w.votes--; } };
+  flip(!was); wpRender(); wpDetailVote();
+  try {
+    const j = await wpApi('vote', { id: w.id });
+    w.votes = j.votes;
+    if (j.voted) WP.voted.add(w.id); else WP.voted.delete(w.id);
+  } catch (e) { flip(was); toast('投票沒成功：' + wpWhy(e)); }
+  finally { w.pending = false; wpRender(); wpDetailVote(); }
+}
+function wpDetailVote() {
+  const w = WP.cur;
+  if (!w) return;
+  $('wpDVote').classList.toggle('on', WP.voted.has(w.id));
+  $('wpDVote').title = WP.voted.has(w.id) ? '已投票，再按一次取消' : '投一票';
+  $('wpDVotes').textContent = String(w.votes);
+}
+function wpShowCmts(items) {
+  WP.cmts = items;
+  $('wpDCmts').replaceChildren(...(items.length ? items.map(c => el('div', { class: 'wp-cmt' },
+    el('div', { class: 'who' }, `${c.nick || '匿名'}・${wpAge(c.t)}`,
+      c.mine && c.cid ? el('button', { class: 'wp-cdel', title: '刪除自己的這則留言', text: '刪除', onclick: () => wpUncomment(c) }) : null),
+    el('div', { class: 'txt', text: c.text })))
+    : [el('div', { class: 'hint', text: '還沒有留言，留下第一則吧' })]));
+}
+async function wpUncomment(c) {
+  const w = WP.cur;
+  if (!w || c.pending || !window.confirm('確定刪除這則留言？刪除後大家都看不到（要改內容可以刪掉再重留）。')) return;
+  c.pending = true;
+  try {
+    const j = await wpApi('uncomment', { id: w.id, cid: c.cid });
+    w.cmts = j.cmts;
+    if (WP.cur === w) { wpShowCmts(WP.cmts.filter(x => x !== c)); $('wpDCh').textContent = `留言（${w.cmts}）`; $('wpDMeta').replaceChildren(...wpMeta(w)); }
+    wpRender();
+    toast('已刪除留言');
+  } catch (e) { toast('刪除沒成功：' + wpWhy(e)); }
+  finally { c.pending = false; }
+}
+async function wpOpen(w) {
+  WP.cur = w;
+  $('wpDetail').hidden = false;
+  $('wpDId').textContent = `編號 ${w.id}`;
+  $('wpDTitle').textContent = w.title;
+  $('wpDMeta').replaceChildren(...wpMeta(w));
+  $('wpDBody').textContent = w.body || '（沒有寫說明）';
+  $('wpDReply').hidden = !w.reply;
+  $('wpDReply').textContent = w.reply ? `🗨 管理者回覆：${w.reply}` : '';
+  $('wpDCh').textContent = `留言（${w.cmts}）`;
+  wpDetailVote();
+  if (!w.cmts) { wpShowCmts([]); return; }
+  $('wpDCmts').replaceChildren(el('div', { class: 'hint', text: '載入留言中…' }));
+  try { const j = await wpApi('comments', { id: w.id }); if (WP.cur === w) wpShowCmts(j.items || []); }
+  catch (e) { if (WP.cur === w) $('wpDCmts').replaceChildren(el('div', { class: 'hint', text: '留言載不到：' + wpWhy(e) })); }
+}
+function wpCloseDetail() { $('wpDetail').hidden = true; WP.cur = null; }
+async function wpComment() {
+  const w = WP.cur, text = $('wpCText').value.trim();
+  if (!w) return;
+  if (!text) { toast('請先寫留言'); $('wpCText').focus(); return; }
+  if (Date.now() - WP.lastCmt < 15000) { toast('留言太快了，請 15 秒後再留下一則'); return; }
+  $('wpCSend').disabled = true;
+  try {
+    const nick = $('wpCNick').value.trim();
+    const j = await wpApi('comment', { id: w.id, nick, text });
+    WP.lastCmt = Date.now();
+    try { localStorage.setItem(WP_NICK_KEY, nick); } catch (e) {}
+    w.cmts = j.cmts;
+    $('wpCText').value = '';
+    if (WP.cur === w) { wpShowCmts([...WP.cmts, j.item]); $('wpDCh').textContent = `留言（${w.cmts}）`; $('wpDMeta').replaceChildren(...wpMeta(w)); }
+    wpRender();
+  } catch (e) { toast('留言沒送出：' + wpWhy(e)); }
+  finally { $('wpCSend').disabled = false; }
+}
+function fbChips(box, items, key) {
+  box.replaceChildren(...items.map(([v, label]) => el('button', {
+    type: 'button', 'data-v': v, text: label,
+    onclick: () => { fb[key] = v; for (const b of box.children) b.classList.toggle('on', b.dataset.v === v); }
+  })));
+}
+function fbSelect(box, key, v) { fb[key] = v; for (const b of box.children) b.classList.toggle('on', b.dataset.v === v); }
+function browserLabel() {
+  const u = navigator.userAgent;
+  const b = /Edg\//.test(u) ? 'Edge' : /Chrome\//.test(u) ? 'Chrome' : /Firefox\//.test(u) ? 'Firefox' : /Safari\//.test(u) ? 'Safari' : '其他瀏覽器';
+  const os = /Windows/.test(u) ? 'Windows' : /Android/.test(u) ? 'Android' : /iPhone|iPad/.test(u) ? 'iPhone/iPad' : /Mac/.test(u) ? 'Mac' : '';
+  return `${b}${os ? '／' + os : ''}`;
+}
+const fbAuto = () => ({ ver: TOOL_VERSION, ua: browserLabel(), screen: `${window.innerWidth}×${window.innerHeight}` });
+function fbEnter() { wpLoad(false); }
+function wpOpenForm() {
+  if (!fb.area && FB_TAB_AREA[fbFrom]) fbSelect($('fbArea'), 'area', FB_TAB_AREA[fbFrom]);
+  const a = fbAuto();
+  $('fbAuto').textContent = `會一起送出（方便找原因，不公開）：工具版本 ${a.ver}、${a.ua}、畫面 ${a.screen}。不會送出你的 PDF 或其他個人資料。`;
+  fbShow('', '');
+  $('wpFormModal').hidden = false;
+  $('fbTitle').focus();
+}
+function wpCloseForm() { $('wpFormModal').hidden = true; }
+function fbShow(kind, text) {
+  $('fbResult').replaceChildren(text ? el('div', { class: 'fb-result ' + kind, text }) : '');
+}
+function fbText() {
+  const t = FB_TYPES.find(x => x[0] === fb.type);
+  return [`【PDF 工具箱回報】`, `功能：${fb.area || '（未選）'}`, `類型：${t ? t[1] : '（未選）'}`,
+    `標題：${$('fbTitle').value.trim()}`, `說明：${$('fbMsg').value.trim()}`, `稱呼：${$('fbName').value.trim()}`, `聯絡：${$('fbContact').value.trim()}`,
+    `工具版本 ${TOOL_VERSION}／${browserLabel()}`].join('\n');
+}
+async function fbSend() {
+  const title = $('fbTitle').value.trim(), msg = $('fbMsg').value.trim();
+  if (!fb.area) { fbShow('err', '請先選「哪個功能」'); return; }
+  if (!fb.type) { fbShow('err', '請先選「是哪一種」'); return; }
+  if (title.length < 2) { fbShow('err', '請寫標題，一句話說重點就好'); $('fbTitle').focus(); return; }
+  if (Date.now() - fb.last < 30000) { fbShow('err', '剛剛才送出過，請 30 秒後再送下一則'); return; }
+  const payload = { area: fb.area, type: fb.type, title, body: msg, name: $('fbName').value.trim(), contact: $('fbContact').value.trim(), website: $('fbWebsite').value, ...fbAuto() };
+  $('fbSend').disabled = true;
+  $('fbResult').replaceChildren(el('div', { class: 'hint', text: '送出中…' }));
+  try {
+    const j = await wpApi('add', payload);
+    fb.last = Date.now();
+    if (j.item) {
+      WP.items.unshift(j.item);
+      const mine = wpMine(); mine.add(j.item.id);
+      try { localStorage.setItem(WP_MINE_KEY, JSON.stringify([...mine].slice(-200))); } catch (e) {}
+    }
+    for (const id of ['fbTitle', 'fbMsg']) $(id).value = '';
+    $('fbCount').textContent = '0／2000 字';
+    fbShow('', '');
+    wpCloseForm();
+    WP.tab = 'new'; wpRender();
+    toast('✅ 已送出，謝謝你！大家都看得到，也可以幫你投票', 3500);
+  } catch (e) {
+    console.error(e);
+    fbShow('err', `沒有送出成功：${wpWhy(e)}。你寫的內容還在，可以稍後再按一次，或按「複製內容」用 LINE 傳給管理者。`);
+  } finally { $('fbSend').disabled = false; }
+}
+fbChips($('fbArea'), FB_AREAS.map(a => [a, a]), 'area');
+fbChips($('fbType'), FB_TYPES, 'type');
+$('fbMsg').addEventListener('input', () => { $('fbCount').textContent = `${$('fbMsg').value.length}／2000 字`; });
+$('fbSend').onclick = fbSend;
+$('wpTabs').replaceChildren(...WP_TABS.map(([v, label]) => el('button', { 'data-v': v, text: label, onclick: () => { WP.tab = v; wpRender(); } })));
+for (const a of FB_AREAS) $('wpArea').append(el('option', { value: a, text: a }));
+$('wpSearch').addEventListener('input', wpRender);
+$('wpArea').onchange = wpRender;
+$('wpReload').onclick = () => wpLoad(true);
+$('wpNew').onclick = wpOpenForm;
+$('wpFormClose').onclick = wpCloseForm;
+$('wpDClose').onclick = wpCloseDetail;
+$('wpDVote').onclick = () => { if (WP.cur) wpVote(WP.cur); };
+$('wpCSend').onclick = wpComment;
+$('wpCText').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); wpComment(); } });
+for (const m of ['wpFormModal', 'wpDetail']) $(m).addEventListener('click', e => { if (e.target === $(m)) (m === 'wpDetail' ? wpCloseDetail : wpCloseForm)(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { wpCloseForm(); wpCloseDetail(); } });
+try { $('wpCNick').value = localStorage.getItem(WP_NICK_KEY) || ''; } catch (e) {}
+$('fbCopy').onclick = async () => {
+  const text = fbText();
+  try { await navigator.clipboard.writeText(text); }
+  catch (e) {
+    const ta = el('textarea'); ta.value = text; document.body.append(ta); ta.select(); document.execCommand('copy'); ta.remove();
+  }
+  toast('回饋內容已複製，可以貼到 LINE 或 Email');
+};
+$('helpToFb').onclick = () => setTab('feedback');
+$('helpVer').textContent = `工具版本：${TOOL_VERSION}`;
+document.addEventListener('keydown', e => {
+  if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey || e.key.toLowerCase() !== 's') return;
+  e.preventDefault();
+  if (!$('busy').hidden) return;
+  if (curTab === 'organize') { if (org.pages.length) orgExport('all'); else toast('還沒有加入檔案'); }
+  else if (curTab === 'addtext') exportAddText();
+  else if (curTab === 'watermark') (wm.mode === 'add' ? wmSave : wmRemove)();
+  else if (curTab === 'snap') { if (!$('snSave').disabled) $('snSave').click(); else toast('請先框選要擷取的範圍'); }
+  else toast('Ctrl+S 用在「合併・分割・裁半」「加字」「浮水印」「擷取畫面」分頁');
+});
+window.addEventListener('beforeunload', e => { if (A.count()) { e.preventDefault(); e.returnValue = ''; } });
+try { const m = localStorage.getItem('pdfBox.ctMode'); if (m) $('ctMode').value = m; } catch (e) {}
+setTool('text');
+updateSplitOrderLabels();
+orgRender();
+vDocList();
+snUpdate();
+run();
+let startTab = 'organize';
+try { const t = localStorage.getItem('pdfBox.tab'); if (t && $('view-' + (VIEWER_TABS.includes(t) ? 'viewer' : t))) startTab = t; } catch (e) {}
+setTab(startTab);
+</script>
+</body>
+</html>
