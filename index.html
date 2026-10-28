@@ -280,7 +280,7 @@ header.top h1{font-size:17px;margin:0}
   <span class="privacy">🔒 檔案只在這台電腦上處理，不會上傳</span>
   <span class="namebar">📁 檔名 <select id="nameQuick" title="存檔時用哪一組命名規則"></select><button id="btnNaming" title="管理命名規則：新增、修改、刪除">⚙</button></span>
 </header>
-<div id="libErr" hidden>PDF 元件載入失敗：這個工具第一次使用需要連上網路，請確認網路後重新整理頁面（F5）。</div>
+<div id="libErr" hidden>工具載入失敗：這個工具第一次使用需要連上網路，請確認網路後重新整理頁面（F5）。</div>
 <section class="view" id="view-organize">
   <div class="bar tools">
     <button class="primary" id="orgAdd">＋ 加入 PDF／圖片</button>
@@ -311,10 +311,10 @@ header.top h1{font-size:17px;margin:0}
   <div class="bar export">
     <button class="primary" id="expAll" title="快速鍵 Ctrl+S">存成一個 PDF（全部頁）</button>
     <button id="expSel">只存選取的頁</button>
-    <button id="expEach">每頁存一個檔（ZIP）</button>
+    <button id="expEach">每頁存一個檔（壓縮檔）</button>
     <span class="sep"></span>
     依頁碼拆檔 <input type="text" id="rangeInp" placeholder="例：1-3, 4-8, 9">
-    <button id="expRange">拆檔（ZIP）</button>
+    <button id="expRange">拆檔（壓縮檔）</button>
   </div>
 </section>
 <section class="view" id="view-viewer" hidden>
@@ -361,7 +361,7 @@ header.top h1{font-size:17px;margin:0}
         <div id="wmImgBox" hidden>
           <div class="row"><button id="wmPickImg">選擇圖片…</button><span class="hint" id="wmImgName">還沒選圖片</span></div>
           <input type="file" id="wmImgFile" accept="image/png,image/jpeg" hidden>
-          <p class="hint">建議用去背的 PNG。圖片只在這台電腦處理，不會上傳。</p>
+          <p class="hint">建議用背景透明的圖片。圖片只在這台電腦處理，不會上傳。</p>
         </div>
         <h2>樣式</h2>
         <label class="row">大小 <input type="range" id="wmScale" min="10" max="100" value="60"> <span id="wmScaleLbl"></span></label>
@@ -396,20 +396,20 @@ header.top h1{font-size:17px;margin:0}
     <div data-panel="snap">
       <h2>怎麼用</h2>
       <p class="hint">在頁面上按住滑鼠拖出要擷取的範圍，再按「複製圖片」，就能直接貼到 LINE、Word、Email。</p>
-      <label class="row">解析度
-        <select id="snDpi"><option value="150">150 dpi（一般）</option><option value="200" selected>200 dpi（清楚）</option><option value="300">300 dpi（列印用）</option></select>
+      <label class="row">清晰度
+        <select id="snDpi"><option value="150">一般</option><option value="200" selected>清楚</option><option value="300">很清楚（要印出來選這個）</option></select>
       </label>
       <div class="preview" id="snPrev"><span class="hint">還沒框選範圍</span></div>
       <p class="hint" id="snInfo"></p>
-      <div class="row"><button class="primary" id="snCopy" disabled>複製圖片</button><button id="snSave" disabled>下載 PNG</button></div>
+      <div class="row"><button class="primary" id="snCopy" disabled>複製圖片</button><button id="snSave" disabled>下載圖片</button></div>
       <h2>整頁</h2>
-      <div class="row"><button id="snPage">這一頁存成 PNG</button></div>
+      <div class="row"><button id="snPage">這一頁存成圖片</button></div>
     </div>
     <div data-panel="copytext">
       <h2>取出文字</h2>
       <div class="row"><button class="primary" id="ctPage">這一頁</button><button id="ctAll">全部頁</button></div>
       <p class="hint">也可以在頁面上拖出範圍，只取框內的字。</p>
-      <label class="row">掃描檔辨識（OCR）
+      <label class="row">掃描檔認字
         <select id="ctOcr"><option value="auto">自動：沒有文字才辨識</option><option value="always">一律用辨識</option><option value="never">不辨識</option></select>
       </label>
       <div class="row"><span class="hint" id="ctStatus"></span><button id="ctStop" hidden>停止</button></div>
@@ -541,7 +541,7 @@ header.top h1{font-size:17px;margin:0}
       <span class="hint" id="dictCount"></span>
       <button id="dictClose" title="關閉（Esc）">✕</button>
     </div>
-    <p class="hint">記下 OCR 或 PDF 常弄錯的字，之後「複製文字」和「文字整理」的結果會自動改成正確的。存在這台電腦的瀏覽器裡，只有你自己看得到。</p>
+    <p class="hint">記下掃描檔認字或 PDF 常弄錯的字，之後「複製文字」和「文字整理」的結果會自動改成正確的。存在這台電腦的瀏覽器裡，只有你自己看得到。</p>
     <div class="row">
       <input type="text" id="dictFrom" placeholder="錯的字，例：己經">
       →
@@ -562,7 +562,7 @@ header.top h1{font-size:17px;margin:0}
   <div class="docwrap"><div class="doc">
     <h2>快速上手</h2>
     <ol>
-      <li>把 PDF（或 JPG／PNG 照片）<b>拖進視窗</b>，或按各分頁的「加入」「開啟 PDF」。</li>
+      <li>把 PDF（或照片）<b>拖進視窗</b>，或按各分頁的「加入」「開啟 PDF」。</li>
       <li>拉進來一次，<b>五個分頁都能用</b>，不用重選；加字、擷取、複製文字上方的下拉選單可以切換檔案。</li>
       <li>做完按存檔或 <b>Ctrl+S</b>：Chrome、Edge 會跳出「另存新檔」視窗，自己選資料夾（也可以直接蓋掉原檔）；其他瀏覽器存到<b>「下載」資料夾</b>。不想跳視窗，到右上「📁 檔名 ⚙」取消勾選。</li>
     </ol>
@@ -572,7 +572,7 @@ header.top h1{font-size:17px;margin:0}
     <ul>
       <li>一次拖進好幾個檔就能合併；<b>拖拉縮圖</b>排順序，<b>點一下</b>選取，<b>雙擊</b>放大看，按住 Shift 點可以一次選一段。</li>
       <li>「裁成兩半」：A3 一張印兩頁的掃描檔，可以切成左右（或上下）兩頁，中線位置可調。沒選頁時會套用全部頁。</li>
-      <li>存檔四種：存成一份、只存選取的頁、每頁一個檔（ZIP）、依頁碼拆（例如輸入 1-3, 4-8）。弄錯了按「↶ 復原」。</li>
+      <li>存檔四種：存成一份、只存選取的頁、每頁一個檔（壓縮檔）、依頁碼拆（例如輸入 1-3, 4-8）。弄錯了按「↶ 復原」。</li>
     </ul>
     <h3>加字</h3>
     <ul>
@@ -587,11 +587,11 @@ header.top h1{font-size:17px;margin:0}
       <li>「➖ 去除浮水印」：能去掉 Acrobat、Word、本工具加的浮水印；掃描檔或直接畫在內容裡的去不掉（改用「加字」的白底遮蓋）。只用在公司自己的文件。</li>
     </ul>
     <h3>擷取畫面</h3>
-    <ul><li>在頁面上拖出範圍 → 「複製圖片」直接貼到 LINE、Word、Email，或下載 PNG。要印出來請選 300 dpi。</li></ul>
+    <ul><li>在頁面上拖出範圍 → 「複製圖片」直接貼到 LINE、Word、Email，或下載成圖片。要印出來請把清晰度選「很清楚」。</li></ul>
     <h3>複製文字</h3>
     <ul>
       <li>取一頁、全部頁，或在頁面上拖框只取框內的字；斷行、多餘空格會自動整理。</li>
-      <li>掃描檔（圖片）沒有文字，會自動用 OCR 辨識；第一次用要下載辨識資料，稍等一下。</li>
+      <li>掃描檔（圖片）沒有文字，會自動辨識上面的字；第一次用要下載辨識資料，稍等一下。</li>
     </ul>
     <h3>文字整理</h3>
     <ul>
@@ -600,17 +600,17 @@ header.top h1{font-size:17px;margin:0}
       <li>熟了以後：「⚡ 一鍵整理剪貼簿」＝讀剪貼簿、整理完直接放回剪貼簿，回去按 Ctrl+V 就好。</li>
     </ul>
     <h3>常錯字對照表</h3>
-    <ul><li>OCR 常認錯的字，在結果裡選取 → 按「加入常錯字」（複製文字分頁叫「選取的字加入常錯字」）→ 輸入正確的字。以後會自動改正。</li></ul>
+    <ul><li>掃描檔常認錯的字，在結果裡選取 → 按「加入常錯字」（複製文字分頁叫「選取的字加入常錯字」）→ 輸入正確的字。以後會自動改正。</li></ul>
     <h3>命名規則</h3>
     <ul>
       <li>右上角「📁 檔名」選這次存檔要用哪一組規則；按 ⚙ 新增自己的規則，例如 <code>{日期}-{自訂}-{序號}</code> → 20261028-業務部-001.pdf。</li>
       <li>每組規則的序號分開算，每天從 001 開始。</li>
     </ul>
     <h2>常見問題</h2>
-    <details><summary>畫面上方出現「PDF 元件載入失敗」</summary><p>這個工具要從網路下載 PDF 處理元件，請確認有連上網路，再按 F5 重新整理。</p></details>
+    <details><summary>畫面上方出現「工具載入失敗」</summary><p>這個工具第一次打開要從網路下載，請確認有連上網路，再按 F5 重新整理。</p></details>
     <details><summary>加上去的字為什麼不能選取、複製？</summary><p>為了保證中文在任何電腦、手機打開都<b>不會變亂碼或方框</b>，加的字是用高解析度「印」在頁面上。代價是之後沒辦法再選取這些字。</p></details>
     <details><summary>白底遮蓋可以拿來遮機密資料嗎？</summary><p><b>不行。</b>白底只是蓋住看不到，底下原本的字還在，別人用複製或搜尋還是找得到。機密資料請改用「⬛ 塗銷」（可選黑色或白色）：存檔時有塗銷的頁會整頁轉成圖片，框底下的字真的刪掉；代價是那幾頁其他的字也不能再選取、複製。存好後可以用「複製文字」分頁檢查一次。</p></details>
-    <details><summary>OCR 辨識有錯字怎麼辦？</summary><p>1. 掃描時設 300 dpi、頁面放正；2. 只框選需要的那段，避開表格線和印章；3. 常認錯的字加進「常錯字對照表」，以後自動改；4. 重要文件可用 Windows 剪取工具（Win＋Shift＋S →「文字動作」）再辨識一次對照。手寫字基本上認不出來。</p></details>
+    <details><summary>掃描檔認出來的字有錯怎麼辦？</summary><p>1. 掃描時選高畫質、頁面放正；2. 只框選需要的那段，避開表格線和印章；3. 常認錯的字加進「常錯字對照表」，以後自動改；4. 重要文件可用 Windows 剪取工具（Win＋Shift＋S →「文字動作」）再辨識一次對照。手寫字基本上認不出來。</p></details>
     <details><summary>有密碼或有保護的 PDF 可以用嗎？</summary><p>有「開啟密碼」的會請你輸入密碼。只有「禁止編輯」保護的 PDF，在「合併・分割・裁半」存檔時會改用圖片方式存（文字不能再選取），「加字」則無法使用。</p></details>
     <details><summary>存好的檔案在哪裡？檔名可以改嗎？</summary><p>Chrome、Edge 存檔時會跳出「另存新檔」視窗，存在你選的資料夾，檔名可以直接改（預設照右上角的命名規則）。不想跳視窗：到右上「📁 檔名 ⚙」取消「跳出另存新檔視窗」，就會存到瀏覽器的「下載」資料夾。</p></details>
     <details><summary>換電腦或清除瀏覽器資料後，對照表和命名規則不見了</summary><p>這兩樣存在你這台電腦的瀏覽器裡。平常記得按「匯出」備份，換電腦後用「匯入」就能還原，也可以把檔案傳給同事匯入。</p></details>
@@ -909,7 +909,7 @@ async function addFiles(files, { toGrid = false } = {}) {
   let histPushed = false;
   try {
     for (const f of list) {
-      if (!isPdfFile(f) && !isImgFile(f)) { toast(`「${f.name}」不是 PDF 或 JPG/PNG 圖片，已略過`, 3500); continue; }
+      if (!isPdfFile(f) && !isImgFile(f)) { toast(`「${f.name}」不是 PDF 或圖片，已略過`, 3500); continue; }
       const key = `${f.name}|${f.size}|${f.lastModified}`;
       let di = org.docs.findIndex(d => d.key === key);
       const isNew = di < 0;
@@ -1246,7 +1246,7 @@ async function orgExport(kind) {
           used.add(name);
           zip.file(name, await buildPdf(org.pages.slice(a - 1, b), cache));
         }
-        busy('壓縮成 ZIP…');
+        busy('打包成壓縮檔…');
         return zip.generateAsync({ type: 'blob' });
       }, { src: outStem(), action: '拆檔', ext: '.zip' }, 'application/zip', seq);
       if (!r) return;
@@ -1726,7 +1726,7 @@ $('wmImgFile').onchange = async e => {
   const f = e.target.files[0]; e.target.value = '';
   if (!f) return;
   try { wm.img = await createImageBitmap(f); wm.imgName = f.name; }
-  catch (err) { toast('這張圖片讀不進來，請換 PNG 或 JPG'); return; }
+  catch (err) { toast('這張圖片讀不進來，請換一張圖片再試'); return; }
   $('wmImgName').textContent = f.name;
   wm.kind = 'image'; wmChanged();
 };
@@ -1998,22 +1998,22 @@ function loadScript(src, ms, integrity) {
   return withTimeout(new Promise((res, rej) => {
     const s = el('script', { src });
     if (integrity) { s.integrity = integrity; s.crossOrigin = 'anonymous'; s.referrerPolicy = 'no-referrer'; }
-    s.onload = res; s.onerror = () => rej(new Error('辨識元件下載失敗，請確認網路'));
+    s.onload = res; s.onerror = () => rej(new Error('辨識資料下載失敗，請確認網路'));
     document.head.append(s);
-  }), ms, '辨識元件下載逾時，請確認網路後再試');
+  }), ms, '辨識資料下載逾時，請確認網路後再試');
 }
 let ocrPromise = null, ocrPrefix = '';
 function getOcr() {
   if (!ocrPromise) {
     ocrPromise = (async () => {
-      ctStatus('第一次使用要下載文字辨識元件（約 20MB，之後就快了），請稍候…');
+      ctStatus('第一次認字要下載辨識資料（約 20MB，之後就快了），請稍候…');
       if (!window.Tesseract) await loadScript(TESS_URL, 30000, TESS_SRI);
       return withTimeout(Tesseract.createWorker('chi_tra+eng', 1, {
         logger: m => {
           if (m.status === 'recognizing text') ctStatus(`${ocrPrefix}辨識中 ${Math.round(m.progress * 100)}%`);
-          else if (m.status) ctStatus(`${ocrPrefix}準備辨識元件中… ${m.progress ? Math.round(m.progress * 100) + '%' : ''}`);
+          else if (m.status) ctStatus(`${ocrPrefix}準備辨識中… ${m.progress ? Math.round(m.progress * 100) + '%' : ''}`);
         }
-      }), 180000, '辨識元件下載逾時，請確認網路後再試');
+      }), 180000, '辨識資料下載逾時，請確認網路後再試');
     })();
     ocrPromise.catch(() => { ocrPromise = null; });
   }
@@ -2071,7 +2071,7 @@ async function ctRun(scope) {
     }
   } catch (e) {
     console.error(e); failed = true;
-    ctStatus(e instanceof Error && /辨識元件/.test(e.message) ? e.message : '處理失敗，請再試一次');
+    ctStatus(e instanceof Error && /辨識資料/.test(e.message) ? e.message : '處理失敗，請再試一次');
   } finally {
     CT.running = false; $('ctStop').hidden = true; ocrPrefix = '';
   }
@@ -2081,7 +2081,7 @@ async function ctRun(scope) {
   if (!failed) {
     const what = scope === 'sel' ? '框選範圍' : scope === 'all' ? `全部 ${parts.length} 頁` : `第 ${V.page} 頁`;
     ctStatus(!CT.raw.trim() ? `${what}沒有找到文字${ocrMode === 'never' ? '（可能是掃描檔，請把辨識改成「自動」）' : ''}`
-      : `已取出${what}${ocrUsed ? `（其中 ${ocrUsed} 頁用 OCR 辨識，可能有錯字，請核對）` : ''}${CT.stop ? '，已停止' : ''}`);
+      : `已取出${what}${ocrUsed ? `（其中 ${ocrUsed} 頁是掃描檔、用辨識取出，可能有錯字，請核對）` : ''}${CT.stop ? '，已停止' : ''}`);
   }
   return true;
 }
@@ -2423,7 +2423,7 @@ function makeName(info, seq, rule = curRule()) {
   return (s || 'PDF工具箱') + info.ext;
 }
 const usesSeq = () => curRule().tpl.includes('{序號}');
-const SAVE_TYPES = { '.pdf': ['PDF 檔', 'application/pdf'], '.zip': ['ZIP 壓縮檔', 'application/zip'], '.png': ['PNG 圖片', 'image/png'] };
+const SAVE_TYPES = { '.pdf': ['PDF 檔', 'application/pdf'], '.zip': ['壓縮檔', 'application/zip'], '.png': ['圖片', 'image/png'] };
 async function saveAs(make, info, type = 'application/pdf', seq = usesSeq() ? seqNext(true) : 0) {
   let name = makeName(info, seq), handle = null;
   if (nm.pick && window.showSaveFilePicker) {
@@ -2671,6 +2671,7 @@ $('c_btnAddDict').onclick = () => dictFromSelection($('c_out'));
 const TOOL_VERSION = '2026-10-28';
 const FEEDBACK_URL = 'https://script.google.com/macros/s/AKfycbxE8eYdivdGN6_0Tsl77DFwX3urPMCQ3VKfxSgyMR4iQlf9-Nqxo68ju_zXIc3DaFgu/exec';
 const FB_AREAS = ['合併・分割・裁半', '加字', '擷取畫面', '複製文字（OCR）', '文字整理', '常錯字對照表', '命名規則', '整體・其他'];
+const fbAreaName = a => a.replace('（OCR）', '');
 const FB_TAB_AREA = { organize: '合併・分割・裁半', addtext: '加字', watermark: '加字', snap: '擷取畫面', copytext: '複製文字（OCR）', clean: '文字整理' };
 const FB_TYPES = [['bug', '🐞 問題回報'], ['idea', '💡 功能許願'], ['good', '👍 好用的地方']];
 const WP_TABS = [['hot', '熱門'], ['new', '最新'], ['開放中', '開放中'], ['已排程', '已排程'], ['進行中', '進行中'], ['已完成', '已完成'], ['mine', '我發的']];
@@ -2746,7 +2747,7 @@ function wpVoteBtn(w) {
   return b;
 }
 function wpMeta(w) {
-  return [el('span', { class: 'wp-pill s-' + w.status, text: w.status }), el('span', { class: 'wp-pill', text: w.area }),
+  return [el('span', { class: 'wp-pill s-' + w.status, text: w.status }), el('span', { class: 'wp-pill', text: fbAreaName(w.area) }),
     el('span', { text: w.type }), el('span', { text: `💬 ${w.cmts}` }), el('span', { text: wpAge(w.t) })];
 }
 function wpRender() {
@@ -2868,7 +2869,7 @@ function fbShow(kind, text) {
 }
 function fbText() {
   const t = FB_TYPES.find(x => x[0] === fb.type);
-  return [`【PDF 工具箱回報】`, `功能：${fb.area || '（未選）'}`, `類型：${t ? t[1] : '（未選）'}`,
+  return [`【PDF 工具箱回報】`, `功能：${fbAreaName(fb.area) || '（未選）'}`, `類型：${t ? t[1] : '（未選）'}`,
     `標題：${$('fbTitle').value.trim()}`, `說明：${$('fbMsg').value.trim()}`, `稱呼：${$('fbName').value.trim()}`, `聯絡：${$('fbContact').value.trim()}`,
     `工具版本 ${TOOL_VERSION}／${browserLabel()}`].join('\n');
 }
@@ -2900,12 +2901,12 @@ async function fbSend() {
     fbShow('err', `沒有送出成功：${wpWhy(e)}。你寫的內容還在，可以稍後再按一次，或按「複製內容」用 LINE 傳給管理者。`);
   } finally { $('fbSend').disabled = false; }
 }
-fbChips($('fbArea'), FB_AREAS.map(a => [a, a]), 'area');
+fbChips($('fbArea'), FB_AREAS.map(a => [a, fbAreaName(a)]), 'area');
 fbChips($('fbType'), FB_TYPES, 'type');
 $('fbMsg').addEventListener('input', () => { $('fbCount').textContent = `${$('fbMsg').value.length}／2000 字`; });
 $('fbSend').onclick = fbSend;
 $('wpTabs').replaceChildren(...WP_TABS.map(([v, label]) => el('button', { 'data-v': v, text: label, onclick: () => { WP.tab = v; wpRender(); } })));
-for (const a of FB_AREAS) $('wpArea').append(el('option', { value: a, text: a }));
+for (const a of FB_AREAS) $('wpArea').append(el('option', { value: a, text: fbAreaName(a) }));
 $('wpSearch').addEventListener('input', wpRender);
 $('wpArea').onchange = wpRender;
 $('wpReload').onclick = () => wpLoad(true);
