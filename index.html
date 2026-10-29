@@ -298,8 +298,8 @@ header.top h1{font-size:17px;margin:0}
 <div id="libErr" hidden>工具載入失敗：這個工具第一次使用需要連上網路，請確認網路後重新整理頁面（F5）。</div>
 <section class="view" id="view-organize">
   <div class="bar tools">
-    <button class="primary" id="orgAdd">＋ 加入 PDF／圖片</button>
-    <input type="file" id="orgFile" multiple accept="application/pdf,.pdf,image/png,image/jpeg" hidden>
+    <button class="primary" id="orgAdd" title="PDF、圖片、Word、Excel 都可以">＋ 加入檔案</button>
+    <input type="file" id="orgFile" multiple accept="application/pdf,.pdf,image/png,image/jpeg,image/webp,image/gif,image/bmp,image/avif,.docx,.xlsx,.xlsm,.csv,.doc,.xls" hidden>
     <span id="orgInfo" class="muted"></span>
     <span class="sp"></span>
     <button id="undoBtn" disabled>↶ 復原</button>
@@ -319,7 +319,7 @@ header.top h1{font-size:17px;margin:0}
     <span class="hint">沒選頁時，旋轉和裁半會套用到全部頁</span>
   </div>
   <div id="gridWrap">
-    <div class="empty" id="orgEmpty"><b>把 PDF 或圖片拖到這裡</b>可以一次放很多個檔；點縮圖選取頁面、雙擊放大看、拖拉排順序</div>
+    <div class="empty" id="orgEmpty"><b>把 PDF、圖片、Word、Excel 拖到這裡</b>可以一次放很多個檔；點縮圖選取頁面、雙擊放大看、拖拉排順序</div>
     <div class="files" id="orgFiles"></div>
     <div class="grid" id="grid"></div>
   </div>
@@ -461,8 +461,8 @@ header.top h1{font-size:17px;margin:0}
   </aside>
   <div class="vmain">
     <div class="bar">
-      <button class="primary" id="vOpen">開啟 PDF</button>
-      <input type="file" id="vFile" accept="application/pdf,.pdf,image/png,image/jpeg" hidden>
+      <button class="primary" id="vOpen">開啟檔案</button>
+      <input type="file" id="vFile" accept="application/pdf,.pdf,image/png,image/jpeg,image/webp,image/gif,image/bmp,image/avif,.docx,.xlsx,.xlsm,.csv,.doc,.xls" hidden>
       <select id="vDocSel" title="已開啟的檔案，點選切換" hidden></select>
       <span class="sp"></span>
       <button id="vPrev" title="上一頁（PageUp）">◀</button>
@@ -472,7 +472,7 @@ header.top h1{font-size:17px;margin:0}
       <button id="vZoomOut" title="縮小">－</button><span id="vZoomLbl" class="muted">100%</span><button id="vZoomIn" title="放大">＋</button>
     </div>
     <div class="vscroll" id="vScroll">
-      <div class="empty" id="vEmpty"><b>把 PDF 拖到這裡</b>或按左上角「開啟 PDF」。在任何一個分頁開過的檔案，這裡都能直接用，不用重選。</div>
+      <div class="empty" id="vEmpty"><b>把檔案拖到這裡</b>或按左上角「開啟檔案」。PDF、圖片、Word、Excel 都可以；在任何一個分頁開過的檔案，這裡都能直接用，不用重選。</div>
       <div class="stage" id="vStage" hidden><canvas id="vCanvas"></canvas><div class="overlay" id="vOverlay"></div></div>
     </div>
   </div>
@@ -591,7 +591,7 @@ header.top h1{font-size:17px;margin:0}
   <div class="docwrap"><div class="doc" id="helpZh" data-noi18n>
     <h2>快速上手</h2>
     <ol>
-      <li>把 PDF（或照片）<b>拖進視窗</b>，或按各分頁的「加入」「開啟 PDF」。</li>
+      <li>把 PDF（或照片、Word、Excel）<b>拖進視窗</b>，或按各分頁的「加入檔案」「開啟檔案」。</li>
       <li>拉進來一次，<b>五個分頁都能用</b>，不用重選；加字、擷取、複製文字上方的下拉選單可以切換檔案。</li>
       <li>做完按存檔或 <b>Ctrl+S</b>：Chrome、Edge 會跳出「另存新檔」視窗，自己選資料夾（也可以直接蓋掉原檔）；其他瀏覽器存到<b>「下載」資料夾</b>。不想跳視窗，到右上「📁 檔名 ⚙」取消勾選。</li>
     </ol>
@@ -600,6 +600,7 @@ header.top h1{font-size:17px;margin:0}
     <h3>合併・分割・裁半</h3>
     <ul>
       <li>一次拖進好幾個檔就能合併；<b>拖拉縮圖</b>排順序，<b>點一下</b>選取，<b>雙擊</b>放大看，按住 Shift 點可以一次選一段。</li>
+      <li><b>Word、Excel、圖片</b>也能直接放進來，會先轉成 PDF 頁面（一樣在這台電腦轉，不上傳）。Excel 照「版面設定」（列印範圍、方向、標題列）排頁，太寬會整張縮小；CSV 也可以。轉出來的頁是圖片：字不能直接選取（「複製文字」分頁會自動認字），頁首頁尾、文字方塊、圖表不會出現，排版也可能跟原檔有點不同。要完全一樣，請在 Word／Excel 用「另存新檔」存成 PDF。舊版 .doc／.xls 請先另存成 .docx／.xlsx。</li>
       <li>「裁成兩半」：A3 一張印兩頁的掃描檔，可以切成左右（或上下）兩頁，中線位置可調。沒選頁時會套用全部頁。</li>
       <li>存檔四種：存成一份、只存選取的頁、每頁一個檔（壓縮檔）、依頁碼拆（例如輸入 1-3, 4-8）。弄錯了按「↶ 復原」。</li>
     </ul>
@@ -653,7 +654,7 @@ header.top h1{font-size:17px;margin:0}
   <div class="doc" id="helpEn" lang="en" hidden>
     <h2>Getting started</h2>
     <ol>
-      <li><b>Drag</b> PDFs (or photos) into the window, or use “Add” / “Open PDF” in each tab.</li>
+      <li><b>Drag</b> PDFs (or photos, Word and Excel files) into the window, or use “Add files” / “Open file” in each tab.</li>
       <li>Add a file once and <b>every tab can use it</b> — no need to pick it again. In Add text, Snapshot and Copy text, switch files from the drop-down at the top.</li>
       <li>When you’re done, click save or press <b>Ctrl+S</b>. Chrome and Edge show a “Save as” window so you can choose the folder (you can also overwrite the original); other browsers save to your <b>Downloads folder</b>. To skip the window, untick it under “📁 File name ⚙” at the top right.</li>
     </ol>
@@ -662,6 +663,7 @@ header.top h1{font-size:17px;margin:0}
     <h3>Merge · Split · Halve</h3>
     <ul>
       <li>Drop several files at once to merge them. <b>Drag thumbnails</b> to reorder, <b>click</b> to select, <b>double-click</b> to enlarge, and Shift+click to select a range.</li>
+      <li><b>Word, Excel and image files</b> can be added too — they’re turned into PDF pages first (on this computer, nothing is uploaded). Excel follows its page setup (print area, orientation, title rows) and shrinks sheets that are too wide; CSV works too. The converted pages are images: their text can’t be selected (the “Copy text” tab recognizes it automatically), and headers/footers, text boxes and charts don’t appear; the layout may differ a little from the original. For an exact copy, use “Save As → PDF” in Word/Excel. Save old .doc/.xls files as .docx/.xlsx first.</li>
       <li>“Cut in half”: split scans with two pages on one sheet (e.g. A3) into left and right (or top and bottom) pages. The cut position is adjustable. With no pages selected it applies to all pages.</li>
       <li>Four ways to save: one PDF, selected pages only, one file per page (zip), or by page ranges (e.g. 1-3, 4-8). Made a mistake? Click “↶ Undo”.</li>
     </ul>
@@ -863,7 +865,7 @@ const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const stem = n => n.replace(/\.[^.]+$/, '');
 const normRot = a => ((Math.round(a / 90) * 90) % 360 + 360) % 360;
 const isPdfFile = f => f.type === 'application/pdf' || /\.pdf$/i.test(f.name);
-const isImgFile = f => /^image\/(png|jpeg)$/.test(f.type) || /\.(png|jpe?g)$/i.test(f.name);
+const isImgFile = f => /^image\/(png|jpeg|webp|gif|bmp|avif)$/.test(f.type) || /\.(png|jpe?g|jfif|webp|gif|bmp|avif)$/i.test(f.name);
 function download(data, name, type = 'application/pdf') {
   const blob = data instanceof Blob ? data : new Blob([data], { type });
   const url = URL.createObjectURL(blob);
@@ -874,6 +876,7 @@ function download(data, name, type = 'application/pdf') {
 const canvasBlob = (c, type = 'image/png', q) => new Promise(r => c.toBlob(r, type, q));
 async function canvasBytes(c, type, q) { return new Uint8Array(await (await canvasBlob(c, type, q)).arrayBuffer()); }
 function friendly(e) {
+  if (e && e.ox) return e.message;
   const n = e && e.name;
   if (n === 'PasswordException') return '需要密碼或已取消';
   if (n === 'InvalidPDFException') return '檔案損壞或不是 PDF';
@@ -928,12 +931,17 @@ const I18N_EN = {
   '工具載入失敗：這個工具第一次使用需要連上網路，請確認網路後重新整理頁面（F5）。': 'The tool failed to load. It needs an internet connection the first time — check your connection and reload the page (F5).',
   '需要密碼或已取消': 'password required or cancelled',
   '檔案損壞或不是 PDF': 'the file is damaged or not a PDF',
+  '檔案損壞或格式不對': 'the file is damaged or in an unexpected format',
+  '檔案裡沒有內容': 'the file has no content',
+  'Excel 檔裡沒有資料': 'the Excel file has no data',
+  '表格太大，請先在 Excel 設定列印範圍，或在 Excel 另存成 PDF': 'the sheet is too big — set a print area in Excel first, or save it as a PDF in Excel',
   '找不到檔案': 'file not found',
   '無法讀取這個檔案': 'this file cannot be read',
   '密碼不對，請再輸入一次：': 'Wrong password. Please try again:',
   '這份 PDF 有設開啟密碼，請輸入：': 'This PDF is password-protected. Enter the password:',
   '讀取檔案中…': 'Reading files…',
-  '＋ 加入 PDF／圖片': '+ Add PDFs / images',
+  '＋ 加入檔案': '+ Add files',
+  'PDF、圖片、Word、Excel 都可以': 'PDFs, images, Word and Excel files all work',
   '↶ 復原': '↶ Undo',
   '清空': 'Clear',
   '選取': 'Select',
@@ -953,7 +961,7 @@ const I18N_EN = {
   '中線': 'Cut at',
   '✂ 裁成兩半': '✂ Cut in half',
   '沒選頁時，旋轉和裁半會套用到全部頁': 'With no pages selected, rotate and halve apply to all pages',
-  '把 PDF 或圖片拖到這裡': 'Drop PDFs or images here',
+  '把 PDF、圖片、Word、Excel 拖到這裡': 'Drop PDFs, images, Word or Excel files here',
   '可以一次放很多個檔；點縮圖選取頁面、雙擊放大看、拖拉排順序': 'You can drop many files at once. Click a thumbnail to select, double-click to enlarge, drag to reorder.',
   '存成一個 PDF（全部頁）': 'Save as one PDF (all pages)',
   '只存選取的頁': 'Save selected pages',
@@ -982,7 +990,7 @@ const I18N_EN = {
   '已清空（可按復原）': 'Cleared (Undo available)',
   '產生 PDF 中…': 'Creating PDF…',
   '已存檔，請到「下載」資料夾查看': 'Saved — check your Downloads folder',
-  '開啟 PDF': 'Open PDF',
+  '開啟檔案': 'Open file',
   '已開啟的檔案，點選切換': 'Opened files — click to switch',
   '上一頁（PageUp）': 'Previous page (PageUp)',
   '下一頁（PageDown）': 'Next page (PageDown)',
@@ -990,8 +998,8 @@ const I18N_EN = {
   '放大': 'Zoom in',
   '－': '−',
   '＋': '+',
-  '把 PDF 拖到這裡': 'Drop a PDF here',
-  '或按左上角「開啟 PDF」。在任何一個分頁開過的檔案，這裡都能直接用，不用重選。': 'or click “Open PDF” at the top left. Files opened in any tab can be used here without picking them again.',
+  '把檔案拖到這裡': 'Drop a file here',
+  '或按左上角「開啟檔案」。PDF、圖片、Word、Excel 都可以；在任何一個分頁開過的檔案，這裡都能直接用，不用重選。': 'or click “Open file” at the top left. PDFs, images, Word and Excel files all work. Files opened in any tab can be used here without picking them again.',
   '還在取字中，請等做完或按「停止」再換檔': 'Still extracting text — wait until it finishes or click “Stop” before switching files',
   '目前這份加的字還沒存，確定要換檔嗎？': 'What you added to this file hasn’t been saved. Switch files anyway?',
   '請先在任一分頁開啟 PDF': 'Open a PDF in any tab first',
@@ -1450,7 +1458,11 @@ const I18N_EN_RE = [
   [/^塗銷的頁轉成圖片中（第 (\d+) 頁）…$/, 'Turning redacted pages into images (page $1)…'],
   [/^取出「(.+)」全部頁的文字$/, 'Extract text from all pages of “$1”'],
   [/^輸出約 (\d+) × (\d+) 像素$/, 'Output about $1 × $2 pixels'],
-  [/^「(.+)」不是 PDF 或圖片，已略過$/, '“$1” is not a PDF or image — skipped'],
+  [/^「(.+)」不是 PDF、圖片、Word 或 Excel，已略過$/, '“$1” is not a PDF, image, Word or Excel file — skipped'],
+  [/^「(.+)」是舊版的 Word／Excel 格式，請先在 Word／Excel 用「另存新檔」存成 \.docx／\.xlsx 再放進來$/, '“$1” is in the old Word/Excel format. In Word/Excel, use “Save As” to save it as .docx/.xlsx, then add it again.'],
+  [/^「(.+)」這種圖片瀏覽器讀不了，請先轉成 JPG 或 PNG 再放進來$/, 'The browser can’t read images like “$1” — convert it to JPG or PNG first.'],
+  [/^排版「(.+)」中…$/, 'Laying out “$1”…'],
+  [/^轉換「(.+)」中（第 (\d+)／(\d+) 頁）…$/, 'Converting “$1” (page $2 of $3)…'],
   [/^讀取「(.+)」…$/, 'Reading “$1”…'],
   [/^「(.+)」打不開：(.+)$/, (m, a, b) => `“${a}” could not be opened: ${T(b)}`],
   [/^(.+)（(\d+) 頁）$/, (m, a, n) => `${a} (${enPages(n)})`],
@@ -1610,6 +1622,866 @@ async function openFiles(files) {
   if (VIEWER_TABS.includes(curTab)) await vUse(used[0]);
   else if (!A.count() && !CT.running) await vUse(used[0]);
 }
+const isOfficeFile = f => /\.(docx|xlsx|xlsm|csv)$/i.test(f.name);
+const isOldOffice = f => /\.(doc|xls)$/i.test(f.name);
+const OX_DPI = 200;
+const R_NS = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+function oxErr(msg) { const e = new Error(msg); e.ox = true; return e; }
+const oxAttr = (n, k) => n ? n.getAttribute(k) : null;
+const oxKids = (n, name) => n ? [...n.children].filter(c => c.localName === name) : [];
+const oxKid = (n, name) => n ? [...n.children].find(c => c.localName === name) || null : null;
+const oxAll = (n, name) => n ? [...n.getElementsByTagNameNS('*', name)] : [];
+const oxPath = (n, ...names) => names.reduce((a, k) => oxKid(a, k), n);
+const oxR = (n, k) => n.getAttributeNS(R_NS, k) || n.getAttribute('r:' + k);
+async function oxXml(zip, path) {
+  const f = path && zip.file(path);
+  if (!f) return null;
+  const d = new DOMParser().parseFromString(await f.async('string'), 'application/xml');
+  return d.getElementsByTagName('parsererror').length ? null : d;
+}
+async function oxRels(zip, part) {
+  const dir = part.replace(/[^/]*$/, ''), m = new Map();
+  for (const r of oxAll(await oxXml(zip, dir + '_rels/' + part.slice(dir.length) + '.rels'), 'Relationship')) {
+    if (r.getAttribute('TargetMode') === 'External') continue;
+    const t = r.getAttribute('Target') || '', out = [];
+    for (const s of (t.startsWith('/') ? t.slice(1) : dir + t).split('/')) {
+      if (s === '..') out.pop(); else if (s && s !== '.') out.push(s);
+    }
+    m.set(r.getAttribute('Id'), out.join('/'));
+  }
+  return m;
+}
+const oxFind = (rels, re) => [...rels.values()].find(p => re.test(p)) || null;
+async function oxTheme(zip, path) {
+  const d = await oxXml(zip, path), sch = oxAll(d, 'clrScheme')[0];
+  const font = kind => {
+    const f = oxAll(d, kind)[0], hant = oxKids(f, 'font').find(x => x.getAttribute('script') === 'Hant');
+    return { latin: oxAttr(oxKid(f, 'latin'), 'typeface') || '', ea: oxAttr(oxKid(f, 'ea'), 'typeface') || oxAttr(hant, 'typeface') || '' };
+  };
+  return {
+    colors: sch ? [...sch.children].map(c => { const v = c.firstElementChild; return v && (v.getAttribute('lastClr') || v.getAttribute('val')); }) : [],
+    major: font('majorFont'), minor: font('minorFont')
+  };
+}
+const OX_IMG = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', bmp: 'image/bmp', webp: 'image/webp' };
+async function oxImgUrl(zip, path) {
+  const type = OX_IMG[(path.split('.').pop() || '').toLowerCase()], f = zip.file(path);
+  return type && f ? `data:${type};base64,` + await f.async('base64') : null;
+}
+const oxQ = s => s ? `"${String(s).replace(/["\\;{}]/g, '')}", ` : '';
+const oxFont = (a, e) => oxQ(a) + oxQ(e) + '"新細明體", PMingLiU, "Microsoft JhengHei", sans-serif';
+function oxTextW(font, s) {
+  const c = oxTextW.c || (oxTextW.c = document.createElement('canvas').getContext('2d'));
+  c.font = font;
+  return c.measureText(s).width;
+}
+const OX_CSS = '.ox{all:initial;display:block;background:#fff;color:#000;font:14.67px/1.2 "新細明體",PMingLiU,"Microsoft JhengHei",sans-serif;text-align:left}' +
+  '.ox *{all:unset;display:revert;box-sizing:border-box}' +
+  '.ox table{border-collapse:collapse;table-layout:fixed}.ox td{vertical-align:top;overflow:hidden}' +
+  '.ox .xl td{vertical-align:bottom;white-space:nowrap;padding:0 3px;line-height:1.2}' +
+  '.ox .wp{white-space:pre-wrap;overflow-wrap:break-word;tab-size:48px}.ox .wt td{overflow:visible}' +
+  '.ox img{display:inline-block;vertical-align:bottom}';
+const oxRoot = (...kids) => el('div', { class: 'ox' }, el('style', { text: OX_CSS }), ...kids);
+function oxHost() {
+  const h = el('div', { 'aria-hidden': 'true', 'data-noi18n': '' });
+  h.style.cssText = 'position:fixed;left:-30000px;top:0;visibility:hidden;pointer-events:none';
+  document.body.append(h);
+  return h;
+}
+const OX_BAD = /[\x00-\x08\x0B\x0C\x0E-\x1F\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g;
+async function oxCanvas(node, w, h, scale) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><foreignObject width="100%" height="100%">` +
+    new XMLSerializer().serializeToString(node).replace(OX_BAD, '') + '</foreignObject></svg>';
+  const img = new Image();
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  await img.decode();
+  const c = document.createElement('canvas');
+  c.width = Math.ceil(w * scale); c.height = Math.ceil(h * scale);
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+  ctx.drawImage(img, 0, 0, c.width, c.height);
+  return c;
+}
+async function oxPdf(pages, name) {
+  if (!pages.length) throw oxErr('檔案裡沒有內容');
+  const doc = await PDFLib.PDFDocument.create();
+  for (let i = 0; i < pages.length; i++) {
+    busy(`轉換「${name}」中（第 ${i + 1}／${pages.length} 頁）…`);
+    const p = pages[i];
+    const s = Math.min(clamp(p.dw / 72 * OX_DPI / p.w, 1, 4), Math.sqrt(24e6 / (p.w * p.h)));
+    const c = await oxCanvas(p.node, p.w, p.h, s);
+    const img = await doc.embedJpg(await canvasBytes(c, 'image/jpeg', 0.9));
+    doc.addPage([p.pw, p.ph]).drawImage(img, { x: p.x, y: p.ph - p.y - p.dh, width: p.dw, height: p.dh });
+  }
+  return doc.save();
+}
+async function officeToPdf(file) {
+  busy(`排版「${file.name}」中…`);
+  if (/\.csv$/i.test(file.name)) return csvToPdf(file);
+  let zip;
+  try { zip = await JSZip.loadAsync(file); } catch (e) { throw oxErr('檔案損壞或格式不對'); }
+  return /\.docx$/i.test(file.name) ? docxToPdf(zip, file.name) : xlsxToPdf(zip, file.name);
+}
+const XL_INDEXED = ('000000 FFFFFF FF0000 00FF00 0000FF FFFF00 FF00FF 00FFFF '.repeat(2) +
+  '800000 008000 000080 808000 800080 008080 C0C0C0 808080 9999FF 993366 FFFFCC CCFFFF 660066 FF8080 0066CC CCCCFF ' +
+  '000080 FF00FF FFFF00 00FFFF 800080 800000 008080 0000FF 00CCFF CCFFFF CCFFCC FFFF99 99CCFF FF99CC CC99FF FFCC99 ' +
+  '3366FF 33CCCC 99CC00 FFCC00 FF9900 FF6600 666699 969696 003366 339966 003300 333300 993300 993366 333399 333333 000000 FFFFFF').split(' ');
+const XL_FMT = { 0: 'General', 1: '0', 2: '0.00', 3: '#,##0', 4: '#,##0.00', 9: '0%', 10: '0.00%', 11: '0.00E+00', 14: 'yyyy/m/d', 15: 'd-mmm-yy',
+  16: 'd-mmm', 17: 'mmm-yy', 18: 'h:mm AM/PM', 19: 'h:mm:ss AM/PM', 20: 'h:mm', 21: 'h:mm:ss', 22: 'yyyy/m/d h:mm',
+  32: 'hh"時"mm"分"', 33: 'hh"時"mm"分"ss"秒"', 34: '上午/下午hh"時"mm"分"', 35: '上午/下午hh"時"mm"分"ss"秒"',
+  37: '#,##0;(#,##0)', 38: '#,##0;(#,##0)', 39: '#,##0.00;(#,##0.00)', 40: '#,##0.00;(#,##0.00)', 45: 'mm:ss', 46: '[h]:mm:ss', 47: 'mm:ss.0', 48: '0.0E+0', 49: '@' };
+const xlFmtOf = id => XL_FMT[id] || ((id >= 27 && id <= 36) || (id >= 50 && id <= 58) ? 'yyyy/m/d' : 'General');
+const XL_BORDER = { thin: '1px solid', medium: '2px solid', thick: '3px solid', double: '3px double', hair: '1px dotted', dotted: '1px dotted',
+  dashed: '1px dashed', dashDot: '1px dashed', dashDotDot: '1px dashed', mediumDashed: '2px dashed', mediumDashDot: '2px dashed', mediumDashDotDot: '2px dashed', slantDashDot: '2px dashed' };
+const XL_XF0 = { fmt: 'General', font: null, fill: null, border: {}, h: '', v: '', wrap: false, indent: 0 };
+const xlOn = v => /^(1|true)$/i.test(v || '');
+const xlK = (r, c) => r * 16384 + c;
+const xlCol = s => [...s.toUpperCase()].reduce((c, ch) => c * 26 + ch.charCodeAt(0) - 64, 0) - 1;
+function xlArea(s) {
+  const m = /^\$?([A-Z]*)\$?(\d*)(?::\$?([A-Z]*)\$?(\d*))?$/i.exec(String(s || '').replace(/^.*!/, '').trim());
+  if (!m || (!m[1] && !m[2])) return null;
+  const [, a, b, c = a, d = b] = m;
+  return { c0: a ? xlCol(a) : 0, r0: b ? b - 1 : 0, c1: c ? xlCol(c) : 16383, r1: d ? d - 1 : 1048575 };
+}
+const xlText = si => oxAll(si, 't').filter(t => t.parentNode.localName !== 'rPh').map(t => t.textContent).join('')
+  .replace(/_x([0-9a-f]{4})_/gi, (m, h) => String.fromCharCode(parseInt(h, 16)));
+function xlColor(c, theme) {
+  if (!c) return null;
+  const rgb = c.getAttribute('rgb'), th = c.getAttribute('theme'), ix = c.getAttribute('indexed');
+  let hex = null;
+  if (rgb) hex = rgb.slice(-6);
+  else if (th != null) hex = theme[+th < 4 ? [1, 0, 3, 2][+th] : +th];
+  else if (ix != null) hex = XL_INDEXED[+ix];
+  if (!hex || !/^[0-9a-f]{6}$/i.test(hex)) return null;
+  const tint = parseFloat(c.getAttribute('tint')) || 0;
+  const v = [0, 2, 4].map(i => parseInt(hex.slice(i, i + 2), 16)).map(x => Math.round(tint < 0 ? x * (1 + tint) : x + (255 - x) * tint));
+  return `rgb(${v.join(',')})`;
+}
+function xlStyles(doc, colors) {
+  const fmts = new Map(oxAll(doc, 'numFmt').map(n => [+n.getAttribute('numFmtId'), n.getAttribute('formatCode')]));
+  const fonts = oxKids(oxAll(doc, 'fonts')[0], 'font').map(f => {
+    const val = k => oxAttr(oxKid(f, k), 'val'), on = k => !!oxKid(f, k) && !/^(0|false)$/.test(val(k) || '');
+    return { b: on('b'), i: on('i'), u: !!oxKid(f, 'u') && val('u') !== 'none', s: on('strike'), sz: parseFloat(val('sz')) || 11, color: xlColor(oxKid(f, 'color'), colors), name: val('name') || '' };
+  });
+  const fills = oxKids(oxAll(doc, 'fills')[0], 'fill').map(f => {
+    const p = oxKid(f, 'patternFill');
+    return oxAttr(p, 'patternType') === 'solid' ? xlColor(oxKid(p, 'fgColor'), colors) : null;
+  });
+  const borders = oxKids(oxAll(doc, 'borders')[0], 'border').map(b => Object.fromEntries(['left', 'right', 'top', 'bottom'].map(k => {
+    const n = oxKid(b, k), w = n && XL_BORDER[n.getAttribute('style')];
+    return [k, w ? `${w} ${xlColor(oxKid(n, 'color'), colors) || '#000'}` : ''];
+  })));
+  const xfs = oxKids(oxAll(doc, 'cellXfs')[0], 'xf').map(x => {
+    const a = oxKid(x, 'alignment'), id = +x.getAttribute('numFmtId') || 0;
+    return { fmt: fmts.get(id) || xlFmtOf(id), font: fonts[+x.getAttribute('fontId') || 0] || null, fill: fills[+x.getAttribute('fillId') || 0] || null,
+      border: borders[+x.getAttribute('borderId') || 0] || {}, h: oxAttr(a, 'horizontal') || '', v: oxAttr(a, 'vertical') || '',
+      wrap: xlOn(oxAttr(a, 'wrapText')), indent: +oxAttr(a, 'indent') || 0 };
+  });
+  return { xfs, font0: fonts[0] || { sz: 11, name: '' } };
+}
+function xlFormat(v, code, d1904) {
+  const secs = String(code || 'General').split(';');
+  let sec = secs[0], sign = '';
+  if (v < 0 && secs.length > 1) { sec = secs[1]; v = -v; }
+  else if (v === 0 && secs.length > 2) sec = secs[2];
+  else if (v < 0) { sign = '-'; v = -v; }
+  if (sec === '' && secs.length > 1) return '';
+  sec = sec.replace(/\[([^\]]*)\]/g, (m, x) => x[0] === '$' ? '"' + x.slice(1).split('-')[0] + '"' : /^[hms]+$/i.test(x) ? '\u0001' + x : '');
+  const bare = sec.replace(/"[^"]*"|\\./g, '').trim();
+  if (!bare || /^general$/i.test(bare) || bare === '@') return sign + xlGeneral(v);
+  if (/[ydhs]/i.test(bare) || (/m/i.test(bare) && !/[0#?]/.test(bare))) return xlDate(sign ? -v : v, sec, d1904);
+  return sign + xlNum(v, sec);
+}
+function xlGeneral(v) {
+  if (Number.isInteger(v) && Math.abs(v) < 1e11) return String(v);
+  if (Math.abs(v) >= 1e11 || (v && Math.abs(v) < 1e-9)) return v.toExponential(5).replace(/\.?0+e/, 'e').toUpperCase().replace(/E([+-])(\d)$/, 'E$10$2');
+  return String(+v.toPrecision(10));
+}
+function xlNum(v, sec) {
+  let pre = '', core = '', post = '', state = 0, pct = 0;
+  for (const t of sec.match(/"[^"]*"|\\.|[_*].|[0#?]|[Ee][+-]|./g) || []) {
+    if ((/^[0#?]$/.test(t) || (state === 1 && /^([.,]|[Ee][+-])$/.test(t))) && state < 2) { core += t; state = 1; continue; }
+    if (state === 1) state = 2;
+    if (t === '%') pct++;
+    const lit = t[0] === '"' ? t.slice(1, -1) : t[0] === '\\' ? t[1] : t[0] === '_' ? ' ' : t[0] === '*' ? '' : t;
+    if (state === 0) pre += lit; else post += lit;
+  }
+  if (!core) return pre + post;
+  const [mant, ex] = core.split(/[Ee][+-]/), [ip, dp = ''] = mant.split('.');
+  const maxD = (dp.match(/[0#?]/g) || []).length, minD = (dp.match(/0/g) || []).length;
+  const a = v * 100 ** pct;
+  let s;
+  if (ex != null) s = a.toExponential(maxD).replace(/e([+-])(\d+)$/, (m, g, n) => 'E' + g + n.padStart(ex.length, '0'));
+  else {
+    s = a.toLocaleString('en-US', { minimumFractionDigits: minD, maximumFractionDigits: maxD, useGrouping: ip.includes(','), minimumIntegerDigits: clamp((ip.match(/0/g) || []).length, 1, 21) });
+    if (!/0/.test(ip)) s = s.replace(/^0(?=\.|$)/, '');
+  }
+  return pre + s + post;
+}
+function xlDate(v, sec, d1904) {
+  if (!(v >= 0 && v <= 2958465)) return '#####';
+  const d = new Date(Math.round((v + (d1904 ? 1462 : 0) - 25569) * 864e5));
+  const Y = d.getUTCFullYear(), M = d.getUTCMonth(), D = d.getUTCDate(), W = d.getUTCDay(), H = d.getUTCHours(), mi = d.getUTCMinutes(), S = d.getUTCSeconds();
+  const toks = sec.match(/"[^"]*"|\\.|\u0001[hms]+|y+|m+|d+|h+|s+(?:\.0+)?|AM\/PM|A\/P|上午\/下午|aaaa|aaa|e+|./gi) || [];
+  const ampm = toks.some(t => /^(AM\/PM|A\/P|上午\/下午)$/i.test(t)), part = t => /^\u0001?[ydhms]/i.test(t) && !/^am/i.test(t);
+  const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const DAY = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const p2 = (n, t) => t.length > 1 ? String(n).padStart(2, '0') : String(n);
+  return toks.map((t, i) => {
+    const lo = t.toLowerCase();
+    if (t[0] === '"') return t.slice(1, -1);
+    if (t[0] === '\\') return t[1];
+    if (t[0] === '\u0001') return String(Math.floor(v * { h: 24, m: 1440, s: 86400 }[lo[1]] + 1e-9));
+    if (lo[0] === 'y' || lo[0] === 'e') return lo.length <= 2 && lo[0] === 'y' ? String(Y).slice(-2) : String(Y);
+    if (lo[0] === 'm') {
+      const prev = toks.slice(0, i).reverse().find(part), next = toks.slice(i + 1).find(part);
+      if ((prev && /^\u0001?h/i.test(prev)) || (next && /^\u0001?s/i.test(next))) return p2(mi, lo);
+      return lo.length >= 5 ? MON[M][0] : lo.length === 4 ? MON[M] : lo.length === 3 ? MON[M].slice(0, 3) : p2(M + 1, lo);
+    }
+    if (lo[0] === 'd') return lo.length >= 4 ? DAY[W] : lo.length === 3 ? DAY[W].slice(0, 3) : p2(D, lo);
+    if (lo[0] === 'h') return p2(ampm ? H % 12 || 12 : H, lo);
+    if (lo[0] === 's') { const f = lo.split('.')[1]; return p2(S, lo.split('.')[0]) + (f ? '.' + String(d.getUTCMilliseconds()).padStart(3, '0').slice(0, f.length) : ''); }
+    if (lo === 'am/pm') return H < 12 ? 'AM' : 'PM';
+    if (lo === 'a/p') return H < 12 ? 'A' : 'P';
+    if (t === '上午/下午') return H < 12 ? '上午' : '下午';
+    if (lo === 'aaaa') return '星期' + '日一二三四五六'[W];
+    if (lo === 'aaa') return '日一二三四五六'[W];
+    return t;
+  }).join('');
+}
+async function xlsxToPdf(zip, name) {
+  const wbPath = 'xl/workbook.xml', wb = await oxXml(zip, wbPath);
+  if (!wb) throw oxErr('檔案損壞或格式不對');
+  const rels = await oxRels(zip, wbPath);
+  const theme = await oxTheme(zip, oxFind(rels, /theme\d*\.xml$/i));
+  const st = xlStyles(await oxXml(zip, oxFind(rels, /styles\.xml$/i)), theme.colors);
+  const ctx = { st, strs: oxKids((await oxXml(zip, oxFind(rels, /sharedStrings\.xml$/i)) || {}).documentElement, 'si').map(xlText),
+    d1904: xlOn(oxAttr(oxAll(wb, 'workbookPr')[0], 'date1904')) };
+  const names = oxAll(wb, 'definedName'), pages = [], host = oxHost();
+  try {
+    for (const [i, s] of oxAll(wb, 'sheet').entries()) {
+      if (/hidden/i.test(s.getAttribute('state') || '')) continue;
+      const def = n => (names.find(d => d.getAttribute('name') === n && d.getAttribute('localSheetId') === String(i)) || {}).textContent || '';
+      const sh = await oxXml(zip, rels.get(oxR(s, 'id')));
+      const m = sh && xlSheet(sh, { ...ctx, area: def('_xlnm.Print_Area'), titles: def('_xlnm.Print_Titles') });
+      if (m) pages.push(...xlLayout(m, host));
+    }
+  } finally { host.remove(); }
+  if (!pages.length) throw oxErr('Excel 檔裡沒有資料');
+  return oxPdf(pages, name);
+}
+function xlSheet(sh, ctx) {
+  const { st } = ctx, cells = new Map(), rowInfo = new Map();
+  let r0 = Infinity, c0 = Infinity, r1 = -1, c1 = -1, ri = -1;
+  for (const row of oxAll(sh, 'row')) {
+    ri = row.getAttribute('r') ? +row.getAttribute('r') - 1 : ri + 1;
+    rowInfo.set(ri, { ht: parseFloat(row.getAttribute('ht')) || 0, hidden: xlOn(row.getAttribute('hidden')) });
+    let ci = -1;
+    for (const c of oxKids(row, 'c')) {
+      const p = xlArea(c.getAttribute('r'));
+      ci = p ? p.c0 : ci + 1;
+      if (ci > 16383) continue;
+      const xf = st.xfs[+c.getAttribute('s') || 0] || XL_XF0;
+      const t = c.getAttribute('t') || 'n', ve = oxKid(c, 'v'), vt = ve ? ve.textContent : '';
+      let text = '', num = false;
+      if (t === 's') text = ctx.strs[+vt] || '';
+      else if (t === 'inlineStr') text = xlText(oxKid(c, 'is'));
+      else if (t === 'b') text = vt ? (vt === '1' ? 'TRUE' : 'FALSE') : '';
+      else if (t === 'str' || t === 'e' || t === 'd') text = vt;
+      else if (vt !== '' && isFinite(+vt)) { text = xlFormat(+vt, xf.fmt, ctx.d1904); num = true; }
+      const b = xf.border;
+      if (text !== '' || xf.fill || b.left || b.right || b.top || b.bottom) {
+        cells.set(xlK(ri, ci), { text, xf, num, bool: t === 'b' });
+        r0 = Math.min(r0, ri); r1 = Math.max(r1, ri); c0 = Math.min(c0, ci); c1 = Math.max(c1, ci);
+      }
+    }
+  }
+  const merges = oxAll(sh, 'mergeCell').map(n => xlArea(n.getAttribute('ref'))).filter(Boolean);
+  for (const g of merges) if (cells.has(xlK(g.r0, g.c0))) {
+    if (g.r1 < 1048575) r1 = Math.max(r1, g.r1);
+    if (g.c1 < 16383) c1 = Math.max(c1, g.c1);
+  }
+  const pa = ctx.area && xlArea(ctx.area.split(',')[0]);
+  if (pa) { r0 = pa.r0; c0 = pa.c0; if (pa.r1 < 1048575) r1 = pa.r1; if (pa.c1 < 16383) c1 = pa.c1; }
+  if (r1 < r0 || c1 < c0) return null;
+  if (r1 - r0 > 30000 || c1 - c0 > 1000 || (r1 - r0 + 1) * (c1 - c0 + 1) > 400000) throw oxErr('表格太大，請先在 Excel 設定列印範圍，或在 Excel 另存成 PDF');
+  const fp = oxAll(sh, 'sheetFormatPr')[0], f0 = st.font0;
+  const mdw = Math.round(oxTextW(`${f0.sz * 4 / 3}px ${oxFont(f0.name)}`, '0')) || 7;
+  const colPxOf = w => Math.trunc((256 * w + Math.trunc(128 / mdw)) / 256 * mdw);
+  const base = parseFloat(oxAttr(fp, 'baseColWidth'));
+  const defW = parseFloat(oxAttr(fp, 'defaultColWidth')) || (isNaN(base) ? 8.43 : base + 0.43) + 5 / mdw;
+  const colW = new Map();
+  for (const n of oxAll(sh, 'col')) {
+    const w = xlOn(n.getAttribute('hidden')) ? 0 : parseFloat(n.getAttribute('width'));
+    for (let c = Math.max(+n.getAttribute('min') - 1, c0); c <= Math.min(+n.getAttribute('max') - 1, c1); c++) colW.set(c, isNaN(w) ? defW : w);
+  }
+  const colPx = c => colPxOf(colW.has(c) ? colW.get(c) : defW);
+  const cols = [], rows = [];
+  for (let c = c0; c <= c1; c++) if (colPx(c) > 0) cols.push(c);
+  for (let r = r0; r <= r1; r++) if (!(rowInfo.get(r) || {}).hidden) rows.push(r);
+  if (!cols.length || !rows.length) return null;
+  const ps = oxAll(sh, 'pageSetup')[0], pm = oxAll(sh, 'pageMargins')[0], po = oxAll(sh, 'printOptions')[0];
+  const mg = (k, d) => { const v = parseFloat(oxAttr(pm, k)); return (isNaN(v) ? d : v) * 72; };
+  const ori = oxAttr(ps, 'orientation');
+  const tr = (ctx.titles.split(',').find(s => /\$?\d+:\$?\d+$/.test(s) && !/[A-Z]\$?\d/i.test(s.replace(/^.*!/, ''))) || '');
+  const ta = tr && xlArea(tr);
+  if (ta && ta.r1 < r0) for (let r = Math.min(ta.r1, r0 - 1); r >= ta.r0; r--) if (!(rowInfo.get(r) || {}).hidden) rows.unshift(r);
+  return {
+    cells, rows, cols, colPx, merges, font0: f0, grid: xlOn(oxAttr(po, 'gridLines')),
+    rowPx: r => ((rowInfo.get(r) || {}).ht || 0) * 4 / 3, defRowPx: (parseFloat(oxAttr(fp, 'defaultRowHeight')) || 15) * 4 / 3,
+    titles: ta ? [ta.r0, ta.r1] : null,
+    breaks: new Set(oxAll(oxAll(sh, 'rowBreaks')[0], 'brk').map(b => +b.getAttribute('id'))),
+    setup: {
+      land: ori === 'landscape' ? true : ori === 'portrait' ? false : null,
+      paper: oxAttr(ps, 'paperSize') === '1' ? [612, 792] : [595.28, 841.89],
+      scale: clamp((parseFloat(oxAttr(ps, 'scale')) || 100) / 100, 0.1, 4),
+      fitH: xlOn(oxAttr(oxAll(sh, 'pageSetUpPr')[0], 'fitToPage')) && (oxAttr(ps, 'fitToHeight') || '1') === '1',
+      mg: { l: mg('left', 0.7), r: mg('right', 0.7), t: mg('top', 0.75), b: mg('bottom', 0.75) },
+      hc: xlOn(oxAttr(po, 'horizontalCentered')), vc: xlOn(oxAttr(po, 'verticalCentered'))
+    }
+  };
+}
+function xlCell(td, cell, f0) {
+  const { xf } = cell, f = xf.font || f0, s = td.style;
+  td.textContent = cell.text;
+  if (f !== f0) { s.fontFamily = oxFont(f.name); s.fontSize = f.sz * 4 / 3 + 'px'; }
+  if (f.b) s.fontWeight = 'bold';
+  if (f.i) s.fontStyle = 'italic';
+  const deco = [f.u && 'underline', f.s && 'line-through'].filter(Boolean).join(' ');
+  if (deco) s.textDecoration = deco;
+  if (f.color) s.color = f.color;
+  if (xf.fill) s.background = xf.fill;
+  for (const k of ['left', 'right', 'top', 'bottom']) if (xf.border[k]) s['border' + k[0].toUpperCase() + k.slice(1)] = xf.border[k];
+  const h = xf.h || 'general';
+  s.textAlign = h === 'general' ? (cell.num ? 'right' : cell.bool ? 'center' : 'left')
+    : h === 'center' || h === 'centerContinuous' ? 'center' : h === 'right' ? 'right' : h === 'justify' || h === 'distributed' ? 'justify' : 'left';
+  s.verticalAlign = xf.v === 'top' ? 'top' : xf.v === 'center' ? 'middle' : 'bottom';
+  if (xf.wrap) { s.whiteSpace = 'pre-wrap'; s.overflowWrap = 'anywhere'; }
+  if (xf.indent) s.paddingLeft = 3 + xf.indent * 10 + 'px';
+}
+function xlLayout(m, host) {
+  const f0 = m.font0, table = el('table', { class: 'xl' });
+  table.style.fontFamily = oxFont(f0.name); table.style.fontSize = f0.sz * 4 / 3 + 'px';
+  table.style.width = m.cols.reduce((a, c) => a + m.colPx(c), 0) + 'px';
+  const cg = el('colgroup', null, m.cols.map(c => { const e = el('col'); e.style.width = m.colPx(c) + 'px'; return e; }));
+  table.append(cg);
+  const span = new Map(), covered = new Set(), rowIx = new Map(m.rows.map((r, i) => [r, i]));
+  const nb = new Uint8Array(m.rows.length);
+  for (const g of m.merges) {
+    const rs = m.rows.filter(r => r >= g.r0 && r <= g.r1), cs = m.cols.filter(c => c >= g.c0 && c <= g.c1);
+    if (!rs.length || !cs.length) continue;
+    span.set(xlK(rs[0], cs[0]), { rs: rs.length, cs: cs.length, g });
+    for (const r of rs) for (const c of cs) if (r !== rs[0] || c !== cs[0]) covered.add(xlK(r, c));
+    for (let i = rowIx.get(rs[0]); i < rowIx.get(rs[rs.length - 1]); i++) nb[i] = 1;
+  }
+  const trs = m.rows.map(r => {
+    const tr = el('tr');
+    tr.style.height = (m.rowPx(r) || m.defRowPx) + 'px';
+    m.cols.forEach((c, ci) => {
+      const k = xlK(r, c);
+      if (covered.has(k)) return;
+      const cell = m.cells.get(k), sp = span.get(k), td = el('td');
+      if (sp) { if (sp.rs > 1) td.rowSpan = sp.rs; if (sp.cs > 1) td.colSpan = sp.cs; }
+      if (m.grid) td.style.border = '1px solid #bfbfbf';
+      if (cell) {
+        xlCell(td, cell, f0);
+        if (sp) {
+          const R = m.cells.get(xlK(r, sp.g.c1)), B = m.cells.get(xlK(sp.g.r1, c));
+          if (R && R.xf.border.right) td.style.borderRight = R.xf.border.right;
+          if (B && B.xf.border.bottom) td.style.borderBottom = B.xf.border.bottom;
+        }
+        const nx = m.cols[ci + 1];
+        if (!sp && !cell.xf.wrap && nx != null && !covered.has(xlK(r, nx)) && !(m.cells.get(xlK(r, nx)) || {}).text) td.style.overflow = 'visible';
+      }
+      tr.append(td);
+    });
+    return tr;
+  });
+  const root = oxRoot(table);
+  host.append(root);
+  trs.forEach(tr => table.append(tr));
+  const hs = trs.map(tr => tr.getBoundingClientRect().height), TW = table.getBoundingClientRect().width;
+  root.remove();
+  const S = m.setup, [p0, p1] = S.paper;
+  const land = S.land != null ? S.land : TW * 0.75 * S.scale > p0 - S.mg.l - S.mg.r;
+  const pw = land ? p1 : p0, ph = land ? p0 : p1, cw = pw - S.mg.l - S.mg.r, ch = ph - S.mg.t - S.mg.b;
+  let k = 0.75 * S.scale;
+  if (S.fitH) k = Math.min(k, ch / hs.reduce((a, b) => a + b, 0));
+  k = Math.min(k, cw / TW);
+  let tIdx = m.titles ? m.rows.map((r, i) => r >= m.titles[0] && r <= m.titles[1] ? i : -1).filter(i => i >= 0) : [];
+  let tH = tIdx.reduce((a, i) => a + hs[i], 0);
+  const cap = ch / k, groups = [];
+  if (tH > cap * 0.5) { tIdx = []; tH = 0; }
+  let cur = [], acc = 0;
+  for (let i = 0; i < m.rows.length; i++) {
+    let j = i, h = hs[i];
+    while (nb[j] && j < m.rows.length - 1) h += hs[++j];
+    const room = cap - (groups.length && tIdx.length ? tH : 0);
+    if (cur.length && (acc + h > room + 0.5 || m.breaks.has(m.rows[i]))) { groups.push(cur); cur = []; acc = 0; }
+    for (let t = i; t <= j; t++) cur.push(t);
+    acc += h; i = j;
+  }
+  if (cur.length) groups.push(cur);
+  return groups.map((g, gi) => {
+    const t = table.cloneNode(false);
+    t.append(cg.cloneNode(true));
+    if (gi && tIdx.length && !tIdx.includes(g[0])) for (const i of tIdx) t.append(trs[i].cloneNode(true));
+    for (const i of g) t.append(trs[i].cloneNode(true));
+    const node = oxRoot(t);
+    host.append(node);
+    const b = t.getBoundingClientRect();
+    node.remove();
+    const w = Math.ceil(b.width), h = Math.ceil(b.height);
+    node.style.width = w + 'px'; node.style.height = h + 'px';
+    const kk = Math.min(k, ch / h), dw = w * kk, dh = h * kk;
+    return { node, w, h, pw, ph, dw, dh, x: S.mg.l + (S.hc ? (cw - dw) / 2 : 0), y: S.mg.t + (S.vc ? (ch - dh) / 2 : 0) };
+  });
+}
+function csvParse(s) {
+  const head = s.slice(0, s.indexOf('\n') >>> 0);
+  const sep = (head.match(/\t/g) || []).length > (head.match(/,/g) || []).length ? '\t' : ',';
+  const rows = [];
+  let row = [], f = '', q = false;
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (q) { if (ch !== '"') f += ch; else if (s[i + 1] === '"') { f += '"'; i++; } else q = false; }
+    else if (ch === '"' && f === '') q = true;
+    else if (ch === sep) { row.push(f); f = ''; }
+    else if (ch === '\n' || ch === '\r') { if (ch === '\r' && s[i + 1] === '\n') i++; row.push(f); rows.push(row); row = []; f = ''; }
+    else f += ch;
+  }
+  if (f !== '' || row.length) { row.push(f); rows.push(row); }
+  return rows;
+}
+async function csvToPdf(file) {
+  const buf = new Uint8Array(await file.arrayBuffer());
+  let text;
+  try { text = new TextDecoder('utf-8', { fatal: true }).decode(buf); } catch (e) { text = new TextDecoder('big5').decode(buf); }
+  const data = csvParse(text.replace(/^\uFEFF/, ''));
+  while (data.length && !data[data.length - 1].some(Boolean)) data.pop();
+  if (data.length > 30000) throw oxErr('表格太大，請先在 Excel 設定列印範圍，或在 Excel 另存成 PDF');
+  const font0 = { sz: 11, name: '' }, xf = { ...XL_XF0, wrap: true }, cells = new Map(), wid = [];
+  const font = `${font0.sz * 4 / 3}px ${oxFont('')}`;
+  data.forEach((row, r) => row.forEach((t, c) => {
+    if (t === '') return;
+    cells.set(xlK(r, c), { text: t, xf, num: /^[-+]?[\d,]*\.?\d+%?$/.test(t.trim()) });
+    if (r < 500) wid[c] = Math.max(wid[c] || 0, oxTextW(font, t));
+  }));
+  if (!cells.size) throw oxErr('檔案裡沒有內容');
+  const nc = Math.max(...data.map(r => r.length));
+  if (nc > 1000) throw oxErr('表格太大，請先在 Excel 設定列印範圍，或在 Excel 另存成 PDF');
+  const host = oxHost();
+  try {
+    return await oxPdf(xlLayout({
+      cells, rows: data.map((r, i) => i), cols: [...Array(nc).keys()], colPx: c => clamp(Math.ceil((wid[c] || 0) + 12), 40, 320), merges: [], font0, grid: true,
+      rowPx: () => 0, defRowPx: 20, titles: [0, 0], breaks: new Set(),
+      setup: { land: null, paper: [595.28, 841.89], scale: 1, fitH: false, mg: { l: 50, r: 50, t: 54, b: 54 }, hc: false, vc: false }
+    }, host), file.name);
+  } finally { host.remove(); }
+}
+const W_HL = { yellow: '#ff0', green: '#0f0', cyan: '#0ff', magenta: '#f0f', blue: '#00f', red: '#f00', darkBlue: '#000080', darkCyan: '#008080', darkGreen: '#008000',
+  darkMagenta: '#800080', darkRed: '#800000', darkYellow: '#808000', darkGray: '#808080', lightGray: '#c0c0c0', black: '#000', white: '#fff' };
+const W_SYM = { f0a8: '☐', f06f: '☐', f0fe: '☑', f078: '☒', f0fb: '☒', f0fc: '✓', f0b7: '•', f06c: '●', f06e: '■', f0a7: '■', f0d8: '➢', f076: '❖', f0b2: '☐' };
+const wv = (n, k = 'val') => n ? n.getAttribute('w:' + k) : null;
+const wOn = n => !!n && !/^(0|false|off)$/i.test(wv(n) || '');
+const twPx = v => (parseFloat(v) || 0) / 15;
+const wHex = v => v && /^[0-9a-f]{6}$/i.test(v) ? '#' + v : null;
+const wBullet = t => [...t].map(ch => { const c = ch.charCodeAt(0); return c >= 0xF000 ? W_SYM[c.toString(16)] || '•' : ch === 'o' ? '○' : ch === '§' ? '■' : ch; }).join('') || '•';
+function wRun(rPr, o, th) {
+  if (rPr) for (const n of rPr.children) switch (n.localName) {
+    case 'b': o.b = wOn(n); break;
+    case 'i': o.i = wOn(n); break;
+    case 'u': o.u = !!wv(n) && wv(n) !== 'none'; break;
+    case 'strike': case 'dstrike': o.s = wOn(n); break;
+    case 'caps': o.caps = wOn(n); break;
+    case 'vanish': o.hide = wOn(n); break;
+    case 'sz': o.sz = (+wv(n) || 20) / 2; break;
+    case 'color': o.color = wHex(wv(n)); break;
+    case 'highlight': o.hl = W_HL[wv(n)] || null; break;
+    case 'shd': { const f = wHex(wv(n, 'fill')); if (f) o.hl = f; break; }
+    case 'vertAlign': o.va = wv(n); break;
+    case 'rFonts': {
+      const t = k => { const v = wv(n, k); return v && th ? (/^major/.test(v) ? th.major : th.minor)[/EastAsia/.test(v) ? 'ea' : 'latin'] : null; };
+      const a = wv(n, 'ascii') || t('asciiTheme'), e = wv(n, 'eastAsia') || t('eastAsiaTheme');
+      if (a) o.fa = a;
+      if (e) o.fe = e;
+      break;
+    }
+  }
+  return o;
+}
+function wPara(pPr, o) {
+  if (pPr) for (const n of pPr.children) switch (n.localName) {
+    case 'jc': o.jc = wv(n); break;
+    case 'spacing': for (const k of ['before', 'after', 'line', 'lineRule', 'beforeLines', 'afterLines']) if (wv(n, k) != null) o[k] = wv(n, k); break;
+    case 'ind': {
+      if (wv(n, 'firstLine') != null || wv(n, 'firstLineChars') != null) o.hang = o.hangCh = 0;
+      if (wv(n, 'hanging') != null || wv(n, 'hangingChars') != null) o.first = o.firstCh = 0;
+      for (const [k, a] of [['start', 'left'], ['left', 'left'], ['end', 'right'], ['right', 'right'], ['firstLine', 'first'], ['hanging', 'hang'],
+        ['startChars', 'leftCh'], ['leftChars', 'leftCh'], ['firstLineChars', 'firstCh'], ['hangingChars', 'hangCh']]) if (wv(n, k) != null) o[a] = +wv(n, k);
+      break;
+    }
+    case 'numPr': {
+      const id = wv(oxKid(n, 'numId')), lv = wv(oxKid(n, 'ilvl'));
+      o.num = { ...o.num, ...(id != null ? { id } : {}), ...(lv != null ? { lvl: +lv } : {}) };
+      break;
+    }
+    case 'pageBreakBefore': o.pbb = wOn(n); break;
+    case 'contextualSpacing': o.cs = wOn(n); break;
+    case 'snapToGrid': o.snap = wOn(n); break;
+    case 'shd': o.shd = wHex(wv(n, 'fill')); break;
+    case 'pBdr': o.bdr = wBorders(n); break;
+  }
+  return o;
+}
+function wBorder(b) {
+  const v = wv(b);
+  if (!v || v === 'nil' || v === 'none') return 'none';
+  const px = Math.max(1, (+wv(b, 'sz') || 4) / 8 * 4 / 3), col = wHex(wv(b, 'color')) || '#000';
+  const style = /double/i.test(v) ? 'double' : /dash/i.test(v) ? 'dashed' : /dot/i.test(v) ? 'dotted' : 'solid';
+  return `${style === 'double' ? Math.max(3, px) : px}px ${style} ${col}`;
+}
+function wBorders(n) {
+  const o = {};
+  if (n) for (const b of n.children) o[{ start: 'left', end: 'right' }[b.localName] || b.localName] = wBorder(b);
+  return o;
+}
+function wMar(n) {
+  const o = {};
+  if (n) for (const c of n.children) if (!wv(c, 'type') || wv(c, 'type') === 'dxa') o[{ start: 'left', end: 'right' }[c.localName] || c.localName] = twPx(wv(c, 'w'));
+  return o;
+}
+async function wStyles(zip, path, th) {
+  const d = await oxXml(zip, path), root = d && d.documentElement;
+  const map = new Map(oxAll(d, 'style').map(s => [wv(s, 'styleId'), s]));
+  const chain = (id, seen = new Set()) => {
+    const s = id != null && map.get(id);
+    if (!s || seen.has(id)) return [];
+    seen.add(id);
+    return [...chain(wv(oxKid(s, 'basedOn')), seen), s];
+  };
+  const deflt = type => wv([...map.values()].find(s => wv(s, 'type') === type && /^(1|true)$/.test(wv(s, 'default') || '')), 'styleId');
+  const cache = new Map();
+  const get = (id, type) => {
+    const key = type + '|' + id;
+    if (!cache.has(key)) {
+      let ss = chain(id);
+      if (!ss.length) ss = chain(deflt(type));
+      const o = { p: {}, r: {}, bdr: {}, mar: {} };
+      for (const s of ss) {
+        wPara(oxKid(s, 'pPr'), o.p); wRun(oxKid(s, 'rPr'), o.r, th);
+        const tp = oxKid(s, 'tblPr');
+        Object.assign(o.bdr, wBorders(oxKid(tp, 'tblBorders'))); Object.assign(o.mar, wMar(oxKid(tp, 'tblCellMar')));
+      }
+      cache.set(key, o);
+    }
+    return cache.get(key);
+  };
+  return { defP: wPara(oxPath(root, 'docDefaults', 'pPrDefault', 'pPr'), {}), defR: wRun(oxPath(root, 'docDefaults', 'rPrDefault', 'rPr'), {}, th),
+    para: id => get(id, 'paragraph'), char: id => get(id, 'character').r, table: id => get(id, 'table') };
+}
+function wNumFmt(n, fmt) {
+  const CJK = '〇一二三四五六七八九';
+  const roman = x => [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]
+    .reduce((s, [v, r]) => { while (x >= v) { s += r; x -= v; } return s; }, '');
+  const letter = () => String.fromCharCode(65 + (n - 1) % 26).repeat(Math.floor((n - 1) / 26) + 1);
+  switch (fmt) {
+    case 'lowerLetter': return letter().toLowerCase();
+    case 'upperLetter': return letter();
+    case 'lowerRoman': return roman(n).toLowerCase();
+    case 'upperRoman': return roman(n);
+    case 'decimalZero': return String(n).padStart(2, '0');
+    case 'decimalFullWidth': case 'decimalFullWidth2': return String(n).replace(/\d/g, x => String.fromCharCode(0xFF10 + +x));
+    case 'ideographTraditional': return '甲乙丙丁戊己庚辛壬癸'[(n - 1) % 10] || String(n);
+    case 'ideographZodiac': return '子丑寅卯辰巳午未申酉戌亥'[(n - 1) % 12] || String(n);
+    case 'decimalEnclosedCircle': case 'decimalEnclosedCircleChinese': return n >= 1 && n <= 20 ? String.fromCharCode(0x2460 + n - 1) : String(n);
+    case 'taiwaneseCounting': case 'taiwaneseCountingThousand': case 'chineseCounting': case 'chineseCountingThousand': case 'ideographDigital': case 'japaneseCounting':
+      return n < 10 ? CJK[n] : n < 100 ? (n >= 20 ? CJK[Math.floor(n / 10)] : '') + '十' + (n % 10 ? CJK[n % 10] : '') : String(n);
+    default: return String(n);
+  }
+}
+async function wNumbering(zip, path, th) {
+  const d = await oxXml(zip, path);
+  const abs = new Map(oxAll(d, 'abstractNum').map(a => [wv(a, 'abstractNumId'), a]));
+  const nums = new Map(oxAll(d, 'num').map(n => [wv(n, 'numId'), n]));
+  const counters = new Map();
+  return (id, lvl) => {
+    const num = nums.get(id), a = num && abs.get(wv(oxKid(num, 'abstractNumId')));
+    const lvOf = l => oxKids(a, 'lvl').find(x => +wv(x, 'ilvl') === l);
+    const lv = a && lvOf(lvl);
+    if (!lv) return null;
+    const startOf = l => {
+      const ov = oxKids(num, 'lvlOverride').find(o => +wv(o, 'ilvl') === l);
+      return +(wv(oxKid(ov, 'startOverride')) || wv(oxKid(lvOf(l), 'start')) || 1);
+    };
+    const cnt = counters.get(id) || [];
+    counters.set(id, cnt);
+    cnt[lvl] = cnt[lvl] == null ? startOf(lvl) : cnt[lvl] + 1;
+    cnt.length = lvl + 1;
+    const fmtOf = l => wv(oxKid(lvOf(l), 'numFmt')) || 'decimal';
+    let text = wv(oxKid(lv, 'lvlText')) || '';
+    if (fmtOf(lvl) === 'bullet') text = wBullet(text);
+    else text = text.replace(/%(\d)/g, (m, x) => fmtOf(x - 1) === 'none' ? '' : wNumFmt(cnt[x - 1] != null ? cnt[x - 1] : startOf(x - 1), fmtOf(x - 1)));
+    return { text, suff: wv(oxKid(lv, 'suff')) || 'tab', p: wPara(oxKid(lv, 'pPr'), {}), r: wRun(oxKid(lv, 'rPr'), {}, th) };
+  };
+}
+function wSpan(sp, S, out) {
+  const s = sp.style, px = (S.sz || 10) * 4 / 3, small = S.va === 'superscript' || S.va === 'subscript';
+  s.fontFamily = oxFont(S.fa, S.fe); s.fontSize = (small ? px * 0.65 : px) + 'px';
+  if (small) s.verticalAlign = S.va === 'superscript' ? 'super' : 'sub';
+  if (S.b) s.fontWeight = 'bold';
+  if (S.i) s.fontStyle = 'italic';
+  const deco = [S.u && 'underline', S.s && 'line-through'].filter(Boolean).join(' ');
+  if (deco) s.textDecoration = deco;
+  if (S.color) s.color = S.color;
+  if (S.hl) s.backgroundColor = S.hl;
+  if (S.caps) s.textTransform = 'uppercase';
+  if (out && out.lineFor && px > out.fpx * 1.1) s.lineHeight = out.lineFor(px) + 'px';
+  return sp;
+}
+async function wImage(n, ctx) {
+  const blip = oxAll(n, 'blip')[0] || oxAll(n, 'imagedata')[0];
+  const path = blip && ctx.rels.get(oxR(blip, 'embed') || oxR(blip, 'id'));
+  const src = path && await oxImgUrl(ctx.zip, path);
+  if (!src) return null;
+  const ext = oxAll(n, 'extent')[0], img = el('img', { src, alt: '' });
+  let w = 0, h = 0;
+  if (ext) { w = +ext.getAttribute('cx') / 9525; h = +ext.getAttribute('cy') / 9525; }
+  else {
+    const st = oxAttr(blip.parentNode, 'style') || '';
+    const g = k => { const m = new RegExp(k + '\\s*:\\s*([\\d.]+)(pt|in|px)?').exec(st); return m ? +m[1] * ({ pt: 4 / 3, in: 96 }[m[2]] || 1) : 0; };
+    w = g('width'); h = g('height');
+  }
+  if (!(w > 0 && h > 0)) { await img.decode().catch(() => {}); w = img.naturalWidth || 100; h = img.naturalHeight || 100; }
+  const k = Math.min(1, ctx.cw / w);
+  img.style.width = w * k + 'px'; img.style.height = h * k + 'px';
+  return img;
+}
+function wNewPart(out) {
+  const d = out.cur.cloneNode(false);
+  d.style.paddingTop = '0px'; d.style.textIndent = '0px';
+  out.cur.style.paddingBottom = '0px';
+  out.parts.push(d); out.cur = d;
+}
+async function wRunEl(r, out) {
+  const rPr = oxKid(r, 'rPr'), cs = wv(oxKid(rPr, 'rStyle'));
+  const S = { ...out.R, ...(cs ? out.ctx.styles.char(cs) : {}), ...wRun(rPr, {}, out.ctx.th) };
+  if (S.hide) return;
+  let span = null;
+  const add = x => { if (!span) { span = wSpan(el('span'), S, out); out.cur.append(span); } span.append(x); };
+  for (const c of r.children) switch (c.localName) {
+    case 't': add(c.textContent); break;
+    case 'tab': case 'ptab': add('\t'); break;
+    case 'br': case 'cr': if (wv(c, 'type') === 'page' && !out.ctx.inTable) { wNewPart(out); span = null; } else add(el('br')); break;
+    case 'noBreakHyphen': add('\u2011'); break;
+    case 'sym': { const v = parseInt(wv(c, 'char') || '', 16); if (v) add(W_SYM[(v < 0x100 ? v + 0xF000 : v).toString(16)] || ''); break; }
+    case 'drawing': case 'pict': case 'object': case 'AlternateContent': {
+      const im = await wImage(c, out.ctx);
+      if (im) { span = null; out.cur.append(im); }
+      break;
+    }
+  }
+}
+async function wInline(node, out) {
+  for (const n of node.children) switch (n.localName) {
+    case 'r': await wRunEl(n, out); break;
+    case 'hyperlink': case 'ins': case 'smartTag': case 'customXml': case 'fldSimple': case 'moveTo': case 'bdo': case 'dir': await wInline(n, out); break;
+    case 'sdt': { const c = oxKid(n, 'sdtContent'); if (c) await wInline(c, out); break; }
+  }
+}
+async function wParagraph(p, ctx) {
+  const pPr = oxKid(p, 'pPr'), sid = wv(oxKid(pPr, 'pStyle')), st = ctx.styles.para(sid), dir = wPara(pPr, {});
+  const num = { ...st.p.num, ...dir.num };
+  const lab = num.id && num.id !== '0' ? ctx.num(num.id, num.lvl || 0) : null;
+  const P = { ...ctx.styles.defP, ...ctx.tblP, ...st.p, ...(lab ? lab.p : {}), ...dir };
+  const R = { ...ctx.styles.defR, ...ctx.tblR, ...st.r }, mark = wRun(oxKid(pPr, 'rPr'), { ...R }, ctx.th);
+  const fpx = (mark.sz || 10) * 4 / 3, grid = ctx.pitch > 0 && P.snap !== false;
+  const auto = !/^(exact|atLeast)$/.test(P.lineRule || ''), mul = auto ? (+P.line || 240) / 240 : 1;
+  const lineFor = grid && auto ? px => Math.max(1, Math.ceil(px * 1.15 / ctx.pitch - 0.05)) * ctx.pitch * mul : null;
+  const unit = grid ? ctx.pitch : fpx * 1.2, sp = (lines, tw) => lines != null && +lines ? +lines / 100 * unit : twPx(tw);
+  const div = el('div', { class: 'wp' }), s = div.style;
+  s.fontFamily = oxFont(mark.fa, mark.fe); s.fontSize = fpx + 'px';
+  s.lineHeight = lineFor ? lineFor(fpx) + 'px' : auto ? String(1.2 * mul) : (P.lineRule === 'exact' ? twPx(P.line) : Math.max(twPx(P.line), fpx * 1.2)) + 'px';
+  s.paddingTop = sp(P.beforeLines, P.before) + 'px'; s.paddingBottom = sp(P.afterLines, P.after) + 'px';
+  const hang = P.hangCh ? P.hangCh / 100 * fpx : twPx(P.hang), first = P.firstCh ? P.firstCh / 100 * fpx : twPx(P.first);
+  s.marginLeft = (P.leftCh ? P.leftCh / 100 * fpx : twPx(P.left)) + 'px'; s.marginRight = twPx(P.right) + 'px';
+  s.textIndent = (hang ? -hang : first) + 'px';
+  s.textAlign = { center: 'center', right: 'right', end: 'right', both: 'justify', distribute: 'justify' }[P.jc] || 'left';
+  if (P.shd) s.background = P.shd;
+  if (P.bdr) for (const k of ['top', 'bottom', 'left', 'right']) if (P.bdr[k]) s['border' + k[0].toUpperCase() + k.slice(1)] = P.bdr[k];
+  if (P.cs && ctx.prev && ctx.prev.cs && ctx.prev.sid === sid) { s.paddingTop = '0px'; ctx.prev.div.style.paddingBottom = '0px'; }
+  if (lab && lab.text) {
+    const ls = wSpan(el('span', { text: lab.text + (lab.suff === 'space' ? ' ' : '') }), { ...mark, ...lab.r, fa: mark.fa, fe: mark.fe });
+    ls.style.display = 'inline-block'; ls.style.textIndent = '0px'; ls.style.whiteSpace = 'pre';
+    if (lab.suff === 'tab') { ls.style.minWidth = Math.max(hang, 0) + 'px'; if (hang <= 0) ls.style.paddingRight = '0.5em'; }
+    div.append(ls);
+  }
+  const out = { ctx, R, fpx, lineFor, cur: div, parts: [div] };
+  await wInline(p, out);
+  for (const d of out.parts) if (!d.textContent && !d.querySelector('img')) d.append('\u200b');
+  ctx.prev = { sid, cs: P.cs, div: out.cur };
+  return out.parts.map((node, i) => ({ node, kind: 'p', pbb: i ? true : !!P.pbb }));
+}
+async function wTable(tbl, ctx) {
+  const pr = oxKid(tbl, 'tblPr'), ts = ctx.styles.table(wv(oxKid(pr, 'tblStyle')));
+  const bdr = { ...ts.bdr, ...wBorders(oxKid(pr, 'tblBorders')) };
+  const mar = { top: 0, bottom: 0, left: 7.2, right: 7.2, ...ts.mar, ...wMar(oxKid(pr, 'tblCellMar')) };
+  const grid = oxKids(oxKid(tbl, 'tblGrid'), 'gridCol').map(g => twPx(wv(g, 'w')));
+  const table = el('table', { class: 'wt' }), wrap = el('div', null, table);
+  if (grid.length) {
+    table.append(el('colgroup', null, grid.map(w => { const c = el('col'); c.style.width = w + 'px'; return c; })));
+    table.style.width = grid.reduce((a, b) => a + b, 0) + 'px';
+  } else table.style.tableLayout = 'auto';
+  const jc = wv(oxKid(pr, 'jc'));
+  if (jc === 'center') { table.style.marginLeft = 'auto'; table.style.marginRight = 'auto'; }
+  else if (jc === 'right' || jc === 'end') table.style.marginLeft = 'auto';
+  else if (twPx(wv(oxKid(pr, 'tblInd'), 'w'))) table.style.marginLeft = twPx(wv(oxKid(pr, 'tblInd'), 'w')) + 'px';
+  const sub = { ...ctx, tblP: ts.p, tblR: ts.r, inTable: true, prev: null };
+  const flat = (n, name) => [...n.children].flatMap(c => c.localName === name ? [c] : c.localName === 'sdt' ? flat(oxKid(c, 'sdtContent') || c, name)
+    : c.localName === 'customXml' ? flat(c, name) : []);
+  const rows = flat(tbl, 'tr'), vm = [];
+  let hdr = 0, lead = true;
+  for (const [ri, tr] of rows.entries()) {
+    const trPr = oxKid(tr, 'trPr'), tre = el('tr'), th = oxKid(trPr, 'trHeight');
+    if (lead && wOn(oxKid(trPr, 'tblHeader'))) hdr++; else lead = false;
+    if (th) tre.style.height = twPx(wv(th, 'val')) + 'px';
+    let col = +wv(oxKid(trPr, 'gridBefore')) || 0;
+    if (col) tre.append(el('td', { colspan: col }));
+    for (const tc of flat(tr, 'tc')) {
+      const cp = oxKid(tc, 'tcPr'), span = +wv(oxKid(cp, 'gridSpan')) || 1, vmEl = oxKid(cp, 'vMerge');
+      if (vmEl && wv(vmEl) !== 'restart') { if (vm[col]) vm[col].rowSpan++; col += span; continue; }
+      const td = el('td'), s = td.style;
+      if (span > 1) td.colSpan = span;
+      for (let i = 0; i < span; i++) vm[col + i] = null;
+      vm[col] = vmEl ? td : null;
+      const b = { top: ri ? bdr.insideH : bdr.top, bottom: ri === rows.length - 1 ? bdr.bottom : bdr.insideH,
+        left: col ? bdr.insideV : bdr.left, right: col + span >= grid.length ? bdr.right : bdr.insideV, ...wBorders(oxKid(cp, 'tcBorders')) };
+      for (const k of ['top', 'bottom', 'left', 'right']) if (b[k]) s['border' + k[0].toUpperCase() + k.slice(1)] = b[k];
+      const m = { ...mar, ...wMar(oxKid(cp, 'tcMar')) };
+      s.padding = `${m.top}px ${m.right}px ${m.bottom}px ${m.left}px`;
+      const f = wHex(wv(oxKid(cp, 'shd'), 'fill'));
+      if (f) s.background = f;
+      const va = wv(oxKid(cp, 'vAlign'));
+      if (va === 'center') s.verticalAlign = 'middle'; else if (va === 'bottom') s.verticalAlign = 'bottom';
+      const cw = grid.slice(col, col + span).reduce((a, x) => a + x, 0) - m.left - m.right;
+      for (const blk of await wBlocks(tc, { ...sub, cw: cw > 20 ? cw : ctx.cw })) if (blk.node) td.append(blk.node);
+      tre.append(td);
+      col += span;
+    }
+    table.append(tre);
+  }
+  return { node: wrap, kind: 't', hdr };
+}
+async function wBlocks(box, ctx) {
+  const out = [];
+  for (const n of box.children) {
+    if (n.localName === 'p') {
+      out.push(...await wParagraph(n, ctx));
+      const sp = oxPath(n, 'pPr', 'sectPr');
+      if (sp && !ctx.inTable) out.push({ sect: sp });
+    } else if (n.localName === 'tbl') { ctx.prev = null; out.push(await wTable(n, ctx)); ctx.prev = null; }
+    else if (n.localName === 'sdt') { const c = oxKid(n, 'sdtContent'); if (c) out.push(...await wBlocks(c, ctx)); }
+    else if (n.localName === 'customXml') out.push(...await wBlocks(n, ctx));
+  }
+  return out;
+}
+function wSect(sp) {
+  const sz = oxKid(sp, 'pgSz'), mg = oxKid(sp, 'pgMar');
+  const W = twPx(wv(sz, 'w') || 11906), H = twPx(wv(sz, 'h') || 16838);
+  const [mt, mr, mb, ml] = ['top', 'right', 'bottom', 'left'].map(k => Math.abs(twPx(wv(mg, k) != null ? wv(mg, k) : 1440)));
+  return { W, H, mt, mr, mb, ml, cw: W - ml - mr, ch: H - mt - mb };
+}
+function wLayout(blocks, sp, host) {
+  const g = wSect(sp), col = el('div');
+  col.style.width = g.cw + 'px';
+  const root = oxRoot(col);
+  host.append(root);
+  for (const b of blocks) col.append(b.node);
+  for (const b of blocks) b.h = b.node.getBoundingClientRect().height;
+  for (const b of blocks) if (b.hdr) {
+    const t = b.node.firstChild, ht = t.cloneNode(false), cg = t.querySelector(':scope > colgroup');
+    if (cg) ht.append(cg.cloneNode(true));
+    [...t.rows].slice(0, b.hdr).forEach(tr => ht.append(tr.cloneNode(true)));
+    const hn = el('div', null, ht);
+    col.append(hn);
+    const h = hn.getBoundingClientRect().height;
+    hn.remove();
+    if (h < g.ch * 0.5) b.hdrNode = { node: hn, h };
+  }
+  const cutsOf = b => {
+    const top = b.node.getBoundingClientRect().top;
+    if (b.kind === 't') return [...b.node.firstChild.rows].map(tr => tr.getBoundingClientRect().bottom - top);
+    const rg = document.createRange();
+    rg.selectNodeContents(b.node);
+    const rs = [...rg.getClientRects()].filter(x => x.height > 0).map(x => [x.top - top, x.bottom - top]);
+    return [...new Set(rs.map(x => x[1]))].filter(c => !rs.some(([t, bt]) => t < c - 0.5 && bt > c + 0.5)).sort((a, c) => a - c);
+  };
+  const pages = [[]];
+  let acc = 0;
+  const newPage = () => { if (pages[pages.length - 1].length) { pages.push([]); acc = 0; } };
+  for (const b of blocks) {
+    if (b.pbb) newPage();
+    let from = 0;
+    while (b.h - from > 0.5) {
+      const hdr = from > 0 && b.hdrNode ? b.hdrNode : null, avail = g.ch - acc - (hdr ? hdr.h : 0);
+      let to = b.h;
+      if (b.h - from > avail + 0.5) {
+        to = 0;
+        for (const c of b.cuts || (b.cuts = cutsOf(b))) if (c > from + 1 && c <= from + avail + 0.5) to = c;
+        if (to && !b.cuts.some(c => c > to + 0.5)) to = b.h;
+        if (!to && acc > 0) { newPage(); continue; }
+        if (!to) to = from + Math.max(avail, 20);
+      }
+      pages[pages.length - 1].push({ b, from, to, hdr });
+      acc += to - from + (hdr ? hdr.h : 0);
+      if (to < b.h) newPage();
+      from = to;
+    }
+  }
+  root.remove();
+  return pages.filter(p => p.length).map(items => {
+    const page = el('div'), body = el('div');
+    page.style.cssText = `width:${g.W}px;height:${g.H}px;padding:${g.mt}px ${g.mr}px ${g.mb}px ${g.ml}px;overflow:hidden`;
+    body.style.width = g.cw + 'px';
+    page.append(body);
+    for (const it of items) {
+      if (it.hdr) body.append(it.hdr.node.cloneNode(true));
+      const c = it.b.node.cloneNode(true);
+      if (it.from === 0 && it.to >= it.b.h - 0.5) { body.append(c); continue; }
+      const w = el('div', null, c);
+      w.style.height = it.to - it.from + 'px'; w.style.overflow = 'hidden';
+      c.style.marginTop = -it.from + 'px';
+      body.append(w);
+    }
+    const node = oxRoot(page);
+    node.style.width = g.W + 'px'; node.style.height = g.H + 'px';
+    return { node, w: g.W, h: g.H, pw: g.W * 0.75, ph: g.H * 0.75, x: 0, y: 0, dw: g.W * 0.75, dh: g.H * 0.75 };
+  });
+}
+async function docxToPdf(zip, name) {
+  const main = oxFind(await oxRels(zip, ''), /document\d*\.xml$/i) || 'word/document.xml';
+  const body = oxAll(await oxXml(zip, main), 'body')[0];
+  if (!body) throw oxErr('檔案損壞或格式不對');
+  const rels = await oxRels(zip, main), th = await oxTheme(zip, oxFind(rels, /theme\d*\.xml$/i));
+  const last = oxKid(body, 'sectPr'), dg = oxKid(last, 'docGrid');
+  const ctx = { zip, rels, th, styles: await wStyles(zip, oxFind(rels, /(^|\/)styles\.xml$/i), th), num: await wNumbering(zip, oxFind(rels, /numbering\.xml$/i), th),
+    tblP: {}, tblR: {}, prev: null, cw: wSect(last).cw, pitch: wv(dg, 'type') && wv(dg, 'type') !== 'default' ? twPx(wv(dg, 'linePitch')) : 0 };
+  const blocks = await wBlocks(body, ctx), pages = [], host = oxHost();
+  const secs = [];
+  let cur = [];
+  for (const b of blocks) if (b.sect) { secs.push({ blocks: cur, sp: b.sect }); cur = []; } else cur.push(b);
+  secs.push({ blocks: cur, sp: last });
+  const groups = [];
+  for (const s of secs) {
+    const prev = groups[groups.length - 1], a = wSect(s.sp), b = prev && wSect(prev.sp);
+    if (prev && wv(oxKid(s.sp, 'type')) === 'continuous' && a.W === b.W && a.H === b.H) prev.blocks.push(...s.blocks);
+    else groups.push(s);
+  }
+  try {
+    for (const g of groups) pages.push(...wLayout(g.blocks, g.sp, host));
+  } finally { host.remove(); }
+  return oxPdf(pages, name);
+}
 const org = { docs: [], pages: [], sel: new Set(), hist: [], seq: 1, last: -1, drag: null, thumbs: new Map(), queue: Promise.resolve() };
 async function imageToPdf(file) {
   const bmp = await createImageBitmap(file);
@@ -1617,7 +2489,7 @@ async function imageToPdf(file) {
   c.width = bmp.width; c.height = bmp.height;
   const ctx = c.getContext('2d');
   ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height); ctx.drawImage(bmp, 0, 0);
-  const png = /png/i.test(file.type) || /\.png$/i.test(file.name);
+  const png = /png|gif|bmp/i.test(file.type) || /\.(png|gif|bmp)$/i.test(file.name);
   const data = await canvasBytes(c, png ? 'image/png' : 'image/jpeg', 0.92);
   const doc = await PDFLib.PDFDocument.create();
   const img = png ? await doc.embedPng(data) : await doc.embedJpg(data);
@@ -1633,14 +2505,16 @@ async function addFiles(files, { toGrid = false } = {}) {
   let histPushed = false;
   try {
     for (const f of list) {
-      if (!isPdfFile(f) && !isImgFile(f)) { toast(`「${f.name}」不是 PDF 或圖片，已略過`, 3500); continue; }
+      if (isOldOffice(f)) { toast(`「${f.name}」是舊版的 Word／Excel 格式，請先在 Word／Excel 用「另存新檔」存成 .docx／.xlsx 再放進來`, 6000); continue; }
+      if (/\.(heic|heif|tiff?)$/i.test(f.name)) { toast(`「${f.name}」這種圖片瀏覽器讀不了，請先轉成 JPG 或 PNG 再放進來`, 5000); continue; }
+      if (!isPdfFile(f) && !isImgFile(f) && !isOfficeFile(f)) { toast(`「${f.name}」不是 PDF、圖片、Word 或 Excel，已略過`, 3500); continue; }
       const key = `${f.name}|${f.size}|${f.lastModified}`;
       let di = org.docs.findIndex(d => d.key === key);
       const isNew = di < 0;
       if (isNew) {
         try {
           busy(`讀取「${f.name}」…`);
-          const bytes = isImgFile(f) ? await imageToPdf(f) : new Uint8Array(await f.arrayBuffer());
+          const bytes = isImgFile(f) ? await imageToPdf(f) : isOfficeFile(f) ? await officeToPdf(f) : new Uint8Array(await f.arrayBuffer());
           const pdf = await openPdfjs(bytes);
           di = org.docs.push({ key, name: f.name, bytes, pdf }) - 1;
         } catch (e) { console.error(e); toast(`「${f.name}」打不開：${friendly(e)}`, 4000); continue; }
