@@ -1,6 +1,17 @@
 {
-  "version": "2026.10.29.1407",
+  "version": "2026.10.29.1728",
   "history": [
+    {
+      "date": "2026-10-29",
+      "notes": [
+        "合併分頁可以直接放 Word、Excel、CSV，會先轉成 PDF 頁面再合併（一樣不上傳）",
+        "圖片多支援 WebP、GIF、BMP"
+      ],
+      "notes_en": [
+        "Merge: add Word, Excel and CSV files directly — they’re turned into PDF pages first (still never uploaded)",
+        "Images: WebP, GIF and BMP now work too"
+      ]
+    },
     {
       "date": "2026-10-29",
       "notes": [
