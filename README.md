@@ -10,7 +10,7 @@
 
 | 分頁 | 做什麼 |
 |---|---|
-| 合併・分割・裁半 | 好幾個 PDF 或照片排好順序合成一份；拆成好幾檔；掃描的「一張兩頁」裁成兩頁；旋轉、刪頁 |
+| 合併・分割・裁半 | 好幾個 PDF、照片、Word、Excel 排好順序合成一份（Word、Excel 會先轉成 PDF 頁面）；拆成好幾檔；掃描的「一張兩頁」裁成兩頁；旋轉、刪頁 |
 | 加字 | 在 PDF 上直接打中文（正黑體、標楷體、細明體），任何電腦打開都不會亂碼；🖍 螢光筆、方框、圓圈、直線、箭頭（實線／虛線）；白底遮蓋錯字；⬛ 塗銷機密資料（真的刪掉，不是蓋住） |
 | 浮水印 | 加「機密」「草稿」這類文字或公司 logo，可調大小、濃淡、角度、滿版；也能去掉 Acrobat、Word 加的浮水印 |
 | 擷取畫面 | 框選一塊範圍，直接貼到 LINE、Word、Email |
@@ -42,14 +42,14 @@
 ## 怎麼用
 
 1. 打開 [https://r-toooooooooool.github.io/pdf-toolbox/](https://r-toooooooooool.github.io/pdf-toolbox/)（建議用電腦版 Chrome 或 Edge；手機也能用基本功能）
-2. 把 PDF 拖進畫面，或按「開啟 PDF」
+2. 把 PDF（或照片、Word、Excel）拖進畫面，或按「加入檔案」「開啟檔案」
 3. 上面選要做的事，做完按存檔（或 Ctrl+S）
 
 每個分頁的詳細說明，在工具裡的「❓ 說明」。
 
 ## 檔案安全
 
-- **PDF 全部在你自己的瀏覽器裡處理，不會上傳到任何伺服器。** 關掉網頁就沒了。
+- **檔案全部在你自己的瀏覽器裡處理（包括 Word、Excel 轉成 PDF），不會上傳到任何伺服器。** 關掉網頁就沒了。
 - 會連上網路的只有：第一次打開時下載工具本身（有防偽檢查，被動過手腳會拒絕使用）、第一次辨識掃描檔時下載辨識資料、以及你在「回報區」主動送出的意見。擴充功能版另外會看一下有沒有新版（只讀版本號，不送出任何資料）。
 - 不用帳號、不用密碼。
 
@@ -60,7 +60,7 @@
 ## English
 
 **PDF Toolbox** is a free, no-install, no-sign-in PDF tool that runs entirely in your browser — files are never uploaded.
-Merge, split and halve pages, add text (Chinese text never turns into boxes), highlight and draw shapes, add or remove watermarks, take snapshots, extract text (even from scans) and clean up copied text.
+Merge, split and halve pages (Word, Excel and image files can be added too), add text (Chinese text never turns into boxes), highlight and draw shapes, add or remove watermarks, take snapshots, extract text (even from scans) and clean up copied text.
 
 - 👉 [Open PDF Toolbox in English](https://r-toooooooooool.github.io/pdf-toolbox/?lang=en) — or click **EN** at the top right
 - 🧩 [Chrome / Edge extension](https://r-toooooooooool.github.io/pdf-toolbox/extension/#en)
