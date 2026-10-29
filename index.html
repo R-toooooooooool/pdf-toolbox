@@ -94,7 +94,7 @@ header.top h1{font-size:17px;margin:0}
 .stage{position:relative;margin:0 auto;box-shadow:0 2px 10px rgba(0,0,0,.28);background:#fff}
 .stage canvas{display:block}
 .overlay{position:absolute;inset:0;touch-action:none}
-.overlay[data-mode=snap],.overlay[data-mode=copytext],.overlay[data-mode=addtext][data-tool=rect],.overlay[data-mode=addtext][data-tool=redact]{cursor:crosshair}
+.overlay[data-mode=snap],.overlay[data-mode=copytext],.overlay[data-mode=addtext]:not([data-tool=text]){cursor:crosshair}
 .overlay[data-mode=addtext][data-tool=text]{cursor:text}
 .selbox{position:absolute;border:2px solid var(--accent);background:rgba(36,99,235,.12);pointer-events:none}
 .anno{position:absolute}
@@ -111,6 +111,19 @@ header.top h1{font-size:17px;margin:0}
 .anno.rect.drawing{pointer-events:none;outline:2px dashed var(--accent)}
 .anno.rect .handle{position:absolute;right:-7px;bottom:-7px;width:14px;height:14px;background:var(--accent);border-radius:3px;cursor:nwse-resize;display:none;touch-action:none}
 .anno.rect.active .handle{display:block}
+.anno.shape{inset:0;pointer-events:none}
+.anno.shape.hl{mix-blend-mode:multiply}
+.anno.shape svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.anno.shape .hit{pointer-events:stroke;cursor:move}
+.anno.shape .hitf{pointer-events:fill;cursor:move}
+.anno.shape .del,.anno.shape .handle{pointer-events:auto}
+.anno.shape .handle{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;background:var(--accent);border:2px solid #fff;border-radius:50%;cursor:crosshair;display:none;touch-action:none}
+.anno.shape .sbox{position:absolute;outline:1px dashed var(--accent);display:none}
+.anno.shape.active .handle,.anno.shape.active .sbox{display:block}
+.anno.shape.drawing .hit,.anno.shape.drawing .hitf{pointer-events:none}
+.anno.shape.drawing .del,.anno.shape.drawing .handle,.anno.shape.drawing .sbox{display:none}
+#atTools .seg button{flex:1;padding:5px 4px}
+#atTools .seg+.seg{margin-top:6px}
 .wmprev{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .wm-off{position:absolute;left:8px;top:8px;margin:0;background:var(--panel);padding:2px 8px;border-radius:4px;pointer-events:none}
 #wmMode{margin-bottom:6px}
@@ -321,9 +334,22 @@ header.top h1{font-size:17px;margin:0}
   <aside class="side">
     <div data-panel="addtext">
       <h2>工具</h2>
-      <div class="seg" id="atTools"><button data-tool="text" class="on">文字</button><button data-tool="rect">白底遮蓋</button><button data-tool="redact" title="機密資料用：存檔時連同底下的字一起刪掉">⬛ 塗銷</button></div>
+      <div id="atTools">
+        <div class="seg"><button data-tool="text" class="on">文字</button><button data-tool="hl" title="拖過要標記的字，底下的字還看得到">🖍 螢光筆</button><button data-tool="rect">白底遮蓋</button><button data-tool="redact" title="機密資料用：存檔時連同底下的字一起刪掉">⬛ 塗銷</button></div>
+        <div class="seg"><button data-tool="box" title="畫方框圈重點">▭ 方框</button><button data-tool="ellipse" title="畫圓圈圈重點">◯ 圓圈</button><button data-tool="line" title="畫直線">╱ 直線</button><button data-tool="arrow" title="畫箭頭指位置">↗ 箭頭</button></div>
+      </div>
       <div class="row" id="atRedactRow" hidden>塗銷顏色 <div class="seg" id="atRedactColor"><button data-c="black" class="on">⬛ 黑</button><button data-c="white">⬜ 白</button></div></div>
       <p class="hint" id="atHint"></p>
+      <div id="atShapeBox" hidden>
+      <h2 id="atShapeTitle">線條樣式</h2>
+      <div class="row">顏色 <input type="color" id="atSColor" value="#d32f2f">
+        <span class="row" id="atSSw" style="margin:0"><button class="ssw" data-g="shape" data-c="#d32f2f">紅</button><button class="ssw" data-g="shape" data-c="#1d4ed8">藍</button><button class="ssw" data-g="shape" data-c="#000000">黑</button><button class="ssw" data-g="shape" data-c="#15803d">綠</button><button class="ssw" data-g="hl" data-c="#ffe500">黃</button><button class="ssw" data-g="hl" data-c="#5cf25c">綠</button><button class="ssw" data-g="hl" data-c="#ff8fd8">粉紅</button><button class="ssw" data-g="hl" data-c="#7cc8ff">藍</button></span>
+      </div>
+      <div class="row">粗細 <div class="seg" id="atSWidth"><button data-i="0">細</button><button data-i="1" class="on">中</button><button data-i="2">粗</button></div></div>
+      <div class="row">線條 <div class="seg" id="atSDash"><button data-d="0" class="on">━ 實線</button><button data-d="1">┅ 虛線</button></div></div>
+      <div class="row" id="atHlRow">畫法 <div class="seg" id="atHlFree"><button data-f="0" class="on">直線</button><button data-f="1">自由畫</button></div></div>
+      </div>
+      <div id="atTextBox">
       <h2>文字樣式</h2>
       <label class="row">字型
         <select id="atFont"><option value="jh">微軟正黑體</option><option value="kai">標楷體</option><option value="ming">新細明體</option></select>
@@ -334,6 +360,7 @@ header.top h1{font-size:17px;margin:0}
       </div>
       <label class="chk"><input type="checkbox" id="atBold">粗體</label>
       <label class="chk"><input type="checkbox" id="atBg">文字加白底（蓋掉底下原本的字）</label>
+      </div>
       <h2>已加的內容</h2>
       <p class="hint" id="atInfo">還沒加任何東西</p>
       <div class="row"><button id="atDel">刪除選取的</button><button id="atClearPage">清除這頁</button></div>
@@ -577,6 +604,8 @@ header.top h1{font-size:17px;margin:0}
     <h3>加字</h3>
     <ul>
       <li>點頁面任何位置就能打字，可選正黑體、標楷體、新細明體、字級、顏色、粗體。拖左上角 ✥ 移動。</li>
+      <li>「🖍 螢光筆」：拖過要標記的字，底下的字還看得到。可選顏色、粗細；畫法選「直線」（自動拉平）或「自由畫」。</li>
+      <li>「方框、圓圈、直線、箭頭」：拖一下就畫好，圈重點、指位置用。可選顏色、粗細、<b>實線或虛線</b>。點一下選取後可以拖動、拉圓點調整，按 Delete 刪除。</li>
       <li>「白底遮蓋」：拖出白色方框蓋掉錯字，再在上面加正確的字（只是蓋住，原本的字還在）。</li>
       <li>「⬛ 塗銷」：遮<b>機密資料</b>用，可選黑色或白色（白色看起來像空白、比較不突兀）。存檔時那一頁會整頁轉成圖片，框底下的字真的被刪掉，複製、搜尋都找不到。</li>
     </ul>
@@ -1386,6 +1415,7 @@ ov.addEventListener('pointerdown', e => {
   const x0 = px(e), y0 = py(e);
   if (V.mode === 'addtext' && A.tool === 'text') { e.preventDefault(); A.addText(x0, y0); return; }
   e.preventDefault();
+  if (V.mode === 'addtext' && SHAPE_TOOLS.has(A.tool)) { A.setActive(null); shapeDraw(e, px, py); return; }
   if (V.mode === 'addtext') A.setActive(null);
   ov.setPointerCapture(e.pointerId);
   const box = el('div', { class: V.mode === 'addtext' ? 'anno rect drawing' : 'selbox' });
@@ -1420,8 +1450,9 @@ const FONT_CSS = {
 };
 const A = {
   tool: 'text', redColor: 'black', byPage: new Map(), active: null, seq: 1,
+  sh: { shape: { color: '#d32f2f', wi: 1, dash: false }, hl: { color: '#ffe500', wi: 1, dash: false, free: false } },
   list(p = V.page) { if (!this.byPage.has(p)) this.byPage.set(p, []); return this.byPage.get(p); },
-  count() { let n = 0; for (const l of this.byPage.values()) n += l.filter(a => a.type === 'rect' || a.text.trim()).length; return n; },
+  count() { let n = 0; for (const l of this.byPage.values()) n += l.filter(a => a.type !== 'text' || a.text.trim()).length; return n; },
   reset() { this.byPage.clear(); this.active = null; },
   style() { return { font: $('atFont').value, size: clamp(+$('atSize').value || 12, 4, 200), color: $('atColor').value, bold: $('atBold').checked, bg: $('atBg').checked }; },
   addText(x, y) {
@@ -1452,6 +1483,12 @@ const A = {
     if (a && a.type === 'text') {
       $('atFont').value = a.font; $('atSize').value = a.size; $('atColor').value = a.color;
       $('atBold').checked = a.bold; $('atBg').checked = a.bg;
+      if (SHAPE_TOOLS.has(this.tool)) setTool('text');
+    }
+    if (a && a.type === 'shape') {
+      const k = shGroup(a.kind), w = SH_W[k];
+      Object.assign(this.sh[k], { color: a.color, dash: a.dash, wi: w.indexOf(a.lw) >= 0 ? w.indexOf(a.lw) : this.sh[k].wi });
+      setTool(a.kind);
     }
   }
 };
@@ -1492,6 +1529,7 @@ function dragHandle(handle, a, wrap, kind) {
 function annoEl(a) {
   const del = el('button', { class: 'del', title: '刪除', text: '✕', onclick: e => { e.stopPropagation(); A.remove(a); } });
   del.addEventListener('pointerdown', e => e.stopPropagation());
+  if (a.type === 'shape') return shapeEl(a, del);
   if (a.type === 'rect') {
     const wrap = placeBox(el('div', { class: 'anno rect' + (a.redact ? ' redact' : '') + (a.white ? ' white' : '') + (A.active === a ? ' active' : ''), 'data-id': a.id, title: (a.redact ? '塗銷（存檔時連底下的字一起刪掉；紅色虛線只是畫面上的記號，不會存進去）。' : '') + '拖曳移動，拉右下角調整大小' }),
       { x0: a.x, y0: a.y, x1: a.x + a.w, y1: a.y + a.h });
@@ -1514,9 +1552,178 @@ function annoEl(a) {
   wrap.append(grip, ct, del);
   return wrap;
 }
+const SHAPE_TOOLS = new Set(['box', 'ellipse', 'line', 'arrow', 'hl']);
+const SH_W = { shape: [1, 2.5, 5], hl: [8, 14, 22] };
+const HL_OPACITY = 0.5;
+const shGroup = k => k === 'hl' ? 'hl' : 'shape';
+const shDash = a => a.dash ? [Math.max(3, a.lw * 3), Math.max(2, a.lw * 2)] : null;
+const svgEl = (tag, attrs) => { const e = document.createElementNS('http://www.w3.org/2000/svg', tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); return e; };
+function shapeGeom(a, W, H) {
+  const P = a.pts.map(([x, y]) => [x * W, y * H]), p = P[0], q = P[P.length - 1];
+  if (a.kind === 'box' || a.kind === 'ellipse') {
+    const x = Math.min(p[0], q[0]), y = Math.min(p[1], q[1]), w = Math.abs(q[0] - p[0]), h = Math.abs(q[1] - p[1]);
+    return a.kind === 'box' ? { rect: { x, y, w, h } } : { ell: { cx: x + w / 2, cy: y + h / 2, rx: w / 2, ry: h / 2 } };
+  }
+  if (a.kind === 'hl') return { poly: P };
+  if (a.kind === 'line') return { line: [p, q] };
+  const len = Math.hypot(q[0] - p[0], q[1] - p[1]) || 1, ux = (q[0] - p[0]) / len, uy = (q[1] - p[1]) / len;
+  const L = Math.min(a.lw * 4 + 6, len * 0.8), hw = L * 0.45;
+  const bx = q[0] - ux * L, by = q[1] - uy * L;
+  return { line: [p, [q[0] - ux * L * 0.9, q[1] - uy * L * 0.9]], head: [q, [bx - uy * hw, by + ux * hw], [bx + uy * hw, by - ux * hw]] };
+}
+function drawShapeSvg(svg, a) {
+  const g = shapeGeom(a, V.pt.w, V.pt.h), dash = shDash(a), cap = dash ? 'butt' : 'round';
+  const paint = { fill: 'none', stroke: a.color, 'stroke-width': a.lw, 'stroke-linecap': cap, 'stroke-linejoin': 'round' };
+  if (dash) paint['stroke-dasharray'] = dash.join(' ');
+  if (a.kind === 'hl') paint['stroke-opacity'] = HL_OPACITY;
+  const hit = { fill: 'none', stroke: 'transparent', 'stroke-width': Math.max(a.lw, 14 / V.css.scale), 'stroke-linecap': 'round', class: 'hit' };
+  const parts = [], add = (tag, at) => parts.push(svgEl(tag, { ...at, ...paint }), svgEl(tag, { ...at, ...hit }));
+  const pts = P => P.map(p => p[0].toFixed(2) + ',' + p[1].toFixed(2)).join(' ');
+  if (g.rect) add('rect', { x: g.rect.x, y: g.rect.y, width: g.rect.w, height: g.rect.h });
+  else if (g.ell) add('ellipse', g.ell);
+  else if (g.poly) add('polyline', { points: pts(g.poly) });
+  else {
+    add('line', { x1: g.line[0][0], y1: g.line[0][1], x2: g.line[1][0], y2: g.line[1][1] });
+    if (g.head) parts.push(svgEl('polygon', { points: pts(g.head), fill: a.color, class: 'hitf' }));
+  }
+  svg.replaceChildren(...parts);
+}
+function shapeEl(a, del) {
+  const wrap = el('div', { class: 'anno shape' + (a.kind === 'hl' ? ' hl' : '') + (A.active === a ? ' active' : ''), 'data-id': a.id, title: '拖曳移動；選取後拖圓點調整' });
+  const svg = svgEl('svg', { viewBox: `0 0 ${V.pt.w} ${V.pt.h}`, preserveAspectRatio: 'none' });
+  const sbox = el('div', { class: 'sbox' });
+  const hs = a.free ? [] : [0, 1].map(() => el('span', { class: 'handle', title: '拖曳調整' }));
+  wrap.append(svg, sbox, ...hs, del);
+  wrap._sync = () => {
+    drawShapeSvg(svg, a);
+    const xs = a.pts.map(p => p[0]), ys = a.pts.map(p => p[1]), W = V.css.w, H = V.css.h;
+    const pad = a.lw * V.css.scale / 2 + 3, x0 = Math.min(...xs) * W - pad, y0 = Math.min(...ys) * H - pad, x1 = Math.max(...xs) * W + pad, y1 = Math.max(...ys) * H + pad;
+    Object.assign(sbox.style, { left: x0 + 'px', top: y0 + 'px', width: x1 - x0 + 'px', height: y1 - y0 + 'px' });
+    Object.assign(del.style, { left: x1 - 18 + 'px', top: y0 - 26 + 'px', right: 'auto' });
+    hs.forEach((h, i) => Object.assign(h.style, { left: a.pts[i][0] * W + 'px', top: a.pts[i][1] * H + 'px' }));
+  };
+  wrap._sync();
+  shapeDrag(svg, a, wrap, -1);
+  hs.forEach((h, i) => shapeDrag(h, a, wrap, i));
+  return wrap;
+}
+function snapLine(p0, p) {
+  const dx = Math.abs(p[0] - p0[0]) * V.css.w, dy = Math.abs(p[1] - p0[1]) * V.css.h, t = Math.tan(5 * Math.PI / 180);
+  if (dy < dx * t) return [p[0], p0[1]];
+  if (dx < dy * t) return [p0[0], p[1]];
+  return p;
+}
+function shapeDrag(handle, a, wrap, idx) {
+  handle.addEventListener('pointerdown', e => {
+    if (e.button !== 0 || wrap.classList.contains('drawing')) return;
+    e.preventDefault(); e.stopPropagation();
+    A.setActive(a);
+    const r = ov.getBoundingClientRect(), sx = e.clientX, sy = e.clientY, o = a.pts.map(p => p.slice());
+    const xs = o.map(p => p[0]), ys = o.map(p => p[1]);
+    handle.setPointerCapture(e.pointerId);
+    const mv = ev => {
+      const dx = (ev.clientX - sx) / r.width, dy = (ev.clientY - sy) / r.height;
+      if (idx < 0) {
+        const mx = clamp(dx, -Math.min(...xs), 1 - Math.max(...xs)), my = clamp(dy, -Math.min(...ys), 1 - Math.max(...ys));
+        a.pts = o.map(p => [p[0] + mx, p[1] + my]);
+      } else {
+        const p = [clamp(o[idx][0] + dx, 0, 1), clamp(o[idx][1] + dy, 0, 1)];
+        a.pts[idx] = a.kind === 'box' || a.kind === 'ellipse' ? p : snapLine(o[1 - idx], p);
+      }
+      wrap._sync();
+    };
+    const up = () => {
+      handle.removeEventListener('pointermove', mv);
+      handle.removeEventListener('pointerup', up);
+      handle.removeEventListener('pointercancel', up);
+    };
+    handle.addEventListener('pointermove', mv);
+    handle.addEventListener('pointerup', up);
+    handle.addEventListener('pointercancel', up);
+  });
+}
+function shapeDraw(e, px, py) {
+  const kind = A.tool, k = shGroup(kind), g = A.sh[k], x0 = px(e), y0 = py(e);
+  const free = kind === 'hl' && g.free;
+  const a = { id: A.seq++, type: 'shape', kind, color: g.color, lw: SH_W[k][g.wi], dash: g.dash, free, pts: free ? [[x0, y0]] : [[x0, y0], [x0, y0]] };
+  const node = annoEl(a);
+  node.classList.add('drawing');
+  ov.append(node);
+  ov.setPointerCapture(e.pointerId);
+  const move = ev => {
+    const p = [px(ev), py(ev)];
+    if (free) {
+      const l = a.pts[a.pts.length - 1];
+      if (Math.hypot((p[0] - l[0]) * V.css.w, (p[1] - l[1]) * V.css.h) >= 2) a.pts.push(p);
+    } else a.pts[1] = kind === 'box' || kind === 'ellipse' ? p : snapLine(a.pts[0], p);
+    node._sync();
+  };
+  const up = () => {
+    ov.removeEventListener('pointermove', move);
+    ov.removeEventListener('pointerup', up);
+    ov.removeEventListener('pointercancel', up);
+    node.remove();
+    const xs = a.pts.map(p => p[0]), ys = a.pts.map(p => p[1]);
+    const w = (Math.max(...xs) - Math.min(...xs)) * V.css.w, h = (Math.max(...ys) - Math.min(...ys)) * V.css.h;
+    if (kind === 'box' || kind === 'ellipse' ? w < 6 || h < 6 : Math.hypot(w, h) < 6) return;
+    A.list().push(a);
+    drawOverlay();
+  };
+  ov.addEventListener('pointermove', move);
+  ov.addEventListener('pointerup', up);
+  ov.addEventListener('pointercancel', up);
+}
+function drawShapePdf(pg, a, VW, VH) {
+  const R = normRot(pg.getRotation().angle), b = visibleBox(pg);
+  const P = ([x, y]) => { const n = visToBase(x / VW, y / VH, R); return { x: b.x + n.x * b.width, y: b.y + (1 - n.y) * b.height }; };
+  const g = shapeGeom(a, VW, VH), dash = shDash(a);
+  const c = PDFLib.rgb(...[1, 3, 5].map(i => parseInt(a.color.slice(i, i + 2), 16) / 255));
+  const line = { borderColor: c, borderWidth: a.lw, ...(dash ? { borderDashArray: dash } : {}) };
+  const svgPath = Q => Q.map((p, i) => { const t = P(p); return (i ? 'L' : 'M') + t.x.toFixed(2) + ',' + (-t.y).toFixed(2); }).join(' ');
+  if (g.rect || g.ell) {
+    const B = g.rect || { x: g.ell.cx - g.ell.rx, y: g.ell.cy - g.ell.ry, w: g.ell.rx * 2, h: g.ell.ry * 2 };
+    const r = visRectToPdf(pg, { x0: B.x / VW, y0: B.y / VH, x1: (B.x + B.w) / VW, y1: (B.y + B.h) / VH });
+    if (g.rect) pg.drawRectangle({ x: r.x, y: r.y, width: r.width, height: r.height, ...line });
+    else pg.drawEllipse({ x: r.x + r.width / 2, y: r.y + r.height / 2, xScale: r.width / 2, yScale: r.height / 2, ...line });
+  } else if (g.poly) {
+    pg.pushOperators(PDFLib.pushGraphicsState(), PDFLib.setLineJoin(PDFLib.LineJoinStyle.Round));
+    pg.drawSvgPath(svgPath(g.poly), { x: 0, y: 0, ...line, borderOpacity: HL_OPACITY, borderLineCap: dash ? PDFLib.LineCapStyle.Butt : PDFLib.LineCapStyle.Round, blendMode: PDFLib.BlendMode.Multiply });
+    pg.pushOperators(PDFLib.popGraphicsState());
+  } else {
+    pg.drawLine({ start: P(g.line[0]), end: P(g.line[1]), thickness: a.lw, color: c, lineCap: dash ? PDFLib.LineCapStyle.Butt : PDFLib.LineCapStyle.Round, ...(dash ? { dashArray: dash } : {}) });
+    if (g.head) pg.drawSvgPath(svgPath(g.head) + ' Z', { x: 0, y: 0, color: c });
+  }
+}
+function shUi() {
+  const show = SHAPE_TOOLS.has(A.tool);
+  $('atShapeBox').hidden = !show; $('atTextBox').hidden = show;
+  if (!show) return;
+  const k = shGroup(A.tool), g = A.sh[k];
+  $('atShapeTitle').textContent = k === 'hl' ? '螢光筆樣式' : '線條樣式';
+  $('atSColor').value = g.color;
+  for (const b of $('atSSw').children) b.hidden = b.dataset.g !== k;
+  for (const b of $('atSWidth').children) b.classList.toggle('on', +b.dataset.i === g.wi);
+  for (const b of $('atSDash').children) b.classList.toggle('on', !!+b.dataset.d === g.dash);
+  $('atHlRow').hidden = k !== 'hl';
+  for (const b of $('atHlFree').children) b.classList.toggle('on', !!+b.dataset.f === g.free);
+}
+function shSet(patch) {
+  const k = shGroup(A.tool), g = Object.assign(A.sh[k], patch);
+  shUi();
+  const a = A.active;
+  if (!a || a.type !== 'shape' || shGroup(a.kind) !== k) return;
+  Object.assign(a, { color: g.color, lw: SH_W[k][g.wi], dash: g.dash });
+  const n = ov.querySelector(`[data-id="${a.id}"]`);
+  if (n) n._sync();
+}
+$('atSColor').addEventListener('input', e => shSet({ color: e.target.value }));
+for (const b of $('atSSw').children) b.onclick = () => shSet({ color: b.dataset.c });
+for (const b of $('atSWidth').children) b.onclick = () => shSet({ wi: +b.dataset.i });
+for (const b of $('atSDash').children) b.onclick = () => shSet({ dash: !!+b.dataset.d });
+for (const b of $('atHlFree').children) b.onclick = () => shSet({ free: !!+b.dataset.f });
 function atInfo() {
   if (!V.pdf) return;
-  const here = A.list().filter(a => a.type === 'rect' || a.text.trim()).length;
+  const here = A.list().filter(a => a.type !== 'text' || a.text.trim()).length;
   const all = A.count();
   $('atInfo').textContent = all ? `這頁 ${here} 個，全部 ${all} 個（會一起存）` : '還沒加任何東西';
 }
@@ -1534,23 +1741,32 @@ for (const id of ['atFont', 'atSize', 'atColor', 'atBold', 'atBg']) {
 for (const b of document.querySelectorAll('[data-panel=addtext] .sw')) b.onclick = () => { $('atColor').value = b.dataset.c; onStyleChange(); };
 const AT_HINT = {
   text: '點頁面任何位置就能打字，按 Enter 換行。拖曳文字框左上的 ✥ 移動，點 ✕ 刪除。',
-  rect: '在頁面上拖出一個框，用白色蓋掉不要的內容；選取後可拖曳移動、拉右下角調整大小。⚠ 只是蓋住看不到，底下原本的字還在，用複製或搜尋還是找得到，機密資料請用「⬛ 塗黑」。',
+  hl: '按住拖過要標記的字，像螢光筆一樣，底下的字還看得到。「直線」會自動拉平；想圈畫就選「自由畫」。點一下畫好的可以拖動或刪除。',
+  box: '拖出一個方框圈住重點（只有框線，裡面是空的）。點一下選取後，拖線移動、拖對角的圓點調整大小。',
+  ellipse: '拖出一個圓圈圈住重點。點一下選取後，拖線移動、拖圓點調整大小。',
+  line: '從起點拖到終點畫一條直線，接近水平或垂直會自動拉正。點一下選取後，拖兩端的圓點調整。',
+  arrow: '從起點拖到要指的地方，箭頭會在放開的那一端。點一下選取後，拖兩端的圓點調整。',
+  rect: '在頁面上拖出一個框，用白色蓋掉不要的內容；選取後可拖曳移動、拉右下角調整大小。⚠ 只是蓋住看不到，底下原本的字還在，用複製或搜尋還是找得到，機密資料請用「⬛ 塗銷」。',
   redact: '遮機密資料用：拖出框蓋住要刪的內容，顏色可選黑或白（白色看起來像空白，比較不突兀）。存檔時，有塗銷的頁會整頁轉成圖片，框底下的字真的被刪掉，複製、搜尋都找不到；代價是那幾頁其他的字也不能再選取。'
 };
 function setTool(t) {
   A.tool = t;
-  for (const b of $('atTools').children) b.classList.toggle('on', b.dataset.tool === t);
+  for (const b of $('atTools').querySelectorAll('button')) b.classList.toggle('on', b.dataset.tool === t);
   $('atHint').textContent = AT_HINT[t];
   $('atRedactRow').hidden = t !== 'redact';
   ov.dataset.tool = t;
+  shUi();
 }
-for (const b of $('atTools').children) b.onclick = () => setTool(b.dataset.tool);
+for (const b of $('atTools').querySelectorAll('button')) b.onclick = () => {
+  if (A.active && b.dataset.tool !== A.tool) A.setActive(null);
+  setTool(b.dataset.tool);
+};
 for (const b of $('atRedactColor').children) b.onclick = () => {
   A.redColor = b.dataset.c;
   for (const x of $('atRedactColor').children) x.classList.toggle('on', x === b);
   if (A.active && A.active.redact) { A.active.white = A.redColor === 'white'; drawOverlay(); }
 };
-$('atDel').onclick = () => { if (A.active) A.remove(A.active); else toast('請先點選要刪除的文字框或遮蓋框'); };
+$('atDel').onclick = () => { if (A.active) A.remove(A.active); else toast('請先點選要刪除的東西（文字框、框、線、螢光筆）'); };
 $('atClearPage').onclick = () => {
   if (!A.list().length) return;
   if (!confirm('清除這一頁加的所有東西？')) return;
@@ -1579,7 +1795,7 @@ async function textCanvas(a, K) {
 }
 async function exportAddText() {
   if (!V.pdf) { toast('請先開啟 PDF'); return; }
-  if (!A.count()) { toast('還沒加任何字或遮蓋框'); return; }
+  if (!A.count()) { toast('還沒加任何東西'); return; }
   if (document.activeElement) document.activeElement.blur();
   busy('產生 PDF 中…');
   try {
@@ -1599,7 +1815,8 @@ async function exportAddText() {
           const r = visRectToPdf(pg, { x0: a.x, y0: a.y, x1: a.x + a.w, y1: a.y + a.h });
           pg.drawRectangle({ x: r.x, y: r.y, width: r.width, height: r.height, color: a.redact && !a.white ? PDFLib.rgb(0, 0, 0) : PDFLib.rgb(1, 1, 1), borderWidth: 0 });
           if (a.redact) redPages.add(pn);
-        } else if (a.text.trim()) {
+        } else if (a.type === 'shape') drawShapePdf(pg, a, VW, VH);
+        else if (a.text.trim()) {
           const { c, K: k } = await textCanvas(a, K);
           const img = await lib.embedPng(await canvasBytes(rotCanvas(c, (360 - R) % 360), 'image/png'));
           const r = visRectToPdf(pg, { x0: a.x, y0: a.y, x1: a.x + c.width / k / VW, y1: a.y + c.height / k / VH });
