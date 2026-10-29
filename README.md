@@ -21,6 +21,8 @@
 
 ## 擴充功能版（Chrome／Edge）
 
+### 👉 [擴充功能介紹與下載](https://r-toooooooooool.github.io/pdf-toolbox/extension/)
+
 功能跟網頁版一樣，另外多了：
 
 - 正在瀏覽器裡看 PDF 時，按工具列的圖示，這份 PDF 直接送進工具箱，不用先下載
@@ -30,7 +32,7 @@
 
 安裝：
 
-1. 下載 [pdf-toolbox-extension.zip](https://r-toooooooooool.github.io/pdf-toolbox/extension/pdf-toolbox-extension.zip)，在檔案上按右鍵 →「全部解壓縮」，把資料夾放在不會被刪掉的地方
+1. 到[擴充功能介紹頁](https://r-toooooooooool.github.io/pdf-toolbox/extension/)按「下載擴充功能」，在下載的壓縮檔按右鍵 →「全部解壓縮」，把資料夾放在不會被刪掉的地方
 2. 網址列輸入 `chrome://extensions`（Edge 是 `edge://extensions`），打開「開發人員模式」
 3. 按「載入未封裝項目」（Edge 叫「載入解壓縮」），選剛剛的資料夾
 4. 按網址列右邊的拼圖圖示，把 PDF 工具箱釘出來
@@ -54,6 +56,14 @@
 ## 有問題或想要新功能
 
 工具裡的「💡 回報區」可以回報問題、許願新功能，也能幫別人的許願按讚。
+
+## English
+
+**PDF Toolbox** is a free, no-install, no-sign-in PDF tool that runs entirely in your browser — files are never uploaded.
+Merge, split and halve pages, add text (Chinese text never turns into boxes), highlight and draw shapes, add or remove watermarks, take snapshots, extract text (even from scans) and clean up copied text.
+
+- 👉 [Open PDF Toolbox in English](https://r-toooooooooool.github.io/pdf-toolbox/?lang=en) — or click **EN** at the top right
+- 🧩 [Chrome / Edge extension](https://r-toooooooooool.github.io/pdf-toolbox/extension/#en)
 
 ## 感謝
 
