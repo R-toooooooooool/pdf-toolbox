@@ -20,6 +20,7 @@
 [hidden]{display:none !important}
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 "Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif;display:flex;flex-direction:column}
+html[lang=en] body{font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif}
 button{font:inherit;font-size:14px;padding:5px 11px;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--text);cursor:pointer;white-space:nowrap}
 button:hover{border-color:var(--accent)}
 button:disabled{opacity:.45;cursor:not-allowed;border-color:var(--line)}
@@ -291,6 +292,7 @@ header.top h1{font-size:17px;margin:0}
     <button data-tab="feedback">💡 回報區</button>
   </nav>
   <span class="privacy">🔒 檔案只在這台電腦上處理，不會上傳</span>
+  <button id="langBtn" data-noi18n title="Switch to English">EN</button>
   <span class="namebar">📁 檔名 <select id="nameQuick" title="存檔時用哪一組命名規則"></select><button id="btnNaming" title="管理命名規則：新增、修改、刪除">⚙</button></span>
 </header>
 <div id="libErr" hidden>工具載入失敗：這個工具第一次使用需要連上網路，請確認網路後重新整理頁面（F5）。</div>
@@ -586,7 +588,7 @@ header.top h1{font-size:17px;margin:0}
   </div>
 </div>
 <section class="view" id="view-help" hidden>
-  <div class="docwrap"><div class="doc">
+  <div class="docwrap"><div class="doc" id="helpZh" data-noi18n>
     <h2>快速上手</h2>
     <ol>
       <li>把 PDF（或照片）<b>拖進視窗</b>，或按各分頁的「加入」「開啟 PDF」。</li>
@@ -647,6 +649,68 @@ header.top h1{font-size:17px;margin:0}
     <h2>想要改善？</h2>
     <p>用起來哪裡不順、遇到錯誤、或希望多什麼功能，都歡迎到 <button id="helpToFb">💡 回報區</button> 回報；看到別人的回報也可以按 ▲ 投票，票多的優先做。自己的留言寫錯了可以按「刪除」再重留。</p>
     <p class="hint" id="helpVer"></p>
+  </div>
+  <div class="doc" id="helpEn" lang="en" hidden>
+    <h2>Getting started</h2>
+    <ol>
+      <li><b>Drag</b> PDFs (or photos) into the window, or use “Add” / “Open PDF” in each tab.</li>
+      <li>Add a file once and <b>every tab can use it</b> — no need to pick it again. In Add text, Snapshot and Copy text, switch files from the drop-down at the top.</li>
+      <li>When you’re done, click save or press <b>Ctrl+S</b>. Chrome and Edge show a “Save as” window so you can choose the folder (you can also overwrite the original); other browsers save to your <b>Downloads folder</b>. To skip the window, untick it under “📁 File name ⚙” at the top right.</li>
+    </ol>
+    <div class="tip">🔒 Everything happens inside your own browser — your PDFs are <b>never uploaded</b>. Only the reports, votes and comments you post in “Feedback” are sent over the internet.</div>
+    <h2>How each tab works</h2>
+    <h3>Merge · Split · Halve</h3>
+    <ul>
+      <li>Drop several files at once to merge them. <b>Drag thumbnails</b> to reorder, <b>click</b> to select, <b>double-click</b> to enlarge, and Shift+click to select a range.</li>
+      <li>“Cut in half”: split scans with two pages on one sheet (e.g. A3) into left and right (or top and bottom) pages. The cut position is adjustable. With no pages selected it applies to all pages.</li>
+      <li>Four ways to save: one PDF, selected pages only, one file per page (zip), or by page ranges (e.g. 1-3, 4-8). Made a mistake? Click “↶ Undo”.</li>
+    </ul>
+    <h3>Add text</h3>
+    <ul>
+      <li>Click anywhere on the page to type. Choose the font, size, color and bold. Drag ✥ at the top left to move it.</li>
+      <li>“🖍 Highlighter”: drag over text to mark it — the text stays visible. Choose the color and width; “Straight” keeps the stroke level, “Freehand” lets you draw freely.</li>
+      <li>“Box, Circle, Line, Arrow”: just drag to draw — great for marking key points. Choose the color, width and <b>solid or dashed</b>. Click one to select it, then drag to move, drag the dots to adjust, or press Delete.</li>
+      <li>“White-out”: drag a white box over a mistake, then type the correct text on top (it only covers it — the original text is still there).</li>
+      <li>“⬛ Redact”: for <b>confidential data</b>, in black or white (white looks like blank space). When saved, that page is turned into an image and the text under the box is really deleted — it can’t be copied or searched.</li>
+    </ul>
+    <h3>Watermark</h3>
+    <ul>
+      <li>“➕ Add watermark”: type text (or click a common one like “CONFIDENTIAL” or “DRAFT”) or choose a logo image, then adjust size, opacity and angle — one in the center or tiled across the page. What you see is what gets saved.</li>
+      <li>Apply it to all pages, the current page, or custom pages (e.g. 1-3, 5). Ticking “Prevent removal” turns the pages into images so the watermark is hard to remove, but the text can no longer be selected.</li>
+      <li>“➖ Remove watermark”: removes watermarks added by Acrobat, Word or this tool. Watermarks in scanned files or drawn into the content can’t be removed (use White-out in “Add text” instead). Only use this on your own documents.</li>
+    </ul>
+    <h3>Snapshot</h3>
+    <ul><li>Drag an area on the page → “Copy image” to paste it straight into LINE, Word or email, or download it as an image. For printing, set the quality to “Very sharp”.</li></ul>
+    <h3>Copy text</h3>
+    <ul>
+      <li>Extract one page, all pages, or drag a box to take only the text inside it. Broken lines and extra spaces are cleaned up automatically.</li>
+      <li>Scanned pages (images) have no text, so the words on them are recognized automatically. The first time, the recognition data needs to download — give it a moment.</li>
+    </ul>
+    <h3>Text cleanup</h3>
+    <ul>
+      <li>Follow ① ② ③ on screen: ① paste text copied from a PDF on the left (or click “📄 Extract text from the current PDF”) → ② choose a mode in the middle — if unsure, use “Documents” → ③ click “📋 Copy result” on the right and paste it into Word or LINE.</li>
+      <li>First time? Click “👀 Try an example” to see the before and after. The detailed settings are tucked away below the modes — you can ignore them.</li>
+      <li>Once you’re used to it: “⚡ Clean clipboard in one click” reads the clipboard, cleans it and puts it back — just press Ctrl+V.</li>
+    </ul>
+    <h3>Fix list</h3>
+    <ul><li>For words that scans often get wrong: select it in the result → click “Add to fix list” (in Copy text: “Add selection to fix list”) → type the correct text. It will be corrected automatically from then on.</li></ul>
+    <h3>Naming rules</h3>
+    <ul>
+      <li>Pick which rule to use under “📁 File name” at the top right; click ⚙ to create your own, e.g. <code>{date}-{custom}-{no}</code> → 20261028-Sales-001.pdf.</li>
+      <li>Each rule has its own number, which starts again at 001 every day.</li>
+    </ul>
+    <h2>FAQ</h2>
+    <details><summary>“The tool failed to load” appears at the top</summary><p>The tool downloads its components the first time it opens. Check your internet connection and press F5 to reload.</p></details>
+    <details><summary>Why can’t I select or copy the text I added?</summary><p>To make sure Chinese text <b>never turns into garbled characters or boxes</b> on any computer or phone, added text is “printed” onto the page at high resolution. The trade-off is that it can’t be selected later.</p></details>
+    <details><summary>Can I use White-out to hide confidential data?</summary><p><b>No.</b> White-out only covers it up — the original text is still underneath and can be copied or searched. Use “⬛ Redact” (black or white) instead: when saved, redacted pages become images and the text under the box is really deleted. The trade-off is that other text on those pages can’t be selected or copied. After saving, you can check it in the “Copy text” tab.</p></details>
+    <details><summary>The recognized text from a scan has mistakes</summary><p>1. Scan at high quality and keep the page straight; 2. select only the part you need, avoiding table lines and stamps; 3. add frequent mistakes to the “Fix list” so they’re corrected automatically; 4. for important documents, recognize the text again with the Windows Snipping Tool (Win+Shift+S → “Text actions”) and compare. Handwriting generally can’t be recognized.</p></details>
+    <details><summary>Can I use password-protected PDFs?</summary><p>For PDFs with an “open password”, you’ll be asked for the password. PDFs protected only against editing are saved as images in “Merge · Split · Halve” (text can’t be selected afterwards), and “Add text” can’t be used on them.</p></details>
+    <details><summary>Where are my saved files? Can I change the name?</summary><p>Chrome and Edge show a “Save as” window, so files go to the folder you choose and you can edit the name (the default follows the naming rule at the top right). To skip the window, untick “Show a Save as window” under “📁 File name ⚙” and files will go to your browser’s Downloads folder.</p></details>
+    <details><summary>My fix list and naming rules disappeared after changing computers or clearing browser data</summary><p>Both are stored in this computer’s browser. Use “Export” to back them up now and then, and “Import” to restore them on another computer — you can also share the file with colleagues.</p></details>
+    <details><summary>Does it work on phones?</summary><p>Yes — you can open files, merge and split, take snapshots and extract text. Precise tasks like adding text and selecting areas are easier on a computer.</p></details>
+    <h2>Suggestions?</h2>
+    <p>If something is awkward, you hit an error, or you’d like a new feature, please tell us in <button id="helpToFbEn">💡 Feedback</button>. You can also vote ▲ for other people’s reports — the most-voted ones come first. If you made a mistake in your own comment, click “Delete” and post it again.</p>
+    <p class="hint" id="helpVerEn"></p>
   </div></div>
 </section>
 <section class="view" id="view-feedback" hidden>
@@ -699,9 +763,9 @@ header.top h1{font-size:17px;margin:0}
     <div class="modal-head"><span class="hint" id="wpDId"></span><button id="wpDClose" title="關閉（Esc）">✕</button></div>
     <div class="wp-dtop">
       <button class="wp-vote" id="wpDVote" title="投一票；再按一次取消"><span>▲</span><b id="wpDVotes">0</b></button>
-      <div style="flex:1;min-width:0"><h3 id="wpDTitle"></h3><div class="wp-meta" id="wpDMeta"></div></div>
+      <div style="flex:1;min-width:0"><h3 id="wpDTitle" data-noi18n></h3><div class="wp-meta" id="wpDMeta"></div></div>
     </div>
-    <div class="wp-body" id="wpDBody"></div>
+    <div class="wp-body" id="wpDBody" data-noi18n></div>
     <div class="wp-reply" id="wpDReply" hidden></div>
     <h3 class="wp-ch" id="wpDCh">留言</h3>
     <div id="wpDCmts"></div>
@@ -847,6 +911,637 @@ function rotCanvas(src, r) {
   ctx.drawImage(src, -src.width / 2, -src.height / 2);
   return c;
 }
+const I18N_EN = {
+  'PDF 工具箱': 'PDF Toolbox',
+  '合併・分割・裁半': 'Merge · Split · Halve',
+  '加字': 'Add text',
+  '浮水印': 'Watermark',
+  '擷取畫面': 'Snapshot',
+  '複製文字': 'Copy text',
+  '文字整理': 'Text cleanup',
+  '❓ 說明': '❓ Help',
+  '💡 回報區': '💡 Feedback',
+  '🔒 檔案只在這台電腦上處理，不會上傳': '🔒 Files stay on this computer — nothing is uploaded',
+  '📁 檔名': '📁 File name',
+  '存檔時用哪一組命名規則': 'Which naming rule to use when saving',
+  '管理命名規則：新增、修改、刪除': 'Manage naming rules: add, edit, delete',
+  '工具載入失敗：這個工具第一次使用需要連上網路，請確認網路後重新整理頁面（F5）。': 'The tool failed to load. It needs an internet connection the first time — check your connection and reload the page (F5).',
+  '需要密碼或已取消': 'password required or cancelled',
+  '檔案損壞或不是 PDF': 'the file is damaged or not a PDF',
+  '找不到檔案': 'file not found',
+  '無法讀取這個檔案': 'this file cannot be read',
+  '密碼不對，請再輸入一次：': 'Wrong password. Please try again:',
+  '這份 PDF 有設開啟密碼，請輸入：': 'This PDF is password-protected. Enter the password:',
+  '讀取檔案中…': 'Reading files…',
+  '＋ 加入 PDF／圖片': '+ Add PDFs / images',
+  '↶ 復原': '↶ Undo',
+  '清空': 'Clear',
+  '選取': 'Select',
+  '全選': 'All',
+  '全不選': 'None',
+  '反選': 'Invert',
+  '⟲ 左轉': '⟲ Rotate left',
+  '⟳ 右轉': '⟳ Rotate right',
+  '刪除': 'Delete',
+  '裁半': 'Halve',
+  '左右切': 'Left | right',
+  '上下切': 'Top / bottom',
+  '先左後右': 'Left first',
+  '先右後左': 'Right first',
+  '先上後下': 'Top first',
+  '先下後上': 'Bottom first',
+  '中線': 'Cut at',
+  '✂ 裁成兩半': '✂ Cut in half',
+  '沒選頁時，旋轉和裁半會套用到全部頁': 'With no pages selected, rotate and halve apply to all pages',
+  '把 PDF 或圖片拖到這裡': 'Drop PDFs or images here',
+  '可以一次放很多個檔；點縮圖選取頁面、雙擊放大看、拖拉排順序': 'You can drop many files at once. Click a thumbnail to select, double-click to enlarge, drag to reorder.',
+  '存成一個 PDF（全部頁）': 'Save as one PDF (all pages)',
+  '只存選取的頁': 'Save selected pages',
+  '每頁存一個檔（壓縮檔）': 'One file per page (zip)',
+  '依頁碼拆檔': 'Split by page ranges',
+  '拆檔（壓縮檔）': 'Split (zip)',
+  '快速鍵 Ctrl+S': 'Shortcut: Ctrl+S',
+  '例：1-3, 4-8, 9': 'e.g. 1-3, 4-8, 9',
+  '放大看（也可以雙擊縮圖）': 'Enlarge (or double-click the thumbnail)',
+  '左轉': 'Rotate left',
+  '右轉': 'Rotate right',
+  '把這頁裁成兩半（照上面的裁半設定）': 'Cut this page in half (using the halve settings above)',
+  '只把這頁存成 PDF': 'Save just this page as a PDF',
+  '刪除這頁': 'Delete this page',
+  '點一下選取、雙擊放大看、拖拉排順序': 'Click to select, double-click to enlarge, drag to reorder',
+  '無法顯示': 'Cannot display',
+  '這頁無法顯示': 'This page cannot be displayed',
+  '檔案：': 'Files:',
+  '已復原上一步': 'Undone',
+  '請先點選要刪除的頁': 'Click the pages you want to delete first',
+  '請輸入頁碼範圍，例如 1-3, 4-8': 'Enter page ranges, e.g. 1-3, 4-8',
+  '請先點選要存的頁': 'Click the pages you want to save first',
+  '打包成壓縮檔…': 'Creating zip…',
+  '存檔失敗，這份 PDF 可能有損壞': 'Save failed — this PDF may be damaged',
+  '清空這裡排好的頁面？\n（原始檔案不會被刪；已開啟的檔案在加字、擷取、複製文字還能用）': 'Clear the pages arranged here?\n(Your original files are not deleted; opened files can still be used in Add text, Snapshot and Copy text.)',
+  '已清空（可按復原）': 'Cleared (Undo available)',
+  '產生 PDF 中…': 'Creating PDF…',
+  '已存檔，請到「下載」資料夾查看': 'Saved — check your Downloads folder',
+  '開啟 PDF': 'Open PDF',
+  '已開啟的檔案，點選切換': 'Opened files — click to switch',
+  '上一頁（PageUp）': 'Previous page (PageUp)',
+  '下一頁（PageDown）': 'Next page (PageDown)',
+  '縮小': 'Zoom out',
+  '放大': 'Zoom in',
+  '－': '−',
+  '＋': '+',
+  '把 PDF 拖到這裡': 'Drop a PDF here',
+  '或按左上角「開啟 PDF」。在任何一個分頁開過的檔案，這裡都能直接用，不用重選。': 'or click “Open PDF” at the top left. Files opened in any tab can be used here without picking them again.',
+  '還在取字中，請等做完或按「停止」再換檔': 'Still extracting text — wait until it finishes or click “Stop” before switching files',
+  '目前這份加的字還沒存，確定要換檔嗎？': 'What you added to this file hasn’t been saved. Switch files anyway?',
+  '請先在任一分頁開啟 PDF': 'Open a PDF in any tab first',
+  '請先開啟 PDF': 'Open a PDF first',
+  '產生圖片中…': 'Creating image…',
+  '工具': 'Tools',
+  '文字': 'Text',
+  '🖍 螢光筆': '🖍 Highlighter',
+  '白底遮蓋': 'White-out',
+  '⬛ 塗銷': '⬛ Redact',
+  '▭ 方框': '▭ Box',
+  '◯ 圓圈': '◯ Circle',
+  '╱ 直線': '╱ Line',
+  '↗ 箭頭': '↗ Arrow',
+  '拖過要標記的字，底下的字還看得到': 'Drag over text to mark it; the text underneath stays visible',
+  '機密資料用：存檔時連同底下的字一起刪掉': 'For confidential data: the text underneath is deleted when you save',
+  '畫方框圈重點': 'Draw a box around key points',
+  '畫圓圈圈重點': 'Draw a circle around key points',
+  '畫直線': 'Draw a line',
+  '畫箭頭指位置': 'Draw an arrow pointing at something',
+  '塗銷顏色': 'Redaction color',
+  '⬛ 黑': '⬛ Black',
+  '⬜ 白': '⬜ White',
+  '線條樣式': 'Line style',
+  '螢光筆樣式': 'Highlighter style',
+  '顏色': 'Color',
+  '紅': 'Red',
+  '藍': 'Blue',
+  '黑': 'Black',
+  '綠': 'Green',
+  '黃': 'Yellow',
+  '粉紅': 'Pink',
+  '灰': 'Gray',
+  '粗細': 'Width',
+  '細': 'Thin',
+  '中': 'Medium',
+  '粗': 'Thick',
+  '線條': 'Stroke',
+  '━ 實線': '━ Solid',
+  '┅ 虛線': '┅ Dashed',
+  '畫法': 'Mode',
+  '直線': 'Straight',
+  '自由畫': 'Freehand',
+  '文字樣式': 'Text style',
+  '字型': 'Font',
+  '微軟正黑體': 'JhengHei (sans-serif)',
+  '標楷體': 'Kaiti (brush)',
+  '新細明體': 'Mingliu (serif)',
+  '字級': 'Size',
+  '粗體': 'Bold',
+  '文字加白底（蓋掉底下原本的字）': 'White background behind text (covers what’s underneath)',
+  '已加的內容': 'Added items',
+  '還沒加任何東西': 'Nothing added yet',
+  '刪除選取的': 'Delete selected',
+  '清除這頁': 'Clear this page',
+  '存成 PDF': 'Save as PDF',
+  '加上去的字會用高解析度「印」在頁面上，任何電腦、手機打開都不會變亂碼或方框。缺點是之後沒辦法再選取、複製這些字。': 'Added text is “printed” onto the page at high resolution, so it never turns into garbled characters or boxes on any computer or phone. The downside: that text can’t be selected or copied later.',
+  '有「⬛ 塗銷」的頁，存檔時會整頁轉成圖片，框底下的字真的刪掉（那幾頁其他字也不能再選取）。': 'Pages with “⬛ Redact” are turned into images when saved, so the text under the box is really deleted (other text on those pages can no longer be selected).',
+  '刪除': 'Delete',
+  '塗銷（存檔時連底下的字一起刪掉；紅色虛線只是畫面上的記號，不會存進去）。': 'Redaction (the text underneath is deleted when saved; the red dashed outline is only an on-screen marker and is not saved).',
+  '拖曳移動，拉右下角調整大小': 'Drag to move; drag the bottom-right corner to resize',
+  '拖曳移動': 'Drag to move',
+  '拖曳移動；選取後拖圓點調整': 'Drag to move; once selected, drag the dots to adjust',
+  '拖曳調整': 'Drag to adjust',
+  '點頁面任何位置就能打字，按 Enter 換行。拖曳文字框左上的 ✥ 移動，點 ✕ 刪除。': 'Click anywhere on the page to type; press Enter for a new line. Drag ✥ at the top left of a text box to move it, click ✕ to delete.',
+  '按住拖過要標記的字，像螢光筆一樣，底下的字還看得到。「直線」會自動拉平；想圈畫就選「自由畫」。點一下畫好的可以拖動或刪除。': 'Drag over the text you want to mark, like a highlighter — the text stays visible. “Straight” keeps the stroke level; choose “Freehand” to draw freely. Click a stroke to move or delete it.',
+  '拖出一個方框圈住重點（只有框線，裡面是空的）。點一下選取後，拖線移動、拖對角的圓點調整大小。': 'Drag to draw a box around key points (outline only, the inside stays clear). Click it to select, drag the outline to move, drag the corner dots to resize.',
+  '拖出一個圓圈圈住重點。點一下選取後，拖線移動、拖圓點調整大小。': 'Drag to draw a circle around key points. Click it to select, drag the outline to move, drag the dots to resize.',
+  '從起點拖到終點畫一條直線，接近水平或垂直會自動拉正。點一下選取後，拖兩端的圓點調整。': 'Drag from start to end to draw a line; nearly horizontal or vertical lines snap straight. Click it to select, then drag the end dots to adjust.',
+  '從起點拖到要指的地方，箭頭會在放開的那一端。點一下選取後，拖兩端的圓點調整。': 'Drag from the start to what you want to point at; the arrowhead goes where you let go. Click it to select, then drag the end dots to adjust.',
+  '在頁面上拖出一個框，用白色蓋掉不要的內容；選取後可拖曳移動、拉右下角調整大小。⚠ 只是蓋住看不到，底下原本的字還在，用複製或搜尋還是找得到，機密資料請用「⬛ 塗銷」。': 'Drag a box on the page to cover unwanted content with white; once selected you can move it or drag the bottom-right corner to resize. ⚠ This only hides it — the text underneath is still there and can be copied or searched. Use “⬛ Redact” for confidential data.',
+  '遮機密資料用：拖出框蓋住要刪的內容，顏色可選黑或白（白色看起來像空白，比較不突兀）。存檔時，有塗銷的頁會整頁轉成圖片，框底下的字真的被刪掉，複製、搜尋都找不到；代價是那幾頁其他的字也不能再選取。': 'For confidential data: drag a box over what you want removed; choose black or white (white looks like blank space). When saved, redacted pages are turned into images and the text under the box is really deleted — it can’t be copied or searched. The trade-off: other text on those pages can’t be selected either.',
+  '請先點選要刪除的東西（文字框、框、線、螢光筆）': 'Click what you want to delete first (text box, box, line, highlight)',
+  '清除這一頁加的所有東西？': 'Remove everything added on this page?',
+  '這份 PDF 有加密保護，沒辦法直接加字。可以先到「合併・分割・裁半」另存一份，再拿新檔來加字。': 'This PDF is encrypted, so text can’t be added directly. Save a copy in “Merge · Split · Halve” first, then add text to the new file.',
+  '已存成新的 PDF（在「下載」資料夾），原檔沒有被改動': 'Saved as a new PDF (in your Downloads folder); the original was not changed',
+  '➕ 加浮水印': '➕ Add watermark',
+  '➖ 去除浮水印': '➖ Remove watermark',
+  '浮水印內容': 'Watermark content',
+  '圖片（例如公司 logo）': 'Image (e.g. a company logo)',
+  '常用：': 'Common:',
+  '機密文件': 'CONFIDENTIAL',
+  '僅供內部使用': 'INTERNAL USE ONLY',
+  '草稿': 'DRAFT',
+  '副本': 'COPY',
+  '作廢': 'VOID',
+  '選擇圖片…': 'Choose image…',
+  '還沒選圖片': 'No image chosen',
+  '建議用背景透明的圖片。圖片只在這台電腦處理，不會上傳。': 'An image with a transparent background works best. The image is processed on this computer only and is not uploaded.',
+  '樣式': 'Style',
+  '大小': 'Size',
+  '濃淡': 'Opacity',
+  '角度': 'Angle',
+  '斜放（左下往右上）': 'Diagonal (bottom-left to top-right)',
+  '水平': 'Horizontal',
+  '反斜（左上往右下）': 'Diagonal (top-left to bottom-right)',
+  '直的': 'Vertical',
+  '排法': 'Layout',
+  '頁面中間一個': 'One in the center',
+  '滿版重複': 'Tiled across the page',
+  '加在哪幾頁': 'Pages',
+  '全部頁': 'All pages',
+  '只有目前這頁': 'Current page only',
+  '自訂頁碼…': 'Custom pages…',
+  '例如 1-3, 5': 'e.g. 1-3, 5',
+  '防止別人去掉（整頁轉成圖片）': 'Prevent removal (turn pages into images)',
+  '勾了以後浮水印跟頁面合成一張圖，別人很難去掉；缺點是檔案變大、那幾頁的字不能再選取複製。': 'The watermark is merged with the page into one image, making it hard to remove. Downside: bigger files, and text on those pages can’t be selected or copied.',
+  '加浮水印並存檔': 'Add watermark and save',
+  '畫面上看到的就是存出來的樣子（換頁可以檢查每一頁）。存成新檔，原檔不會被改動。': 'What you see is what gets saved (flip through pages to check each one). Saved as a new file; the original is not changed.',
+  '能去掉的': 'Can be removed',
+  '用 Acrobat、Word 或本工具加的「浮水印物件」，以及標成浮水印的註解、圖層。': '“Watermark objects” added by Acrobat, Word or this tool, plus annotations and layers marked as watermarks.',
+  '去不掉的': 'Can’t be removed',
+  '掃描檔（整頁是一張圖），或浮水印直接畫在內容裡、跟文字混在一起。這種可以改用「加字」分頁的「白底遮蓋」蓋掉。': 'Scanned files (each page is one image), or watermarks drawn directly into the content mixed with the text. For those, use “White-out” in the “Add text” tab.',
+  '⚠ 只用在公司自己的文件（例如去掉自己加的「草稿」）。別人有著作權的文件請不要去浮水印。': '⚠ Only use this on your own documents (e.g. removing a “DRAFT” you added). Don’t remove watermarks from documents whose copyright belongs to others.',
+  '🔍 檢查這份有沒有浮水印': '🔍 Check this file for watermarks',
+  '去除浮水印並存檔': 'Remove watermark and save',
+  '這一頁不加浮水印': 'No watermark on this page',
+  '這張圖片讀不進來，請換一張圖片再試': 'This image can’t be read — try a different image',
+  '請先選浮水印圖片': 'Choose a watermark image first',
+  '請先輸入浮水印文字': 'Enter the watermark text first',
+  '這份 PDF 有加密保護，沒辦法直接加浮水印。可以先到「合併・分割・裁半」另存一份，再拿新檔來加。': 'This PDF is encrypted, so a watermark can’t be added directly. Save a copy in “Merge · Split · Halve” first, then use the new file.',
+  '加浮水印中…': 'Adding watermark…',
+  '這份 PDF 有加密保護，沒辦法去浮水印': 'This PDF is encrypted, so watermarks can’t be removed',
+  '沒找到標成浮水印的東西。可能是掃描檔，或浮水印直接畫在內容裡，這種沒辦法自動去掉，可以改用「加字」分頁的白底遮蓋。': 'Nothing marked as a watermark was found. It may be a scanned file, or the watermark is drawn into the content — that can’t be removed automatically. Use White-out in the “Add text” tab instead.',
+  '檢查中…': 'Checking…',
+  '檢查失敗，這份 PDF 可能有損壞': 'Check failed — this PDF may be damaged',
+  '沒找到可以去除的浮水印': 'No removable watermark found',
+  '處理失敗，這份 PDF 可能有損壞': 'Processing failed — this PDF may be damaged',
+  '怎麼用': 'How to use',
+  '在頁面上按住滑鼠拖出要擷取的範圍，再按「複製圖片」，就能直接貼到 LINE、Word、Email。': 'Drag on the page to select the area to capture, then click “Copy image” to paste it straight into LINE, Word or email.',
+  '清晰度': 'Quality',
+  '一般': 'Normal',
+  '清楚': 'Sharp',
+  '很清楚（要印出來選這個）': 'Very sharp (choose this for printing)',
+  '還沒框選範圍': 'No area selected yet',
+  '複製圖片': 'Copy image',
+  '下載圖片': 'Download image',
+  '整頁': 'Whole page',
+  '這一頁存成圖片': 'Save this page as an image',
+  '圖片已複製，可以直接貼到 LINE、Word、Email': 'Image copied — paste it into LINE, Word or email',
+  '瀏覽器不讓複製圖片，改成下載檔案': 'The browser won’t allow copying images, so it was downloaded instead',
+  '取出文字': 'Extract text',
+  '這一頁': 'This page',
+  '也可以在頁面上拖出範圍，只取框內的字。': 'You can also drag an area on the page to extract only the text inside it.',
+  '掃描檔認字': 'Scanned pages',
+  '自動：沒有文字才辨識': 'Auto: recognize only when there’s no text',
+  '一律用辨識': 'Always recognize',
+  '不辨識': 'Never recognize',
+  '停止': 'Stop',
+  '結果': 'Result',
+  '整理方式': 'Cleanup mode',
+  '智慧合併（推薦）': 'Smart merge (recommended)',
+  '只在空行處分段': 'Break paragraphs only at blank lines',
+  '全部接成一段': 'Join everything into one paragraph',
+  '一句一行': 'One sentence per line',
+  '保留原本換行': 'Keep original line breaks',
+  '不整理（原始文字）': 'No cleanup (raw text)',
+  '複製': 'Copy',
+  '送到「文字整理」細調': 'Fine-tune in “Text cleanup”',
+  '選取的字加入常錯字': 'Add selection to fix list',
+  '📖 對照表': '📖 Fix list',
+  '取出的文字會出現在這裡，也可以直接修改': 'Extracted text appears here; you can edit it directly',
+  '在上面結果裡選取打錯的字，再按這裡': 'Select a misrecognized word in the result above, then click here',
+  '辨識資料下載失敗，請確認網路': 'Couldn’t download the recognition data — check your connection',
+  '辨識資料下載逾時，請確認網路後再試': 'Downloading the recognition data timed out — check your connection and try again',
+  '第一次認字要下載辨識資料（約 20MB，之後就快了），請稍候…': 'The first recognition downloads about 20 MB of data (faster afterwards) — please wait…',
+  '還在處理上一個，請稍等或按停止': 'Still working on the previous one — wait or click Stop',
+  '讀取文字中…': 'Reading text…',
+  '處理失敗，請再試一次': 'Processing failed — please try again',
+  '停止中…（這一頁做完就停）': 'Stopping… (after this page)',
+  '已複製，可以貼上了': 'Copied — ready to paste',
+  '還沒有取出文字': 'No text extracted yet',
+  '把 PDF 複製出來亂掉的文字（斷行、字中間有空格、怪字）整理乾淨。照 ①②③ 做就好；設定會自動記住，「複製文字」分頁也用同一套。': 'Clean up messy text copied from PDFs (broken lines, spaces between characters, odd characters). Just follow ① ② ③; settings are remembered and shared with the “Copy text” tab.',
+  '👀 先看範例': '👀 Try an example',
+  '放一段範例文字進去，看整理前後的差別': 'Load sample text to see the before and after',
+  '📖 常錯字對照表': '📖 Fix list',
+  '⚡ 一鍵整理剪貼簿': '⚡ Clean clipboard in one click',
+  '熟手捷徑：讀剪貼簿 → 用目前的整理方式整理 → 放回剪貼簿，回去直接 Ctrl+V': 'Shortcut: read the clipboard → clean it with the current mode → put it back, then just press Ctrl+V',
+  '放入原文': 'Paste original',
+  '貼上': 'Paste',
+  '把剪貼簿裡的文字貼進來': 'Paste text from the clipboard',
+  '📄 取出目前 PDF 的文字': '📄 Extract text from the current PDF',
+  '三種放法，選一種：\n・在 PDF 上選取文字按 Ctrl+C，再點這個框按 Ctrl+V\n・按上面的「貼上」\n・在其他分頁開過 PDF → 按「📄 取出目前 PDF 的文字」\n\n想先看效果？按最上面的「👀 先看範例」。': 'Three ways to add text:\n• Select text in a PDF and press Ctrl+C, then click this box and press Ctrl+V\n• Click “Paste” above\n• If you opened a PDF in another tab, click “📄 Extract text from the current PDF”\n\nWant to see how it works first? Click “👀 Try an example” at the top.',
+  '選整理方式': 'Choose a mode',
+  '📄 一般文件（推薦）': '📄 Documents (recommended)',
+  '接回被 PDF 切斷的句子、刪掉字中間的空格。公文、程序書、說明書用這個。': 'Rejoins sentences broken by the PDF and removes spaces between characters. Use this for letters, procedures and manuals.',
+  '✉ 貼到 Email／LINE': '✉ For email / LINE',
+  '跟一般文件一樣，另外段落之間空一行、刪掉頁碼，貼出去比較好讀。': 'Like Documents, plus a blank line between paragraphs and page numbers removed — easier to read once pasted.',
+  '📋 表格／清單': '📋 Tables / lists',
+  '原本的換行全部保留，只刪多餘空格、修怪字。一格一行的資料用這個。': 'Keeps all original line breaks; only removes extra spaces and fixes odd characters. Use this for one-item-per-line data.',
+  '✂ 一句一行': '✂ One sentence per line',
+  '每句話自己一行，方便逐句核對或翻譯。': 'Each sentence on its own line — handy for checking or translating sentence by sentence.',
+  '➖ 全部接成一段': '➖ One paragraph',
+  '整份接成一段，貼到只能填一行的表單欄位用。': 'Joins everything into one paragraph, for form fields that only take one line.',
+  '✏ 目前是自訂：下面的細項設定改過了。點上面任一種就換回來。': '✏ Custom: the detailed settings below were changed. Click any mode above to switch back.',
+  '⚙ 細項設定（看不懂可以不用管）': '⚙ Detailed settings (optional)',
+  '換行怎麼處理': 'Line breaks',
+  '空格': 'Spaces',
+  '刪除中文字之間的空格': 'Remove spaces between Chinese characters',
+  '例：「會 議 紀 錄」→「會議紀錄」': 'e.g. “會 議 紀 錄” → “會議紀錄”',
+  '中文和英文／數字之間': 'Between Chinese and English / numbers',
+  '保持原樣': 'Leave as is',
+  '空格全部刪掉': 'Remove all spaces',
+  '統一加一個空格': 'Always one space',
+  '例：「PDF 檔案」刪掉＝「PDF檔案」；「共3頁」加空格＝「共 3 頁」': 'e.g. remove: “PDF 檔案” → “PDF檔案”; add: “共3頁” → “共 3 頁”',
+  '連續空格縮成一個': 'Collapse repeated spaces',
+  '例：「A\u3000\u3000\u3000B」→「A B」': 'e.g. “A   B” → “A B”',
+  '其他修正': 'Other fixes',
+  '修正 PDF 怪字': 'Fix odd PDF characters',
+  '長得一樣、電腦卻當成別的字，搜尋找不到。例：「⾃主」→「自主」、ﬁ 連字、看不見的隱形字元': 'Characters that look the same but are different to the computer, so search can’t find them. e.g. “⾃主” → “自主”, the ﬁ ligature, invisible characters',
+  '短行當作段落結尾': 'Treat short lines as paragraph ends',
+  '標題、段落最後一行通常比較短，用行的長短判斷哪裡該分段': 'Headings and last lines of paragraphs are usually shorter, so line length is used to find paragraph breaks',
+  '英文斷字接回': 'Rejoin hyphenated English words',
+  '例：「effec- / tiveness」→「effectiveness」': 'e.g. “effec- / tiveness” → “effectiveness”',
+  '刪除只有頁碼的行': 'Remove page-number-only lines',
+  '例：整行只有「3」「- 3 -」「第 3 頁」會刪掉。表格一格一行、整行都是數字時請關掉': 'e.g. lines with only “3”, “- 3 -” or “第 3 頁” are removed. Turn this off for tables where whole lines are numbers.',
+  '中文旁的半形標點轉全形': 'Full-width punctuation next to Chinese',
+  '例：「目的,範圍」→「目的，範圍」': 'e.g. “目的,範圍” → “目的，範圍”',
+  '段落之間空一行': 'Blank line between paragraphs',
+  '段落中間多一個空行，貼到 Email 比較好讀': 'Adds a blank line between paragraphs — easier to read in email',
+  '恢復預設設定': 'Reset to defaults',
+  '複製結果': 'Result',
+  '📋 複製結果': '📋 Copy result',
+  '整理好的文字會自動出現在這裡。\n按右上角「📋 複製結果」，再到 Word、LINE、Email 按 Ctrl+V 貼上。\n\n要自己斷行，直接在這裡按 Enter 就好（左邊原文或整理方式一改，這裡手動改的會被蓋掉）。': 'The cleaned text appears here automatically.\nClick “📋 Copy result” at the top right, then press Ctrl+V in Word, LINE or email.\n\nTo add your own line breaks, just press Enter here (manual edits are overwritten if you change the original text or the mode).',
+  '要微調？先在上面選取文字，再按：': 'Fine-tune: select text above, then click:',
+  '接成一行': 'Join into one line',
+  '把選取的幾行接成一行；沒有選取就把游標所在行跟下一行接起來': 'Join the selected lines into one; with no selection, join the current line with the next',
+  '刪掉空格': 'Remove spaces',
+  '刪掉選取範圍內所有空格': 'Remove all spaces in the selection',
+  '加入常錯字': 'Add to fix list',
+  '選取打錯的字，記進常錯字對照表，以後自動修正': 'Select a wrong word to save it in the fix list; it will be corrected automatically next time',
+  '看行尾標點、行的長短、條列符號判斷哪裡是真的分段，其他被 PDF 硬切的換行全部接回去。': 'Uses line-end punctuation, line length and bullets to find real paragraph breaks, and rejoins all other lines broken by the PDF.',
+  '原文有空行的地方才分段，其他換行全部接起來。': 'Breaks paragraphs only where the original has blank lines; joins all other lines.',
+  '不管段落，整份接成一段。': 'Ignores paragraphs and joins everything into one.',
+  '先接起來，再在。！？等句尾斷開，一句一行。': 'Joins the text, then breaks after sentence-ending punctuation — one sentence per line.',
+  '換行完全不動，只處理空格和怪字。': 'Leaves line breaks untouched; only fixes spaces and odd characters.',
+  '沒有東西可以複製': 'Nothing to copy',
+  '已複製，到 Word、LINE、Email 按 Ctrl+V 貼上': 'Copied — press Ctrl+V in Word, LINE or email',
+  '✅ 已複製': '✅ Copied',
+  '瀏覽器不讓讀剪貼簿，請點左邊框框按 Ctrl+V': 'The browser won’t allow reading the clipboard — click the box on the left and press Ctrl+V',
+  '整理好了，已放回剪貼簿，回去直接 Ctrl+V': 'Done — the result is on the clipboard, just press Ctrl+V',
+  '已恢復預設設定': 'Settings reset to defaults',
+  '已經是最後一行': 'Already the last line',
+  '請先在結果裡選取一段文字': 'Select some text in the result first',
+  '關閉（Esc）': 'Close (Esc)',
+  '記下掃描檔認字或 PDF 常弄錯的字，之後「複製文字」和「文字整理」的結果會自動改成正確的。存在這台電腦的瀏覽器裡，只有你自己看得到。': 'Save words that scanning or PDFs often get wrong, and “Copy text” and “Text cleanup” will correct them automatically. Stored in this computer’s browser — only you can see it.',
+  '錯的字，例：己經': 'Wrong text, e.g. “己經”',
+  '正確的字，例：已經（留空＝刪掉）': 'Correct text, e.g. “已經” (empty = delete)',
+  '新增': 'Add',
+  '🔍 搜尋對照表': '🔍 Search the list',
+  '匯出（備份／分享給同事）': 'Export (backup / share)',
+  '匯入': 'Import',
+  '⚠ 清除瀏覽器資料會連對照表一起清掉，建議偶爾按「匯出」備份。匯出的是純文字檔，一行一組「錯字=正確」，可以用記事本修改，也能傳給同事匯入。': '⚠ Clearing browser data also clears the list, so “Export” a backup now and then. The export is a plain text file with one “wrong=correct” pair per line — edit it in Notepad or share it with colleagues.',
+  '對照表存不進瀏覽器（可能是無痕視窗），請用「匯出」另存': 'The list can’t be saved in the browser (private window?) — use “Export” to keep a copy',
+  '找不到符合的': 'No matches',
+  '還沒有任何對照。在結果裡選取打錯的字，按「加入常錯字」最快。': 'No entries yet. The quickest way: select a wrong word in a result and click “Add to fix list”.',
+  '打勾＝啟用；取消＝暫停這組': 'Checked = on; unchecked = paused',
+  '錯的字': 'Wrong text',
+  '正確的字（留空＝刪掉）': 'Correct text (empty = delete)',
+  '刪除這組': 'Delete this pair',
+  '錯的字不能空白；不要這組請按 ✕': 'Wrong text can’t be empty; click ✕ to delete the pair',
+  '請輸入錯的字': 'Enter the wrong text',
+  '錯字跟正確的字一樣，不用加': 'Wrong and correct text are the same — nothing to add',
+  '這組已經有了': 'This pair already exists',
+  '請先在結果裡用滑鼠選取打錯的字': 'Select the wrong word in the result with your mouse first',
+  '選太長了，請只選打錯的那幾個字': 'Selection too long — select only the wrong characters',
+  '對照表是空的': 'The list is empty',
+  '讀不到這個檔': 'Can’t read this file',
+  '（刪掉）': '(delete)',
+  '# PDF 工具箱 常錯字對照表（一行一組：錯字=正確；開頭 #停用 的是暫停中的）': '# PDF Toolbox fix list (one per line: wrong=correct; lines starting with #停用 are paused)',
+  '📁 存檔命名規則': '📁 File naming rules',
+  '可以建好幾組規則，存檔前在右上角「檔名」選要用哪一組，五個分頁都會照它命名。存在這台電腦的瀏覽器裡，每個人設自己的。': 'Create several rules and pick one under “File name” at the top right before saving; all tabs name files with it. Stored in this computer’s browser, so everyone sets their own.',
+  '我的命名規則（點一下＝套用並編輯）': 'My naming rules (click = use and edit)',
+  '＋ 新增': '+ New',
+  '規則名稱': 'Rule name',
+  '格式': 'Format',
+  '插入：': 'Insert:',
+  '常用格式：': 'Common formats:',
+  '自訂文字': 'Custom text',
+  '這組序號歸零': 'Reset this rule’s number',
+  '存檔時跳出「另存新檔」視窗，自己選存在哪個資料夾（也可以直接蓋掉原檔）；沒勾就存到「下載」資料夾': 'Show a “Save as” window so you choose the folder (you can also overwrite the original); unchecked = save to Downloads',
+  '每次存檔前讓我確認、修改檔名（沒有跳「另存新檔」視窗時才用得到）': 'Let me confirm or edit the file name before each save (only when the “Save as” window is off)',
+  '格式欄位說明': 'Format fields',
+  '原本的檔名；好幾個檔合併時是「合併」': 'The original file name; “merged” when several files are combined',
+  '整理、選取、拆檔、加字、加浮水印、去浮水印、擷取、整頁': 'organized, selected, split, annotated, watermarked, unwatermarked, snapshot, fullpage',
+  '存檔當下，例：20261028、1435': 'When saving, e.g. 20261028, 1435',
+  '擷取或拆檔時的頁碼；格式裡沒放的話會自動加在最後，避免檔名重複': 'Page number for snapshots or splits; added at the end automatically if the format doesn’t include it, to avoid duplicate names',
+  '每組規則各自計算，每天從 001 開始，每存一次加 1': 'Counted per rule; starts at 001 each day and goes up by 1 with each save',
+  '這組規則「自訂文字」填的內容': 'What you entered in “Custom text” for this rule',
+  '檔名不能用的符號 \\ / : * ? " < > | 會自動換成 _。': 'Characters not allowed in file names (\\ / : * ? " < > |) are replaced with _.',
+  '匯出規則': 'Export rules',
+  '存成純文字檔，可備份或傳給同事': 'Save as a text file to back up or share',
+  '匯入規則': 'Import rules',
+  '完成': 'Done',
+  '例：報價單、檢驗報告、會議紀錄': 'e.g. Quote, Inspection report, Minutes',
+  '填進 {自訂}，例：部門名稱、客戶簡稱': 'Goes into {custom}, e.g. department or client name',
+  '點一下套用並編輯': 'Click to use and edit',
+  '原本檔名': 'original-name',
+  '擷取第 3 頁': 'Snapshot of page 3',
+  '拆檔第 1-3 頁': 'Split pages 1-3',
+  '格式裡沒有用 {序號}': 'The format doesn’t use {no}',
+  '命名規則存不進瀏覽器（可能是無痕視窗）': 'Naming rules can’t be saved in the browser (private window?)',
+  '未命名': 'Untitled',
+  '新規則': 'New rule',
+  '我的格式': 'My format',
+  '存檔名稱（可以直接修改）：': 'File name (you can edit it):',
+  '已取消存檔': 'Save cancelled',
+  'PDF 檔': 'PDF file',
+  '壓縮檔': 'Zip file',
+  '圖片': 'Image',
+  '檔案': 'File',
+  '# PDF 工具箱 命名規則（一行一組：名稱 | 格式 | 自訂文字）': '# PDF Toolbox naming rules (one per line: name | format | custom text)',
+  '處理中…': 'Working…',
+  '💡 回報區': '💡 Feedback',
+  '遇到問題、想要新功能、覺得哪裡好用，都在這裡回報；也可以投票選出下一個要改善的地方。': 'Report problems, request features or tell us what works well — and vote for what should be improved next.',
+  '＋ 我要回報': '+ New report',
+  '🔍 搜尋回報…': '🔍 Search reports…',
+  '只看某個功能': 'Filter by feature',
+  '所有功能': 'All features',
+  '重新整理清單': 'Refresh the list',
+  '常錯字對照表': 'Fix list',
+  '命名規則': 'Naming rules',
+  '整體・其他': 'General / other',
+  '🐞 問題回報': '🐞 Bug report',
+  '💡 功能許願': '💡 Feature request',
+  '👍 好用的地方': '👍 What works well',
+  '熱門': 'Popular',
+  '最新': 'Newest',
+  '開放中': 'Open',
+  '已排程': 'Scheduled',
+  '進行中': 'In progress',
+  '已完成': 'Done',
+  '我發的': 'Mine',
+  '問題回報': 'Bug report',
+  '功能許願': 'Feature request',
+  '好用的地方': 'What works well',
+  '標題和說明會公開': 'The title and description are public',
+  '給所有使用者看；稱呼和聯絡方式只有管理者看得到。請不要填密碼、客戶資料或其他機密，這裡也': ' to all users; your name and contact details are only visible to the administrator. Don’t enter passwords, customer data or other confidential information. Your PDF is',
+  '不會': 'not',
+  '附上你的 PDF。': 'attached.',
+  '哪個功能？': 'Which feature?',
+  '是哪一種？': 'What kind?',
+  '（必選）': '(required)',
+  '標題': 'Title',
+  '（必填，40 字內）': '(required, up to 40 characters)',
+  '一句話說重點，例：加字可以選更多字型': 'One sentence, e.g. More fonts for Add text',
+  '說明（選填）': 'Description (optional)',
+  '越具體越好：在哪個步驟、看到什麼、希望變怎樣': 'The more specific the better: which step, what you saw, what you’d like instead',
+  '稱呼（選填，不公開）': 'Your name (optional, private)',
+  '聯絡方式（選填，不公開）': 'Contact (optional, private)',
+  '例：業務部 小王': 'e.g. Sales, Alex',
+  '分機、LINE 或 Email': 'Extension, LINE or email',
+  '網站': 'Website',
+  '送出': 'Send',
+  '複製內容': 'Copy content',
+  '網路不通時，可以把內容複製起來用 LINE 傳給管理者': 'If you’re offline, copy the content and send it to the administrator via LINE',
+  '投一票；再按一次取消': 'Vote; click again to undo',
+  '投一票': 'Vote',
+  '已投票，再按一次取消': 'Voted — click again to undo',
+  '留言': 'Comment',
+  '暱稱（選填，會公開）': 'Nickname (optional, public)',
+  '寫下留言…（會公開）': 'Write a comment… (public)',
+  '上一頁（←）': 'Previous page (←)',
+  '下一頁（→）': 'Next page (→)',
+  '選取這頁': 'Select this page',
+  '✕ 關閉': '✕ Close',
+  '等太久沒有回應（網路可能不穩）': 'no response for too long (the connection may be unstable)',
+  '現在使用的人太多，請過幾分鐘再試': 'too many people are using it right now — try again in a few minutes',
+  '內容格式有問題': 'there’s a problem with the content format',
+  '這則已經下架或刪除': 'this post has been removed',
+  '只能刪自己留的言': 'you can only delete your own comments',
+  '回報區還沒設定好': 'feedback isn’t set up yet',
+  '網路或回報區暫時連不上': 'can’t reach the network or the feedback service right now',
+  '剛剛': 'just now',
+  '載入中…（第一次可能要等幾秒）': 'Loading… (the first time may take a few seconds)',
+  '這裡沒有符合的回報': 'No matching reports',
+  '還沒有人回報，按右上「＋ 我要回報」當第一個！': 'No reports yet — click “+ New report” at the top right to be the first!',
+  '刪除自己的這則留言': 'Delete your comment',
+  '還沒有留言，留下第一則吧': 'No comments yet — be the first',
+  '確定刪除這則留言？刪除後大家都看不到（要改內容可以刪掉再重留）。': 'Delete this comment? Nobody will be able to see it (to change it, delete it and post again).',
+  '已刪除留言': 'Comment deleted',
+  '（沒有寫說明）': '(no description)',
+  '載入留言中…': 'Loading comments…',
+  '請先寫留言': 'Write a comment first',
+  '留言太快了，請 15 秒後再留下一則': 'Too fast — wait 15 seconds before the next comment',
+  '其他瀏覽器': 'another browser',
+  '請先選「哪個功能」': 'Choose “Which feature?” first',
+  '請先選「是哪一種」': 'Choose “What kind?” first',
+  '請寫標題，一句話說重點就好': 'Please write a title — one sentence is enough',
+  '剛剛才送出過，請 30 秒後再送下一則': 'You just sent one — wait 30 seconds before the next',
+  '送出中…': 'Sending…',
+  '✅ 已送出，謝謝你！大家都看得到，也可以幫你投票': '✅ Sent — thank you! Everyone can see it and vote for it',
+  '回饋內容已複製，可以貼到 LINE 或 Email': 'Content copied — paste it into LINE or email',
+  '還沒有加入檔案': 'No files added yet',
+  '請先框選要擷取的範圍': 'Select the area to capture first',
+  'Ctrl+S 用在「合併・分割・裁半」「加字」「浮水印」「擷取畫面」分頁': 'Ctrl+S works in the “Merge · Split · Halve”, “Add text”, “Watermark” and “Snapshot” tabs',
+  '原檔名_動作（預設）': 'name_action (default)',
+  '原檔名_動作': 'name_action',
+  '日期-原檔名': 'date-name',
+  '原檔名_動作_日期': 'name_action_date',
+  '日期-自訂-序號': 'date-custom-no',
+  '自訂_原檔名_日期': 'custom_name_date',
+};
+const I18N_EN_TOK = { 原檔名: 'name', 動作: 'action', 日期: 'date', 時間: 'time', 頁碼: 'page', 序號: 'no', 自訂: 'custom' };
+const enTok = s => s.replace(/\{(原檔名|動作|日期|時間|頁碼|序號|自訂)\}/g, (_, k) => '{' + I18N_EN_TOK[k] + '}');
+const zhTok = s => s.replace(/\{(name|action|date|time|page|no|custom)\}/g, (_, k) => '{' + Object.keys(I18N_EN_TOK).find(z => I18N_EN_TOK[z] === k) + '}');
+const enWhat = w => w === '框選範圍' ? 'the selected area' : w.replace(/^全部 (\d+) 頁$/, (m, n) => `all ${enPages(n)}`).replace(/^第 (\d+) 頁$/, 'page $1');
+const I18N_EN_ACT = { '命名規則': 'naming-rules', '常錯字對照表': 'fix-list', '整理': 'organized', '選取': 'selected', '拆檔': 'split', '合併': 'merged', '單頁': 'page',
+  '加字': 'annotated', '加浮水印': 'watermarked', '去浮水印': 'unwatermarked', '擷取': 'snapshot', '整頁': 'fullpage' };
+const TA = s => LANG === 'en' && I18N_EN_ACT[s] ? I18N_EN_ACT[s] : T(s);
+const enPages = n => n + (n === '1' || n === 1 ? ' page' : ' pages');
+const I18N_EN_RE = [
+  [/^(\d+)／2000 字$/, '$1 / 2000 characters'],
+  [/^(\d+) 分鐘前$/, (m, n) => `${n} min ago`],
+  [/^(\d+) 小時前$/, (m, n) => `${n} hour${n === '1' ? '' : 's'} ago`],
+  [/^(\d+) 天前$/, (m, n) => `${n} day${n === '1' ? '' : 's'} ago`],
+  [/^(\d+) 個月(?:(\d+) 天)?前$/, (m, n) => `${n} month${n === '1' ? '' : 's'} ago`],
+  [/^(\d+) 年前$/, (m, n) => `${n} year${n === '1' ? '' : 's'} ago`],
+  [/^(.+)・(剛剛|\d+ (?:分鐘|小時|天)前|\d+ 個月(?:\d+ 天)?前|\d+ 年前)$/, (m, a, b) => `${a === '匿名' ? 'Anonymous' : a} · ${T(b)}`],
+  [/^載不到回報區：(.+)。請稍後按 ⟳ 再試。$/, (m, a) => `Couldn’t load feedback: ${T(a)}. Click ⟳ to try again later.`],
+  [/^編號 (.+)$/, 'No. $1'],
+  [/^留言（(\d+)）$/, 'Comments ($1)'],
+  [/^🗨 管理者回覆：([\s\S]*)$/, '🗨 Reply from the administrator: $1'],
+  [/^留言載不到：(.+)$/, (m, a) => `Couldn’t load comments: ${T(a)}`],
+  [/^(投票沒成功|刪除沒成功|留言沒送出)：(.+)$/, (m, a, b) => `${{ 投票沒成功: 'Vote failed', 刪除沒成功: 'Delete failed', 留言沒送出: 'Comment not sent' }[a]}: ${T(b)}`],
+  [/^會一起送出（方便找原因，不公開）：工具版本 (.+)、(.+)、畫面 (.+)。不會送出你的 PDF 或其他個人資料。$/, (m, v, ua, sc) => `Also sent (to help find the cause, not public): tool version ${v}, ${T(ua.split('／')[0])}${ua.includes('／') ? ' / ' + ua.split('／')[1] : ''}, screen ${sc}. Your PDF and other personal data are not sent.`],
+  [/^沒有送出成功：(.+)。你寫的內容還在，可以稍後再按一次，或按「複製內容」用 LINE 傳給管理者。$/, (m, a) => `Not sent: ${T(a)}. What you wrote is still here — try again later, or click “Copy content” and send it to the administrator via LINE.`],
+  [/^第 (\d+)／(\d+) 頁：(.*)$/, (m, a, b, c) => `Page ${a} of ${b}: ${T(c)}`],
+  [/^辨識中 (\d+)%$/, 'Recognizing $1%'],
+  [/^準備辨識中…(?: (\d+%))?$/, (m, p) => `Preparing…${p ? ' ' + p : ''}`],
+  [/^(框選範圍|全部 \d+ 頁|第 \d+ 頁)沒有找到文字(（可能是掃描檔，請把辨識改成「自動」）)?$/, (m, w, h) => `No text found in ${enWhat(w)}${h ? ' (it may be a scanned file — set scanned pages to “Auto”)' : ''}`],
+  [/^已取出(框選範圍|全部 \d+ 頁|第 \d+ 頁)(?:（其中 (\d+) 頁是掃描檔、用辨識取出，可能有錯字，請核對）)?(，已停止)?$/, (m, w, n, st) => `Extracted text from ${enWhat(w)}${n ? ` (${enPages(n)} recognized from scans — please check for errors)` : ''}${st ? ', stopped' : ''}`],
+  [/^常錯字對照表已自動修正 (\d+) 處$/, 'Fix list corrected $1 item(s)'],
+  [/^(\d+) 字，(\d+) 行$/, '$1 chars, $2 lines'],
+  [/^(\d+) 行 → (\d+) 行$/, '$1 lines → $2 lines'],
+  [/^刪掉 (\d+) 個空格$/, '$1 spaces removed'],
+  [/^修正 (\d+) 個怪字$/, '$1 odd characters fixed'],
+  [/^刪掉 (\d+) 行頁碼$/, '$1 page-number lines removed'],
+  [/^常錯字修正 (\d+) 處$/, '$1 fix-list corrections'],
+  [/^今天下一個序號：(\d+)$/, 'Next number today: $1'],
+  [/^存檔命名改用「(.+)」$/, (m, a) => `Now saving with “${T(a)}”`],
+  [/^刪除命名規則「(.+)」？$/, (m, a) => `Delete the naming rule “${T(a)}”?`],
+  [/^「(.+)」今天的序號已歸零，下一個從 001 開始$/, (m, a) => `Numbering for “${T(a)}” reset; the next is 001`],
+  [/^匯入完成：新增 (\d+) 組、更新 (\d+) 組(?:，(\d+) 行看不懂已略過（格式是 (.+)）)?$/, (m, a, u, b, f) => `Import done: ${a} added, ${u} updated${b ? `; ${b} unreadable line(s) skipped (format: ${f === '錯字=正確' ? 'wrong=correct' : 'name | format | custom text'})` : ''}`],
+  [/^共 (\d+) 組(?:（啟用 (\d+) 組）)?$/, (m, n, on) => `${n} pair${n === '1' ? '' : 's'}${on ? ` (${on} on)` : ''}`],
+  [/^已加入：(.+) → (.+)$/, (m, a, b) => `Added: ${a} → ${T(b)}`],
+  [/^已更新：(.+) → (.+)$/, (m, a, b) => `Updated: ${a} → ${T(b)}`],
+  [/^「(.+)」已經有了$/, '“$1” already exists'],
+  [/^已刪除「(.+)」$/, (m, a) => `Deleted “${T(a)}”`],
+  [/^(已存檔：.+?|已存成新的 PDF（在「下載」資料夾），原檔沒有被改動)；(.+)$/, (m, a, b) => `${T(a)}. ${T(b)}`],
+  [/^塗銷的 (\d+) 頁已轉成圖片，框底下的字已刪除$/, (m, n) => `${enPages(n)} with redactions were turned into images; the text under the boxes was deleted`],
+  [/^共 (\d+) 頁加了浮水印$/, (m, n) => `Watermark added to ${enPages(n)}`],
+  [/^(\d+) 頁的浮水印已去除$/, (m, n) => `Watermark removed from ${enPages(n)}`],
+  [/^找到 (\d+) 頁有浮水印（共 (\d+) 個），可以去除。$/, (m, n, k) => `Found watermarks on ${enPages(n)} (${k} in total) — they can be removed.`],
+  [/^這頁 (\d+) 個，全部 (\d+) 個（會一起存）$/, '$1 on this page, $2 in total (all saved together)'],
+  [/^塗銷的頁轉成圖片中（第 (\d+) 頁）…$/, 'Turning redacted pages into images (page $1)…'],
+  [/^取出「(.+)」全部頁的文字$/, 'Extract text from all pages of “$1”'],
+  [/^輸出約 (\d+) × (\d+) 像素$/, 'Output about $1 × $2 pixels'],
+  [/^「(.+)」不是 PDF 或圖片，已略過$/, '“$1” is not a PDF or image — skipped'],
+  [/^讀取「(.+)」…$/, 'Reading “$1”…'],
+  [/^「(.+)」打不開：(.+)$/, (m, a, b) => `“${a}” could not be opened: ${T(b)}`],
+  [/^(.+)（(\d+) 頁）$/, (m, a, n) => `${a} (${enPages(n)})`],
+  [/^「(.+)」已經在下面了$/, '“$1” is already in the list'],
+  [/^已加入 (.+)，排在最後面$/, (m, a) => `Added ${a.split('、').map(T).join(', ')} at the end`],
+  [/^(.*)原第(\d+)頁( ✂)?$/, (m, a, n, c) => `${a}p.${n}${c || ''}`],
+  [/^原檔第 (\d+)／(\d+) 頁(（裁過）)?$/, (m, a, b, c) => `Original page ${a} of ${b}${c ? ' (cut)' : ''}`],
+  [/^點一下選取這個檔的 (\d+) 頁$/, (m, n) => `Click to select its ${enPages(n)}`],
+  [/^已選取「(.+)」的 (\d+) 頁$/, (m, a, n) => `Selected ${enPages(n)} of “${a}”`],
+  [/^(\d+) 頁$/, (m, n) => enPages(n)],
+  [/^(\d+) 個檔，共 (\d+) 頁(?:，已選 (\d+) 頁)?$/, (m, f, n, s) => `${f} file${f === '1' ? '' : 's'}, ${enPages(n)}${s ? `, ${s} selected` : ''}`],
+  [/^第 (\d+)／(\d+) 頁　(.*)$/, (m, a, b, c) => `Page ${a} of ${b}  ${T(c)}`],
+  [/^已刪除 (\d+) 頁（可按復原）$/, (m, n) => `Deleted ${enPages(n)} (Undo available)`],
+  [/^已把 (\d+) 頁裁成 (\d+) 頁（新的頁已選取，可按復原）$/, (m, a, b) => `Cut ${enPages(a)} into ${b} (new pages selected; Undo available)`],
+  [/^看不懂「(.+)」，請用 1-3, 4-8 這種寫法$/, 'Can’t read “$1” — use a format like 1-3, 4-8'],
+  [/^「(.+)」超出範圍（目前共 (\d+) 頁）$/, (m, a, n) => `“${a}” is out of range (there are ${enPages(n)})`],
+  [/^產生 PDF 中（(\d+) 頁）…$/, (m, n) => `Creating PDF (${enPages(n)})…`],
+  [/^產生第 (\d+)／(\d+) 個檔…$/, 'Creating file $1 of $2…'],
+  [/^已存檔：(.+)$/, 'Saved: $1'],
+  [/^存檔時用哪一組命名規則（目前格式：(.+)）$/, (m, a) => `Naming rule used when saving (current format: ${enTok(a)})`],
+  [/^(.+)。注意：有檔案是加密 PDF，那些頁改用圖片方式存（文字不能再選取）$/, (m, a) => `${T(a)}. Note: some files are encrypted PDFs, so those pages were saved as images (their text can’t be selected).`],
+];
+let LANG = 'zh';
+function T(s) {
+  if (LANG !== 'en' || typeof s !== 'string' || !/[　-ヿ一-鿿＀-￯]/.test(s)) return s;
+  const m = /^(\s*)([\s\S]*?)(\s*)$/.exec(s), core = m[2];
+  let r = Object.prototype.hasOwnProperty.call(I18N_EN, core) ? I18N_EN[core] : null;
+  if (r === null) for (const [re, to] of I18N_EN_RE) if (re.test(core)) { r = core.replace(re, to); break; }
+  if (r === null && core.includes('\n')) { const parts = core.split('\n'), tr = parts.map(T); if (tr.some((x, i) => x !== parts[i])) r = tr.join('\n'); }
+  if (r === null && core.includes('｜')) { const parts = core.split('｜'), tr = parts.map(T); if (tr.some((x, i) => x !== parts[i])) r = tr.join(' | '); }
+  if (r === null && /\{(原檔名|動作|日期|時間|頁碼|序號|自訂)\}/.test(core)) r = enTok(core);
+  return r === null ? s : m[1] + r + m[3];
+}
+const i18nText = new WeakMap(), i18nAttr = new WeakMap();
+const I18N_ATTRS = ['title', 'placeholder', 'aria-label'];
+const i18nSkip = n => { const e = n.nodeType === 1 ? n : n.parentElement; return !e || !!e.closest('[data-noi18n],script,style,textarea,[contenteditable]'); };
+function i18nTextNode(n) {
+  if (i18nSkip(n)) return;
+  const rec = i18nText.get(n);
+  if (LANG === 'en') {
+    if (rec && n.data === rec.t) return;
+    const t = T(n.data);
+    if (t !== n.data) { i18nText.set(n, { o: n.data, t }); n.data = t; } else i18nText.delete(n);
+  } else if (rec && n.data === rec.t) { n.data = rec.o; i18nText.delete(n); }
+}
+function i18nAttrs(e) {
+  if (e.closest('[data-noi18n],script,style')) return;
+  const recs = i18nAttr.get(e) || {};
+  for (const a of I18N_ATTRS) {
+    const v = e.getAttribute(a);
+    if (v == null) continue;
+    const rec = recs[a];
+    if (LANG === 'en') {
+      if (rec && v === rec.t) continue;
+      const t = T(v);
+      if (t !== v) { recs[a] = { o: v, t }; e.setAttribute(a, t); } else delete recs[a];
+    } else if (rec && v === rec.t) { e.setAttribute(a, rec.o); delete recs[a]; }
+  }
+  i18nAttr.set(e, recs);
+}
+function i18nTree(root) {
+  if (root.nodeType === 3) return i18nTextNode(root);
+  if (root.nodeType !== 1 || root.closest('[data-noi18n],script,style')) return;
+  i18nAttrs(root);
+  for (const e of root.querySelectorAll('[title],[placeholder],[aria-label]')) i18nAttrs(e);
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  for (let n = w.nextNode(); n; n = w.nextNode()) i18nTextNode(n);
+}
+const i18nObs = new MutationObserver(list => {
+  for (const r of list) {
+    if (r.type === 'characterData') i18nTextNode(r.target);
+    else if (r.type === 'attributes') i18nAttrs(r.target);
+    else for (const n of r.addedNodes) i18nTree(n);
+  }
+});
+function setLang(l, save = true) {
+  LANG = l === 'en' ? 'en' : 'zh';
+  document.documentElement.lang = LANG === 'en' ? 'en' : 'zh-Hant';
+  i18nObs.disconnect();
+  i18nTree(document.documentElement);
+  if (LANG === 'en') i18nObs.observe(document.documentElement, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: I18N_ATTRS });
+  if (!$('nameModal').hidden) nameRender();
+  $('helpZh').hidden = LANG === 'en'; $('helpEn').hidden = LANG !== 'en';
+  $('langBtn').textContent = LANG === 'en' ? '中文' : 'EN';
+  $('langBtn').title = LANG === 'en' ? '切換成中文' : 'Switch to English';
+  if (save) try { localStorage.setItem('pdfBox.lang', LANG); } catch (e) {}
+}
+const nativeConfirm = window.confirm.bind(window), nativePrompt = window.prompt.bind(window);
+window.confirm = msg => nativeConfirm(T(msg));
+window.prompt = (msg, def) => nativePrompt(T(msg), def);
+$('langBtn').onclick = () => setLang(LANG === 'en' ? 'zh' : 'en');
 const LIBS_OK = !!(window.pdfjsLib && window.PDFLib && window.JSZip);
 if (!LIBS_OK) $('libErr').hidden = false;
 const PDFJS_BASE = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
@@ -1234,7 +1929,7 @@ async function buildPdf(items, libCache) {
   }
   return out.save();
 }
-const outStem = () => { const d = gridDocs(); return d.length === 1 ? stem(org.docs[d[0]].name) : '合併'; };
+const outStem = () => { const d = gridDocs(); return d.length === 1 ? stem(org.docs[d[0]].name) : TA('合併'); };
 function parseRanges(s, max) {
   const out = [];
   for (const part of s.replace(/\s*[-~～－–]\s*/g, '-').split(/[,，、;；\s]+/).filter(Boolean)) {
@@ -1257,7 +1952,7 @@ async function orgExport(kind) {
       const items = kind === 'all' ? org.pages : org.pages.filter(p => org.sel.has(p.id));
       if (!items.length) { toast('請先點選要存的頁'); return; }
       r = await saveAs(() => { busy(`產生 PDF 中（${items.length} 頁）…`); return buildPdf(items, cache); },
-        { src: outStem(), action: kind === 'all' ? '整理' : '選取', ext: '.pdf' });
+        { src: outStem(), action: TA(kind === 'all' ? '整理' : '選取'), ext: '.pdf' });
       if (!r) return;
     } else {
       let groups;
@@ -1270,14 +1965,14 @@ async function orgExport(kind) {
           const [a, b] = groups[g];
           busy(`產生第 ${g + 1}／${groups.length} 個檔…`);
           const label = a === b ? String(a).padStart(pad, '0') : `${String(a).padStart(pad, '0')}-${String(b).padStart(pad, '0')}`;
-          let name = makeName({ src: outStem(), action: '拆檔', page: label, ext: '.pdf' }, seq);
+          let name = makeName({ src: outStem(), action: TA('拆檔'), page: label, ext: '.pdf' }, seq);
           for (let k = 2; used.has(name); k++) name = name.replace(/(?:-\d+)?\.pdf$/, `-${k}.pdf`);
           used.add(name);
           zip.file(name, await buildPdf(org.pages.slice(a - 1, b), cache));
         }
         busy('打包成壓縮檔…');
         return zip.generateAsync({ type: 'blob' });
-      }, { src: outStem(), action: '拆檔', ext: '.zip' }, 'application/zip', seq);
+      }, { src: outStem(), action: TA('拆檔'), ext: '.zip' }, 'application/zip', seq);
       if (!r) return;
     }
     toast(cache.rastered ? savedMsg(r) + '。注意：有檔案是加密 PDF，那些頁改用圖片方式存（文字不能再選取）' : savedMsg(r), cache.rastered ? 6000 : 3000);
@@ -1307,7 +2002,7 @@ async function orgSaveOne(p) {
   const cache = new Map();
   try {
     const r = await saveAs(() => { busy('產生 PDF 中…'); return buildPdf([p], cache); },
-      { src: stem(org.docs[p.doc].name), action: '單頁', page: String(p.index + 1), ext: '.pdf' });
+      { src: stem(org.docs[p.doc].name), action: TA('單頁'), page: String(p.index + 1), ext: '.pdf' });
     if (r) toast(savedMsg(r));
   } catch (e) { console.error(e); toast('存檔失敗，這份 PDF 可能有損壞', 4500); }
   finally { busy(null); }
@@ -1826,7 +2521,7 @@ async function exportAddText() {
     }
     const bytes = await lib.save();
     return redPages.size ? flattenPages(bytes, redPages) : bytes;
-    }, { src: stem(V.name), action: '加字', ext: '.pdf' });
+    }, { src: stem(V.name), action: TA('加字'), ext: '.pdf' });
     if (!r) return;
     const red = redPages.size ? `；塗銷的 ${redPages.size} 頁已轉成圖片，框底下的字已刪除` : '';
     toast((r.picked ? `已存檔：${r.name}` : '已存成新的 PDF（在「下載」資料夾），原檔沒有被改動') + red, red ? 6000 : 3000);
@@ -1981,7 +2676,7 @@ async function wmSave() {
       }
       const bytes = await lib.save();
       return flat ? flattenPages(bytes, new Set(targets)) : bytes;
-    }, { src: stem(V.name), action: '加浮水印', ext: '.pdf' });
+    }, { src: stem(V.name), action: TA('加浮水印'), ext: '.pdf' });
     if (!r) return;
     toast(`${r.picked ? `已存檔：${r.name}` : '已存成新的 PDF（在「下載」資料夾），原檔沒有被改動'}；共 ${targets.length} 頁加了浮水印`, 4000);
   } catch (e) { console.error(e); toast('存檔失敗，這份 PDF 可能有損壞', 4500); }
@@ -2146,7 +2841,7 @@ async function wmRemove() {
     const chk = await wmCheck();
     if (!chk) return;
     if (!chk.r.items) { toast('沒找到可以去除的浮水印', 4000); return; }
-    const r = await saveAs(() => chk.lib.save(), { src: stem(V.name), action: '去浮水印', ext: '.pdf' });
+    const r = await saveAs(() => chk.lib.save(), { src: stem(V.name), action: TA('去浮水印'), ext: '.pdf' });
     if (!r) return;
     toast(`${r.picked ? `已存檔：${r.name}` : '已存成新的 PDF（在「下載」資料夾），原檔沒有被改動'}；${chk.r.pages} 頁的浮水印已去除`, 4000);
   } catch (e) { console.error(e); toast('處理失敗，這份 PDF 可能有損壞', 4500); }
@@ -2188,19 +2883,19 @@ $('snCopy').onclick = async () => {
   } catch (e) {
     console.error(e);
     toast('瀏覽器不讓複製圖片，改成下載檔案');
-    await saveAs(async () => canvasBlob(await snapCanvas(false)), { src: stem(V.name), action: '擷取', page: String(V.page), ext: '.png' }, 'image/png');
+    await saveAs(async () => canvasBlob(await snapCanvas(false)), { src: stem(V.name), action: TA('擷取'), page: String(V.page), ext: '.png' }, 'image/png');
   }
 };
 $('snSave').onclick = async () => {
   if (!V.sel) return;
   busy('產生圖片中…');
-  try { const r = await saveAs(async () => { busy('產生圖片中…'); return canvasBlob(await snapCanvas(false)); }, { src: stem(V.name), action: '擷取', page: String(V.page), ext: '.png' }, 'image/png'); if (r) toast(savedMsg(r)); }
+  try { const r = await saveAs(async () => { busy('產生圖片中…'); return canvasBlob(await snapCanvas(false)); }, { src: stem(V.name), action: TA('擷取'), page: String(V.page), ext: '.png' }, 'image/png'); if (r) toast(savedMsg(r)); }
   finally { busy(null); }
 };
 $('snPage').onclick = async () => {
   if (!V.pdf) { toast('請先開啟 PDF'); return; }
   busy('產生圖片中…');
-  try { const r = await saveAs(async () => { busy('產生圖片中…'); return canvasBlob(await snapCanvas(true)); }, { src: stem(V.name), action: '整頁', page: String(V.page), ext: '.png' }, 'image/png'); if (r) toast(savedMsg(r)); }
+  try { const r = await saveAs(async () => { busy('產生圖片中…'); return canvasBlob(await snapCanvas(true)); }, { src: stem(V.name), action: TA('整頁'), page: String(V.page), ext: '.png' }, 'image/png'); if (r) toast(savedMsg(r)); }
   finally { busy(null); }
 };
 const CT = { raw: '', running: false, stop: false };
@@ -2632,21 +3327,21 @@ function cleanName(s) {
     .slice(0, 150);
 }
 function makeName(info, seq, rule = curRule()) {
-  let tpl = rule.tpl.trim() || DEFAULT_RULE.tpl;
-  if (info.page != null && !tpl.includes('{頁碼}')) tpl += '_第{頁碼}頁';
+  let tpl = zhTok(rule.tpl.trim()) || DEFAULT_RULE.tpl;
+  if (info.page != null && !tpl.includes('{頁碼}')) tpl += LANG === 'en' ? '_p{頁碼}' : '_第{頁碼}頁';
   const d = new Date();
   const map = { 原檔名: info.src, 動作: info.action, 日期: ymd(d), 時間: hhmm(d), 頁碼: info.page ?? '', 序號: String(seq || 1).padStart(3, '0'), 自訂: rule.custom.trim() };
   const s = cleanName(tpl.replace(/\{(原檔名|動作|日期|時間|頁碼|序號|自訂)\}/g, (_, k) => map[k]));
-  return (s || 'PDF工具箱') + info.ext;
+  return (s || (LANG === 'en' ? 'PDF-Toolbox' : 'PDF工具箱')) + info.ext;
 }
-const usesSeq = () => curRule().tpl.includes('{序號}');
+const usesSeq = () => zhTok(curRule().tpl).includes('{序號}');
 const SAVE_TYPES = { '.pdf': ['PDF 檔', 'application/pdf'], '.zip': ['壓縮檔', 'application/zip'], '.png': ['圖片', 'image/png'] };
 async function saveAs(make, info, type = 'application/pdf', seq = usesSeq() ? seqNext(true) : 0) {
   let name = makeName(info, seq), handle = null;
   if (nm.pick && window.showSaveFilePicker) {
     const [desc, mime] = SAVE_TYPES[info.ext] || ['檔案', type];
     busy(null);
-    try { handle = await window.showSaveFilePicker({ id: 'pdfbox-save', suggestedName: name, types: [{ description: desc, accept: { [mime]: [info.ext] } }] }); }
+    try { handle = await window.showSaveFilePicker({ id: 'pdfbox-save', suggestedName: name, types: [{ description: T(desc), accept: { [mime]: [info.ext] } }] }); }
     catch (e) {
       if (e && e.name === 'AbortError') { toast('已取消存檔'); return false; }
       console.warn(e); handle = null;
@@ -2683,7 +3378,7 @@ function nameRender() {
     class: 'nm-item' + (x.id === r.id ? ' on' : ''), title: '點一下套用並編輯',
     onclick: () => { nm.active = x.id; nmStore(); nameRender(); }
   }, x.name, el('small', { text: x.tpl }))));
-  $('nameLabel').value = r.name; $('nameTpl').value = r.tpl; $('nameCustom').value = r.custom;
+  $('nameLabel').value = r.name; $('nameTpl').value = LANG === 'en' ? enTok(r.tpl) : r.tpl; $('nameCustom').value = r.custom;
   $('nameConfirm').checked = nm.confirm;
   $('namePick').checked = nm.pick;
   $('namePickRow').hidden = !window.showSaveFilePicker;
@@ -2691,11 +3386,11 @@ function nameRender() {
   namePreview();
 }
 function namePreview() {
-  const seq = seqNext(true), src = V.name ? stem(V.name) : '原本檔名';
+  const seq = seqNext(true), src = V.name ? stem(V.name) : T('原本檔名');
   const rows = [
-    ['加字', makeName({ src, action: '加字', ext: '.pdf' }, seq)],
-    ['擷取第 3 頁', makeName({ src, action: '擷取', page: '3', ext: '.png' }, seq)],
-    ['拆檔第 1-3 頁', makeName({ src, action: '拆檔', page: '1-3', ext: '.pdf' }, seq)]
+    ['加字', makeName({ src, action: TA('加字'), ext: '.pdf' }, seq)],
+    ['擷取第 3 頁', makeName({ src, action: TA('擷取'), page: '3', ext: '.png' }, seq)],
+    ['拆檔第 1-3 頁', makeName({ src, action: TA('拆檔'), page: '1-3', ext: '.pdf' }, seq)]
   ];
   $('namePreview').replaceChildren(...rows.map(([k, v]) => el('div', {}, el('b', { text: k }), v)));
   $('nameSeqInfo').textContent = usesSeq() ? `今天下一個序號：${String(seq).padStart(3, '0')}` : '格式裡沒有用 {序號}';
@@ -2703,8 +3398,8 @@ function namePreview() {
 }
 function nameSave() {
   const r = curRule();
-  r.name = $('nameLabel').value.trim() || '未命名';
-  r.tpl = $('nameTpl').value; r.custom = $('nameCustom').value;
+  r.name = $('nameLabel').value.trim() || T('未命名');
+  r.tpl = zhTok($('nameTpl').value); r.custom = $('nameCustom').value;
   nm.confirm = $('nameConfirm').checked;
   nm.pick = $('namePick').checked;
   nmStore();
@@ -2718,8 +3413,8 @@ function nameAdd(rule) {
   nmStore(); nameRender();
   $('nameLabel').focus(); $('nameLabel').select();
 }
-$('nameNew').onclick = () => nameAdd({ name: '新規則', tpl: DEFAULT_RULE.tpl, custom: '' });
-$('nameDup').onclick = () => { const r = curRule(); nameAdd({ name: r.name + '（複製）', tpl: r.tpl, custom: r.custom }); };
+$('nameNew').onclick = () => nameAdd({ name: T('新規則'), tpl: DEFAULT_RULE.tpl, custom: '' });
+$('nameDup').onclick = () => { const r = curRule(); nameAdd({ name: r.name + (LANG === 'en' ? ' (copy)' : '（複製）'), tpl: r.tpl, custom: r.custom }); };
 $('nameDel').onclick = () => {
   if (nm.rules.length <= 1) return;
   const r = curRule();
@@ -2729,9 +3424,9 @@ $('nameDel').onclick = () => {
   nmStore(); nameRender(); toast(`已刪除「${r.name}」`);
 };
 function nameExport() {
-  const lines = ['# PDF 工具箱 命名規則（一行一組：名稱 | 格式 | 自訂文字）'];
+  const lines = [T('# PDF 工具箱 命名規則（一行一組：名稱 | 格式 | 自訂文字）')];
   for (const r of nm.rules) lines.push(`${r.name} | ${r.tpl} | ${r.custom}`);
-  download('﻿' + lines.join('\r\n'), `命名規則_${ymd(new Date())}.txt`, 'text/plain;charset=utf-8');
+  download('﻿' + lines.join('\r\n'), `${TA('命名規則')}_${ymd(new Date())}.txt`, 'text/plain;charset=utf-8');
 }
 async function nameImport(file) {
   if (!file) return;
@@ -2757,8 +3452,8 @@ function nameInsert(text) {
   const t = $('nameTpl'), s = t.selectionStart ?? t.value.length, e = t.selectionEnd ?? s;
   t.setRangeText(text, s, e, 'end'); t.focus(); nameSave();
 }
-for (const v of NAME_VARS) $('nameVars').append(el('button', { text: `{${v}}`, onclick: () => nameInsert(`{${v}}`) }));
-for (const [label, tpl] of NAME_PRESETS) $('namePresets').append(el('button', { text: label, title: tpl, onclick: () => { $('nameTpl').value = tpl; nameSave(); } }));
+for (const v of NAME_VARS) $('nameVars').append(el('button', { text: `{${v}}`, onclick: () => nameInsert(LANG === 'en' ? `{${I18N_EN_TOK[v]}}` : `{${v}}`) }));
+for (const [label, tpl] of NAME_PRESETS) $('namePresets').append(el('button', { text: label, title: tpl, onclick: () => { $('nameTpl').value = LANG === 'en' ? enTok(tpl) : tpl; nameSave(); } }));
 for (const id of ['nameLabel', 'nameTpl', 'nameCustom']) $(id).addEventListener('input', nameSave);
 $('nameConfirm').onchange = nameSave;
 $('namePick').onchange = nameSave;
@@ -2849,9 +3544,9 @@ function dictFromSelection(ta) {
 }
 function dictExport() {
   if (!dict.length) { toast('對照表是空的'); return; }
-  const lines = ['# PDF 工具箱 常錯字對照表（一行一組：錯字=正確；開頭 #停用 的是暫停中的）'];
+  const lines = [T('# PDF 工具箱 常錯字對照表（一行一組：錯字=正確；開頭 #停用 的是暫停中的）')];
   for (const r of dict) lines.push(`${r.on === false ? '#停用 ' : ''}${r.from}=${r.to}`);
-  download('﻿' + lines.join('\r\n'), `常錯字對照表_${ymd(new Date())}.txt`, 'text/plain;charset=utf-8');
+  download('﻿' + lines.join('\r\n'), `${TA('常錯字對照表')}_${ymd(new Date())}.txt`, 'text/plain;charset=utf-8');
 }
 async function dictImport(file) {
   if (!file) return;
@@ -2976,8 +3671,8 @@ function wpRender() {
   }
   $('wpList').replaceChildren(...list.map(w => {
     const c = el('div', { class: 'wp-card', 'data-id': w.id }, wpVoteBtn(w),
-      el('div', { class: 'wp-main' }, el('div', { class: 'wp-title', text: w.title }),
-        w.body ? el('div', { class: 'wp-desc', text: w.body }) : null, el('div', { class: 'wp-meta' }, ...wpMeta(w))));
+      el('div', { class: 'wp-main' }, el('div', { class: 'wp-title', 'data-noi18n': '', text: w.title }),
+        w.body ? el('div', { class: 'wp-desc', 'data-noi18n': '', text: w.body }) : null, el('div', { class: 'wp-meta' }, ...wpMeta(w))));
     c.onclick = () => wpOpen(w);
     return c;
   }));
@@ -3006,7 +3701,7 @@ function wpShowCmts(items) {
   $('wpDCmts').replaceChildren(...(items.length ? items.map(c => el('div', { class: 'wp-cmt' },
     el('div', { class: 'who' }, `${c.nick || '匿名'}・${wpAge(c.t)}`,
       c.mine && c.cid ? el('button', { class: 'wp-cdel', title: '刪除自己的這則留言', text: '刪除', onclick: () => wpUncomment(c) }) : null),
-    el('div', { class: 'txt', text: c.text })))
+    el('div', { class: 'txt', 'data-noi18n': '', text: c.text })))
     : [el('div', { class: 'hint', text: '還沒有留言，留下第一則吧' })]));
 }
 async function wpUncomment(c) {
@@ -3028,7 +3723,7 @@ async function wpOpen(w) {
   $('wpDId').textContent = `編號 ${w.id}`;
   $('wpDTitle').textContent = w.title;
   $('wpDMeta').replaceChildren(...wpMeta(w));
-  $('wpDBody').textContent = w.body || '（沒有寫說明）';
+  $('wpDBody').textContent = w.body || T('（沒有寫說明）');
   $('wpDReply').hidden = !w.reply;
   $('wpDReply').textContent = w.reply ? `🗨 管理者回覆：${w.reply}` : '';
   $('wpDCh').textContent = `留言（${w.cmts}）`;
@@ -3144,8 +3839,9 @@ $('fbCopy').onclick = async () => {
   }
   toast('回饋內容已複製，可以貼到 LINE 或 Email');
 };
-$('helpToFb').onclick = () => setTab('feedback');
+$('helpToFb').onclick = $('helpToFbEn').onclick = () => setTab('feedback');
 $('helpVer').textContent = `工具版本：${TOOL_VERSION}`;
+$('helpVerEn').textContent = `Tool version: ${TOOL_VERSION}`;
 document.addEventListener('keydown', e => {
   if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey || e.key.toLowerCase() !== 's') return;
   e.preventDefault();
@@ -3167,6 +3863,9 @@ run();
 let startTab = 'organize';
 try { const t = localStorage.getItem('pdfBox.tab'); if (t && $('view-' + (VIEWER_TABS.includes(t) ? 'viewer' : t))) startTab = t; } catch (e) {}
 setTab(startTab);
+let startLang = 'zh';
+try { startLang = new URLSearchParams(location.search).get('lang') || localStorage.getItem('pdfBox.lang') || 'zh'; } catch (e) {}
+setLang(startLang, false);
 </script>
 </body>
 </html>
